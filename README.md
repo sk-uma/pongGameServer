@@ -37,7 +37,7 @@ npm install @types/bcrypt @types/passport-jwt --save-dev
 yarn start:dev でサーバー起動  
   
 ## 3.frontend  
-yarn add react@17.0.2 react-dom@17.0.2 react-router-dom @types/react-router-dom @chakra-ui/react @chakra-ui/icons framer-motion@3.10.6 @emotion/react @emotion/styled  
+yarn add react@17.0.2 react-dom@17.0.2 react-router-dom @types/react-router-dom @chakra-ui/react @chakra-ui/icons framer-motion@3.10.6 @emotion/react @emotion/styled phaser socket.io-client  
 
 yarn start でサーバー起動  
   
