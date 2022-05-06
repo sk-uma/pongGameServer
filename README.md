@@ -29,7 +29,7 @@ Generalタブ
 ## 2.serverside  
 seversideのディレクトリに移動  
 npm i -g @nestjs/cli(既にインストールされている場合必要なし。初回だけでOK)  
-  
+ 
 npm install  
   
 npm run start:dev でサーバー起動(PORT3001)  
