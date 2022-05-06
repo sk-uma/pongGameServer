@@ -6,12 +6,16 @@ import {
 	Param,
 	Delete,
 	ParseUUIDPipe,
+	UseInterceptors,
+	UploadedFile,
 } from '@nestjs/common';
 import { PlayersService } from './players.service';
 import { CreatePlayerDto } from './dto/create.player.dto';
 import { PlayersRepository } from './players.repository';
 import { Player } from './player.entity';
 import { CredentialDto } from './dto/credential.player.dto';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('players')
 export class PlayersController {
@@ -40,5 +44,11 @@ export class PlayersController {
 	@Post('signin')
 	signIn(@Body() credentialDto: CredentialDto): Promise<Player> {
 		return this.playersService.signIn(credentialDto);
+	}
+
+	@Post('upload')
+	@UseInterceptors(FileInterceptor('file'))
+	uploadFile(@UploadedFile() file: Express.Multer.File) {
+		console.log(file);
 	}
 }
