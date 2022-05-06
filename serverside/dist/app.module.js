@@ -10,6 +10,7 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const players_module_1 = require("./players/players.module");
 const typeorm_1 = require("@nestjs/typeorm");
+const game_module_1 = require("./game/game.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -26,7 +27,8 @@ AppModule = __decorate([
                 autoLoadEntities: true,
                 synchronize: true,
             }),
-        ],
+            game_module_1.GameModule,
+        ]
     })
 ], AppModule);
 exports.AppModule = AppModule;
