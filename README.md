@@ -28,18 +28,17 @@ Generalタブ
   
 ## 2.serverside  
 seversideのディレクトリに移動  
-npm i -g @nestjs/cli  
+npm i -g @nestjs/cli(既にインストールされている場合必要なし。初回だけでOK)  
 
-npm install --save axios typeorm@0.2.45 @nestjs/typeorm pg class-validator class-transformer bcrypt @nestjs/passport passport passport-jwt @nestjs/jwt  
+npm install  
 
-npm install @types/bcrypt @types/passport-jwt --save-dev  
-
-yarn start:dev でサーバー起動  
+npm run start:dev でサーバー起動(PORT3001)  
   
 ## 3.frontend  
-yarn add react@17.0.2 react-dom@17.0.2 react-router-dom @types/react-router-dom @chakra-ui/react @chakra-ui/icons framer-motion@3.10.6 @emotion/react @emotion/styled phaser socket.io-client  
+npm install --legacy-peer-deps  
+(現状モジュール間でコンフリクトあるため、オプション必要)  
 
-yarn start でサーバー起動  
+npm run start でサーバー起動(PORT3000)  
   
 以上、実行後  
 localhost:3000 にアクセス  
