@@ -16,6 +16,7 @@ import {
 import axios from "axios";
 import { PrimaryButton } from "../../atoms/button/PrimaryButton";
 import { useMessage } from "../../../hooks/useMessage";
+import defaultImage from "./default_panda.jpg";
 
 type Props = {
 	isOpen: boolean;
@@ -45,11 +46,26 @@ export const CreatePlayerModal: FC<Props> = memo((props) => {
 		axios
 			.post(`http://localhost:3001/players`, {
 				name: username,
-				imgUrl: "https://source.unsplash.com/random",
+				imgUrl: `http://localhost:3001/avatar/${username}`,
 				password: password,
 				ftUser: false,
 			})
 			.then(() => {
+				const formData = new FormData();
+				fetch(defaultImage)
+					.then((res) => res.blob())
+					.then((blob) => {
+						formData.append("file", blob, "default_panda.jpg");
+						axios.post(
+							`http://localhost:3001/avatar/${username}`,
+							formData,
+							{
+								headers: {
+									"Content-Type": "multipart/form-data",
+								},
+							}
+						);
+					});
 				showMessage({
 					title: "Create Yout Account Successful",
 					status: "success",

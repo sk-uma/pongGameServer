@@ -12,13 +12,15 @@ import { Player } from './player.entity';
 
 import * as bcrypt from 'bcrypt';
 import { CredentialDto } from './dto/credential.player.dto';
+import { AvatarFileService } from './avatarFile.service';
 
 @Injectable()
 export class PlayersService {
 	constructor(
 		@InjectRepository(PlayersRepository)
-		private playersRepository: PlayersRepository, //		private jwtService: JwtService,
-	) {}
+		private playersRepository: PlayersRepository,
+	) //		private readonly avatarFileService: AvatarFileService, //		private jwtService: JwtService,
+	{}
 
 	async findAll(): Promise<Player[]> {
 		return await this.playersRepository.find();
@@ -61,4 +63,15 @@ export class PlayersService {
 			throw new UnauthorizedException();
 		}
 	}
+
+	//	async addAvatar(avatarname: string, imageBuffer: Buffer, filename: string) {
+	//		const avatar = await this.avatarFileService.uploadAvatarFile(
+	//			imageBuffer,
+	//			filename,
+	//		);
+	//		await this.playersRepository.update(avatarname, {
+	//			avatarname: avatar.avatarname,
+	//		});
+	//		return avatar;
+	//	}
 }

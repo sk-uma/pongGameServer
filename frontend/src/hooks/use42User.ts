@@ -32,6 +32,20 @@ const create42Player = (playerName: string, imgUrl: string) =>
 		ftUser: true,
 	});
 
+const create42Avatar = (playerName: string, imgUrl: string) => {
+	const formData = new FormData();
+	fetch(imgUrl)
+		.then((res) => res.blob())
+		.then((blob) => {
+			formData.append("file", blob, `${playerName}.jpg`);
+			axios.post(`http://localhost:3001/avatar/${playerName}`, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			});
+		});
+};
+
 export const use42User = () => {
 	const { setLoginPlayer } = useLoginPlayer();
 	const { showMessage } = useMessage();
@@ -57,6 +71,10 @@ export const use42User = () => {
 											Me.data.image_url
 										)
 											.then((res) => {
+												create42Avatar(
+													Me.data.login,
+													Me.data.image_url
+												);
 												setLoginPlayer(res.data);
 												showMessage({
 													title: "42 Authorization Successful and Player Created",

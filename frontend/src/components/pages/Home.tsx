@@ -2,7 +2,7 @@ import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { memo, VFC, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { PlayerCard } from "../organisms/player/PlayerCard";
+import { PlayerDetail } from "../organisms/player/PlayerDetail";
 import { use42User } from "../../hooks/use42User";
 import { Center, Spinner } from "@chakra-ui/react";
 
@@ -16,9 +16,10 @@ export const Home: VFC = memo(() => {
 	useEffect(() => {
 		getFtUser(code);
 	}, [getFtUser, code]);
+
 	if (loginPlayer) {
 		return (
-			<PlayerCard
+			<PlayerDetail
 				imgUrl={loginPlayer.imgUrl}
 				name={loginPlayer.name}
 				win={loginPlayer.win}
