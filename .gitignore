@@ -1,4 +1,11 @@
+# database
+database/docker
+
 # node_module
 frontend/node_modules
+frontend/package-lock.json
+serverside/node_modules
+serverside/package-lock.json
 
-backend/node_modules
+# nest_dist
+serverside/dist
