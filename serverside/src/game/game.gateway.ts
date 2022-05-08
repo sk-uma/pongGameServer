@@ -55,6 +55,9 @@ interface UpdateGameData {
   }
 )
 export class GameGateway {
+  private isWaiting = false;
+  private waitingRoomID: string;
+
   @WebSocketServer()
   server: Server;
 
@@ -71,6 +74,13 @@ export class GameGateway {
   initGame(@MessageBody() data: any): void {
     this.logger.log(data);
   }
+
+  // @SubscribeMessage('readyToStart')
+  // readyToStart(@ConnectedSocket() client: Socket): void {
+  //   if (this.isWaiting) {
+  //   } else {
+  //   }
+  // }
 
   @SubscribeMessage('updateGameData')
   loopGame(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
@@ -104,6 +114,20 @@ export class GameGateway {
   }
 
   handleConnection(client: Socket, ...args: any[]) {
+    if (this.isWaiting) {
+      console.log('ready...');
+      client.join(this.waitingRoomID);
+      this.server.to(this.waitingRoomID).emit('opponentIsReadyToStart', {
+        roomId: this.waitingRoomID
+      });
+      this.isWaiting = false;
+      this.waitingRoomID = "";
+    } else {
+      console.log('waiting...');
+      this.waitingRoomID = 'waitingRoomIDfromUserID';
+      client.join(this.waitingRoomID);
+      this.isWaiting = true;
+    }
     //クライアント接続時
     this.logger.log(`Client connected: ${client.id}`);
   }
@@ -111,5 +135,8 @@ export class GameGateway {
   handleDisconnect(@ConnectedSocket() client: Socket) {
     //クライアント切断時
     this.logger.log(`Client disconnected: ${client.id}`);
+    client.leave(this.waitingRoomID);
+    this.isWaiting = !this.isWaiting;
   }
 }
+ 

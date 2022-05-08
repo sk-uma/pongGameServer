@@ -59,7 +59,7 @@ export default class PongScene extends Phaser.Scene {
     // this.socket = io("http://localhost:3001");
     this.socket = socket;
 
-    console.log("Pong constructor", socket);
+    // console.log("Pong constructor", socket);
 
     this.socket.on('UpdateCheckedGameData', (data: any) => {
       // console.log(data);
@@ -157,18 +157,18 @@ export default class PongScene extends Phaser.Scene {
   }
 
   update(): void {
-    let cursors = this.input.keyboard.createCursorKeys();
+    // let cursors = this.input.keyboard.createCursorKeys();
 
-    if (cursors.up.isDown) {
-      this.player1?.setVelocityY(-300);
-    } else if (cursors.down.isDown) {
-      this.player1?.setVelocityY(300);
-    } else {
-      this.player1?.setVelocityY(0);
-    }
+    // if (cursors.up.isDown) {
+    //   this.player1?.setVelocityY(-300);
+    // } else if (cursors.down.isDown) {
+    //   this.player1?.setVelocityY(300);
+    // } else {
+    //   this.player1?.setVelocityY(0);
+    // }
 
-    this.sendGameData();
-    console.log("Phaser update");
+    // this.sendGameData();
+    // console.log("Phaser update");
   }
 
   setSocket(): void {
