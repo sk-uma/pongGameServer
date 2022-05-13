@@ -84,29 +84,8 @@ export class GameGateway {
 
   @SubscribeMessage('updateGameData')
   loopGame(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
-    this.logger.log(data, `from ${client.id}`);
-    // client.broadcast
-    // client.broadcast.emit('UpdateCheckedGameData', {
-    //   ball: {
-    //     velocity: {
-    //       x: data.updateGameData.ball.velocity.x,
-    //       y: data.updateGameData.ball.velocity.y,
-    //     },
-    //     position: {
-    //       x: data.updateGameData.ball.position.x,
-    //       y: data.updateGameData.ball.position.y,
-    //     }
-    //   },
-    //   opponent: {
-    //     velocity: {
-    //       y: data.updateGameData.player.velocity.y
-    //     },
-    //     position: {
-    //       y: data.updateGameData.player.position.y
-    //     }
-    //   }
-    // })
-    client.broadcast.emit('UpdateCheckedGameData', `update!!!! from ${client.id}`);
+    // this.logger.log(data, `from ${client.id}`);
+    client.broadcast.emit('UpdateCheckedGameData', data);
   }
 
   afterInit(server: Server) {
@@ -117,8 +96,13 @@ export class GameGateway {
     if (this.isWaiting) {
       console.log('ready...');
       client.join(this.waitingRoomID);
-      this.server.to(this.waitingRoomID).emit('opponentIsReadyToStart', {
-        roomId: this.waitingRoomID
+      client.emit('opponentIsReadyToStart', {
+        roomId: this.waitingRoomID,
+        isServer: false
+      });
+      client.broadcast.emit('opponentIsReadyToStart', {
+        roomId: this.waitingRoomID,
+        isServer: true
       });
       this.isWaiting = false;
       this.waitingRoomID = "";

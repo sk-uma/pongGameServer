@@ -2,7 +2,15 @@ import { Socket, io } from "socket.io-client";
 import React, { useEffect, CSSProperties, useState } from 'react';
 import { config } from "./PongConfig";
 
-export let socket: Socket;
+// export let socket: Socket;
+// export let isServer: boolean = false;
+interface GameInfo {
+  socket?: Socket;
+  roomID?: String;
+  isServer?: boolean;
+};
+
+export let gameInfo: GameInfo = { };
 
 export function Pong() {
   console.log('Pong component');
@@ -15,20 +23,22 @@ export function Pong() {
 
   useEffect(() => {
     let g: Phaser.Game;
-    socket = io("http://localhost:3001");
+    gameInfo.socket = io("http://localhost:3001");
 
-    socket.on('connect', () => {
+    gameInfo.socket.on('connect', () => {
       console.log('connected....');
     });
 
-    socket.on('disconnect', () => {
+    gameInfo.socket.on('disconnect', () => {
       console.log('disconnected...');
     });
 
     console.log("is connected", isConnected);
 
-    socket.on('opponentIsReadyToStart', () => {
+    gameInfo.socket.on('opponentIsReadyToStart', (data: any) => {
       console.log("ready to start");
+      gameInfo.roomID = data.roomID;
+      gameInfo.isServer = data.isServer;
       if (!g) {
         g = new Phaser.Game(config);
       }
@@ -37,7 +47,7 @@ export function Pong() {
 
     return () => {
       g?.destroy(true);
-      socket.disconnect();
+      gameInfo.socket?.disconnect();
     }
   }, []);
 
