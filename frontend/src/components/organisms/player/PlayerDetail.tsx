@@ -38,7 +38,7 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 					templateColumns="repeat(5, 1fr)"
 					gap={3}
 				>
-					<GridItem rowSpan={2} colSpan={1} bg="white">
+					<GridItem display="flex" rowSpan={2} colSpan={1} bg="white">
 						<Image
 							borderRadius="full"
 							src={imgUrl}

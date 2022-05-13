@@ -1,10 +1,12 @@
 import { Entity, PrimaryColumn, Column, JoinColumn, OneToOne } from 'typeorm';
-//import { AvatarFile } from './avatarFile.entity';
 
 @Entity()
 export class Player {
 	@PrimaryColumn()
 	name: string;
+
+	@Column()
+	displayName: string;
 
 	@Column()
 	password: string;
@@ -26,16 +28,4 @@ export class Player {
 
 	@Column()
 	exp: number;
-
-	@Column({
-		nullable: true,
-		type: 'bytea',
-	})
-	avatar: Uint8Array;
-	//	@JoinColumn({ name: 'avatarname' })
-	//	@OneToOne(() => AvatarFile, { nullable: true })
-	//	avatar?: AvatarFile;
-	//
-	//	@Column({ nullable: true })
-	//	avatarname?: string;
 }

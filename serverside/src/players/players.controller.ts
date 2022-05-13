@@ -5,6 +5,8 @@ import {
 	Body,
 	Param,
 	Delete,
+	Patch,
+	Put,
 	ParseUUIDPipe,
 	UseInterceptors,
 	UploadedFile,
@@ -50,5 +52,29 @@ export class PlayersController {
 	@UseInterceptors(FileInterceptor('file'))
 	uploadFile(@UploadedFile() file: Express.Multer.File) {
 		console.log(file);
+	}
+
+	@Patch('/editname/:name/:displayName')
+	updatePlayerDisplayName(
+		@Param('name') name: string,
+		@Param('displayName') displayName: string,
+	): Promise<Player> {
+		return this.playersService.updatePlayerDisplayName(name, displayName);
+	}
+
+	@Patch('/editpass/:name/:password')
+	updatePlayerPassword(
+		@Param('name') name: string,
+		@Param('password') password: string,
+	): Promise<Player> {
+		return this.playersService.updatePlayerPassword(name, password);
+	}
+
+	@Put('/editimgurl/:name')
+	updatePlayerImgUrl(
+		@Param('name') name: string,
+		@Body('imgUrl') imgUrl: string,
+	): Promise<Player> {
+		return this.playersService.updatePlayerImgUrl(name, imgUrl);
 	}
 }

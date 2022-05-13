@@ -18,6 +18,7 @@ export const Header: VFC = memo(() => {
 		navigate("/home/players");
 	}, [navigate]);
 	const onClickLogout = useCallback(() => {
+		localStorage.setItem("loginName", "");
 		navigate("/");
 	}, [navigate]);
 
