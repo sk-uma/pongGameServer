@@ -12,7 +12,7 @@ export const config: Phaser.Types.Core.GameConfig = {
     default: 'arcade',
     arcade: {
       debug: true,
-      fps: 45,
+      fps: 60,
     },
   },
   scene: [PongScene]

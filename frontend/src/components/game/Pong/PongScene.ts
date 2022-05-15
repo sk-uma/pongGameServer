@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import io, {} from 'socket.io-client';
 import { useEffect } from 'react';
-import { socket } from './Pong';
+import { gameInfo } from './Pong';
 // import player from './assets/player.png'
 
 interface InitGameData {
@@ -46,7 +46,7 @@ export default class PongScene extends Phaser.Scene {
   private player2?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private ball?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private ballXSpeed: number = 400;
-  private socket: any;
+  private gameInfo: any;
   private date?: Date;
 
   constructor() {
@@ -57,13 +57,11 @@ export default class PongScene extends Phaser.Scene {
 
     // Socket
     // this.socket = io("http://localhost:3001");
-    this.socket = socket;
+    this.gameInfo = gameInfo;
 
-    console.log("Pong constructor", socket);
+    // console.log("Pong constructor", socket);
 
-    this.socket.on('UpdateCheckedGameData', (data: any) => {
-      // console.log(data);
-    });
+    console.log(gameInfo);
   }
 
   // init(): void { }
@@ -81,8 +79,9 @@ export default class PongScene extends Phaser.Scene {
     // Phaser
     this.playerGroup = this.physics.add.group();
 
-    this.player1 = this.playerGroup.create(50, 300, "player");
-    this.player2 = this.playerGroup.create(750, 300, "player")
+    this.player1 = this.playerGroup.create(this.gameInfo.isServer ? 50 : 750, 300, "player");
+    this.player2 = this.playerGroup.create(this.gameInfo.isServer ? 750 : 50, 300, "player");
+
     this.player1?.setCollideWorldBounds(true);
     this.player2?.setCollideWorldBounds(true);
     this.player1?.setImmovable(true);
@@ -115,7 +114,7 @@ export default class PongScene extends Phaser.Scene {
       },
       time: Date.now()
     }
-    this.socket.emit('initGameData', initGameData);
+    this.gameInfo.socket.emit('initGameData', initGameData);
 
     // this.socket.on('connect', () => {
     //   console.log('connected!!!');
@@ -128,32 +127,55 @@ export default class PongScene extends Phaser.Scene {
     // this.socket.on('UpdateCheckedGameData', (data: any) => {
     //   // console.log(data);
     // });
+
+    this.gameInfo.socket.on('UpdateCheckedGameData', (data: any) => {
+      console.log(data);
+      if (!this.gameInfo.isServer) {
+        this.ball?.setVelocity(data.ball.velocity.x, data.ball.velocity.y);
+        this.ball?.setPosition(data.ball.position.x, data.ball.position.y);
+      }
+      this.player2?.setVelocityY(data.player.velocity.y);
+      this.player2?.setPosition(this.gameInfo.isServer ? 750 : 50, data.player.position.y);
+    });
   }
 
   sendGameData(): void {
-    let updateGameData: UpdateGameData = {
-      playerName: "player1",
-      ball: {
-        velocity: {
-          x: this.ball?.body.velocity.x,
-          y: this.ball?.body.velocity.y,
+    // console.log({
+    //   y: this.player1?.x
+    // })
+    if (this.gameInfo.isServer) {
+      this.gameInfo.socket.emit('updateGameData', {
+        ball: {
+          velocity: {
+            x: this.ball?.body.velocity.x,
+            y: this.ball?.body.velocity.y,
+          },
+          position: {
+            x: this.ball?.x,
+            y: this.ball?.y,
+          }
         },
-        position: {
-          x: this.ball?.body.position.x,
-          y: this.ball?.body.position.y,
+        player: {
+          velocity: {
+            y: this.player1?.body.velocity.y,
+          },
+          position: {
+            y: this.player1?.y,
+          }
         }
-      },
-      player: {
-        velocity: {
-          y: this.player1?.body.position.y
-        },
-        position: {
-          y: this.player1?.body.position.y
+      });
+    } else {
+      this.gameInfo.socket.emit('updateGameData', {
+        player: {
+          velocity: {
+            y: this.player1?.body.velocity.y,
+          },
+          position: {
+            y: this.player1?.y,
+          }
         }
-      },
-      time: Date.now()
-    };
-    this.socket.emit('updateGameData', 'Hello');
+      });
+    }
   }
 
   update(): void {
@@ -168,7 +190,7 @@ export default class PongScene extends Phaser.Scene {
     }
 
     this.sendGameData();
-    console.log("Phaser update");
+    // console.log("Phaser update");
   }
 
   setSocket(): void {
