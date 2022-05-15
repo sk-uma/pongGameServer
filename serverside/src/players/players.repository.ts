@@ -12,6 +12,7 @@ export class PlayersRepository extends Repository<Player> {
 
 		const player = this.create({
 			name,
+			displayName: name,
 			password: hashPassword,
 			ftUser,
 			imgUrl,
