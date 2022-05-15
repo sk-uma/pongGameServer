@@ -15,7 +15,7 @@ export const Players: VFC = memo(() => {
 				<WrapItem key={player.name} mx="auto">
 					<PlayerCard
 						imgUrl={player.imgUrl}
-						name={player.name}
+						name={player.displayName}
 						win={player.win}
 						lose={player.lose}
 						level={player.level}

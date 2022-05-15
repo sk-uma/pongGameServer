@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import axios from "axios";
 import { useLoginPlayer } from "./useLoginPlayer";
 import { useMessage } from "./useMessage";
+import { useNavigate } from "react-router";
 
 const getToken = (code: string) =>
 	axios.post("https://api.intra.42.fr/oauth/token", {
@@ -32,11 +33,11 @@ const create42Player = (playerName: string, imgUrl: string) =>
 		ftUser: true,
 	});
 
-const create42Avatar = (playerName: string, imgUrl: string) => {
-	const formData = new FormData();
+const create42Avatar = (playerName: string, imgUrl: string) =>
 	fetch(imgUrl)
 		.then((res) => res.blob())
 		.then((blob) => {
+			const formData = new FormData();
 			formData.append("file", blob, `${playerName}.jpg`);
 			axios.post(`http://localhost:3001/avatar/${playerName}`, formData, {
 				headers: {
@@ -44,11 +45,12 @@ const create42Avatar = (playerName: string, imgUrl: string) => {
 				},
 			});
 		});
-};
 
 export const use42User = () => {
 	const { setLoginPlayer } = useLoginPlayer();
 	const { showMessage } = useMessage();
+
+	const navigate = useNavigate();
 
 	const getFtUser = useCallback(
 		(code: string | null) => {
@@ -64,6 +66,7 @@ export const use42User = () => {
 											title: "42 Authorization Successful",
 											status: "success",
 										});
+										navigate("/home");
 									})
 									.catch(() => {
 										create42Player(
@@ -74,11 +77,13 @@ export const use42User = () => {
 												create42Avatar(
 													Me.data.login,
 													Me.data.image_url
-												);
-												setLoginPlayer(res.data);
-												showMessage({
-													title: "42 Authorization Successful and Player Created",
-													status: "success",
+												).then(() => {
+													setLoginPlayer(res.data);
+													showMessage({
+														title: "42 Authorization Successful and Player Created",
+														status: "success",
+													});
+													navigate("/home");
 												});
 											})
 											.catch(() =>
@@ -93,7 +98,7 @@ export const use42User = () => {
 					.catch(() => console.log("Not Found AccessToken"));
 			}
 		},
-		[setLoginPlayer, showMessage]
+		[setLoginPlayer, showMessage, navigate]
 	);
 	return { getFtUser };
 };

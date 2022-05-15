@@ -18,9 +18,8 @@ import { AvatarFileService } from './avatarFile.service';
 export class PlayersService {
 	constructor(
 		@InjectRepository(PlayersRepository)
-		private playersRepository: PlayersRepository,
-	) //		private readonly avatarFileService: AvatarFileService, //		private jwtService: JwtService,
-	{}
+		private playersRepository: PlayersRepository, //		private jwtService: JwtService,
+	) {}
 
 	async findAll(): Promise<Player[]> {
 		return await this.playersRepository.find();
@@ -64,14 +63,32 @@ export class PlayersService {
 		}
 	}
 
-	//	async addAvatar(avatarname: string, imageBuffer: Buffer, filename: string) {
-	//		const avatar = await this.avatarFileService.uploadAvatarFile(
-	//			imageBuffer,
-	//			filename,
-	//		);
-	//		await this.playersRepository.update(avatarname, {
-	//			avatarname: avatar.avatarname,
-	//		});
-	//		return avatar;
-	//	}
+	async updatePlayerDisplayName(
+		name: string,
+		displayName: string,
+	): Promise<Player> {
+		const player = await this.findByName(name);
+		player.displayName = displayName;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerPassword(
+		name: string,
+		password: string,
+	): Promise<Player> {
+		const salt = await bcrypt.genSalt();
+		const hashPassword = await bcrypt.hash(password, salt);
+		const player = await this.findByName(name);
+		player.password = hashPassword;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerImgUrl(name: string, imgUrl: string): Promise<Player> {
+		const player = await this.findByName(name);
+		player.imgUrl = imgUrl;
+		await this.playersRepository.save(player);
+		return player;
+	}
 }
