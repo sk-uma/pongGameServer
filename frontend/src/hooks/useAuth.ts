@@ -4,6 +4,7 @@ import { Player } from "../types/api/Player";
 import { useNavigate } from "react-router-dom";
 import { useMessage } from "./useMessage";
 import { useLoginPlayer } from "..//hooks/useLoginPlayer";
+import { constUrl } from "../constant/constUrl";
 
 export const useAuth = () => {
 	const navigate = useNavigate();
@@ -16,7 +17,7 @@ export const useAuth = () => {
 		(name: string, password: string) => {
 			setLoading(true);
 			axios
-				.post<Player>(`http:///localhost:3001/players/signin`, {
+				.post<Player>(constUrl.serversideUrl + `/players/signin`, {
 					name,
 					password,
 				})

@@ -1,17 +1,17 @@
-import { memo, FC, useState, useEffect, ChangeEvent } from "react";
+import { memo, FC, useEffect } from "react";
 import {
 	Modal,
 	ModalOverlay,
 	ModalContent,
 	ModalBody,
 	ModalHeader,
-	ModalCloseButton,
 	ModalFooter,
 	Button,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useMessage } from "../../../hooks/useMessage";
 import { useNavigate } from "react-router";
+import { constUrl } from "../../../constant/constUrl";
 
 type Props = {
 	name: string;
@@ -32,9 +32,9 @@ export const DeletePlayerModal: FC<Props> = memo((props) => {
 
 	const onClickDeleteAccount = () => {
 		axios
-			.delete(`http://localhost:3001/players/${name}`)
+			.delete(constUrl.serversideUrl + `/players/${name}`)
 			.then(() => {
-				axios.delete(`http://localhost:3001/avatar/${name}`);
+				axios.delete(constUrl.serversideUrl + `/avatar/${name}`);
 				navigate("/");
 				showMessage({
 					title: "Delete Your Account Successful and Logout",

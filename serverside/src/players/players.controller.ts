@@ -77,4 +77,36 @@ export class PlayersController {
 	): Promise<Player> {
 		return this.playersService.updatePlayerImgUrl(name, imgUrl);
 	}
+
+	@Patch('/editwin/:name/:win')
+	updatePlayerWin(
+		@Param('name') name: string,
+		@Param('win') win: number,
+	): Promise<Player> {
+		return this.playersService.updatePlayerWin(name, win);
+	}
+
+	@Patch('/editlose/:name/:lose')
+	updatePlayerLose(
+		@Param('name') name: string,
+		@Param('lose') lose: number,
+	): Promise<Player> {
+		return this.playersService.updatePlayerLose(name, lose);
+	}
+
+	@Patch('/editexp/:name/:exp')
+	updatePlayerExp(
+		@Param('name') name: string,
+		@Param('exp') exp: number,
+	): Promise<Player> {
+		return this.playersService.updatePlayerExp(name, exp);
+	}
+
+	@Patch('/editlevel/:name/:level')
+	updatePlayerLevel(
+		@Param('name') name: string,
+		@Param('level') level: number,
+	): Promise<Player> {
+		return this.playersService.updatePlayerLevel(name, level);
+	}
 }

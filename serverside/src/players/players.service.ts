@@ -12,7 +12,6 @@ import { Player } from './player.entity';
 
 import * as bcrypt from 'bcrypt';
 import { CredentialDto } from './dto/credential.player.dto';
-import { AvatarFileService } from './avatarFile.service';
 
 @Injectable()
 export class PlayersService {
@@ -88,6 +87,34 @@ export class PlayersService {
 	async updatePlayerImgUrl(name: string, imgUrl: string): Promise<Player> {
 		const player = await this.findByName(name);
 		player.imgUrl = imgUrl;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerWin(name: string, win: number): Promise<Player> {
+		const player = await this.findByName(name);
+		player.win = win;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerLose(name: string, lose: number): Promise<Player> {
+		const player = await this.findByName(name);
+		player.lose = lose;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerExp(name: string, exp: number): Promise<Player> {
+		const player = await this.findByName(name);
+		player.exp = exp;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerLevel(name: string, level: number): Promise<Player> {
+		const player = await this.findByName(name);
+		player.level = level;
 		await this.playersRepository.save(player);
 		return player;
 	}

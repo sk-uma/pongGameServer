@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { FriendDto } from './dto/friend.dto';
 
 @Entity()
 export class Player {
@@ -28,4 +29,7 @@ export class Player {
 
 	@Column()
 	exp: number;
+
+	//	@OneToMany(() => FriendDto, (friend) => friend.name)
+	//	friends: FriendDto[];
 }
