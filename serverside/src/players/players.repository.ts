@@ -20,6 +20,8 @@ export class PlayersRepository extends Repository<Player> {
 			lose: 0,
 			level: 1,
 			exp: 0,
+			friends: [],
+			blockList: [],
 		});
 		await this.save(player);
 		return player;

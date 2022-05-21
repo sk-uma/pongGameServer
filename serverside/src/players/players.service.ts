@@ -118,4 +118,70 @@ export class PlayersService {
 		await this.playersRepository.save(player);
 		return player;
 	}
+
+	async addFriend(name: string, friendName: string): Promise<Player> {
+		const player = await this.findByName(name);
+		const friend = await this.findByName(friendName);
+		if (player.friends.includes(friendName)) {
+			throw new ForbiddenException(
+				`Friend with name "${friendName}" is already exist`,
+			);
+		} else if (name === friendName) {
+			throw new ForbiddenException(`Cannot add yourself as a friend.`);
+		} else {
+			player.friends.push(friend.name);
+		}
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async deleteFriend(name: string, friendName: string): Promise<Player> {
+		const player = await this.findByName(name);
+		const friend = await this.findByName(friendName);
+		if (!player.friends.includes(friendName)) {
+			throw new ForbiddenException(
+				`Friend with name "${friendName}" is not exist`,
+			);
+		} else {
+			player.friends = player.friends.filter(
+				(person) => person !== friendName,
+			);
+		}
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async blockFriend(name: string, friendName: string): Promise<Player> {
+		const player = await this.findByName(name);
+		const friend = await this.findByName(friendName);
+		if (player.blockList.includes(friendName)) {
+			throw new ForbiddenException(
+				`Block user with name "${friendName}" is already exist`,
+			);
+		} else if (name === friendName) {
+			throw new ForbiddenException(
+				`Cannot add yourself as a block user.`,
+			);
+		} else {
+			player.blockList.push(friend.name);
+		}
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async unblockFriend(name: string, friendName: string): Promise<Player> {
+		const player = await this.findByName(name);
+		const friend = await this.findByName(friendName);
+		if (!player.blockList.includes(friendName)) {
+			throw new ForbiddenException(
+				`Block user with name "${friendName}" is not exist`,
+			);
+		} else {
+			player.blockList = player.blockList.filter(
+				(person) => person !== friendName,
+			);
+		}
+		await this.playersRepository.save(player);
+		return player;
+	}
 }

@@ -17,6 +17,9 @@ export const Header: VFC = memo(() => {
 	const onClickPlayers = useCallback(() => {
 		navigate("/home/players");
 	}, [navigate]);
+	const onClickHistory = useCallback(() => {
+		navigate("/home/history");
+	}, [navigate]);
 	const onClickLogout = useCallback(() => {
 		localStorage.setItem("loginName", "");
 		navigate("/");
@@ -60,6 +63,9 @@ export const Header: VFC = memo(() => {
 					</Box>
 					<Box pr={4}>
 						<Link onClick={onClickPlayers}>Players</Link>
+					</Box>
+					<Box pr={4}>
+						<Link onClick={onClickHistory}>History</Link>
 					</Box>
 					<Box pr={4}>
 						<Link onClick={onClickLogout}>Log Out</Link>

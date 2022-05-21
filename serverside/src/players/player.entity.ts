@@ -30,6 +30,9 @@ export class Player {
 	@Column()
 	exp: number;
 
-	//	@OneToMany(() => FriendDto, (friend) => friend.name)
-	//	friends: FriendDto[];
+	@Column('simple-array')
+	friends: string[];
+
+	@Column('simple-array')
+	blockList: string[];
 }

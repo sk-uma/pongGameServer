@@ -109,4 +109,36 @@ export class PlayersController {
 	): Promise<Player> {
 		return this.playersService.updatePlayerLevel(name, level);
 	}
+
+	@Patch('/addfriend/:name/:friendName')
+	addFriend(
+		@Param('name') name: string,
+		@Param('friendName') friendName: string,
+	): Promise<Player> {
+		return this.playersService.addFriend(name, friendName);
+	}
+
+	@Delete('/deletefriend/:name/:friendName')
+	deleteFriend(
+		@Param('name') name: string,
+		@Param('friendName') friendName: string,
+	): Promise<Player> {
+		return this.playersService.deleteFriend(name, friendName);
+	}
+
+	@Patch('/block/:name/:friendName')
+	blockFriend(
+		@Param('name') name: string,
+		@Param('friendName') friendName: string,
+	): Promise<Player> {
+		return this.playersService.blockFriend(name, friendName);
+	}
+
+	@Delete('/unblock/:name/:friendName')
+	unblockFriend(
+		@Param('name') name: string,
+		@Param('friendName') friendName: string,
+	): Promise<Player> {
+		return this.playersService.unblockFriend(name, friendName);
+	}
 }

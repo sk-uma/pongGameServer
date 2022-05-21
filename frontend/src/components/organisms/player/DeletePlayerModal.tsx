@@ -12,6 +12,7 @@ import axios from "axios";
 import { useMessage } from "../../../hooks/useMessage";
 import { useNavigate } from "react-router";
 import { constUrl } from "../../../constant/constUrl";
+import { useAllPlayers } from "../../../hooks/useAllPlayers";
 
 type Props = {
 	name: string;
@@ -23,30 +24,56 @@ export const DeletePlayerModal: FC<Props> = memo((props) => {
 	const navigate = useNavigate();
 	const { name, isOpen, onClose } = props;
 	const { showMessage } = useMessage();
+	const { getPlayers, players } = useAllPlayers();
 
-	useEffect(() => {}, []);
+	useEffect(() => getPlayers(), [getPlayers]);
 
 	const onClickCancel = () => {
 		onClose();
 	};
 
+	async function deleteFriendBlock(): Promise<void> {
+		await players.forEach((player) => {
+			console.log(player.name);
+			if (player.friends.includes(name)) {
+				axios.delete(
+					constUrl.serversideUrl +
+						`/players/deletefriend/${player.name}/${name}`
+				);
+			}
+			if (player.blockList.includes(name)) {
+				axios.delete(
+					constUrl.serversideUrl +
+						`/players/unblock/${player.name}/${name}`
+				);
+			}
+		});
+	}
+
 	const onClickDeleteAccount = () => {
-		axios
-			.delete(constUrl.serversideUrl + `/players/${name}`)
-			.then(() => {
-				axios.delete(constUrl.serversideUrl + `/avatar/${name}`);
-				navigate("/");
-				showMessage({
-					title: "Delete Your Account Successful and Logout",
-					status: "success",
-				});
-			})
-			.catch(() => {
-				showMessage({
-					title: `Sorry, Delete Your Acount Failed.`,
-					status: "error",
-				});
+		axios.delete(constUrl.serversideUrl + `/history/${name}`).then(() => {
+			deleteFriendBlock().then(() => {
+				axios
+					.delete(constUrl.serversideUrl + `/players/${name}`)
+					.then(() => {
+						console.log("2");
+						axios.delete(
+							constUrl.serversideUrl + `/avatar/${name}`
+						);
+						navigate("/");
+						showMessage({
+							title: "Delete Your Account Successful and Logout",
+							status: "success",
+						});
+					})
+					.catch(() => {
+						showMessage({
+							title: `Sorry, Delete Your Acount Failed.`,
+							status: "error",
+						});
+					});
 			});
+		});
 	};
 
 	return (

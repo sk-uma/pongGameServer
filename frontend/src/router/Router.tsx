@@ -10,6 +10,7 @@ import { Game } from "../components/pages/Game";
 import { Players } from "../components/pages/Players";
 import { LoginPlayerProvider } from "../providers/LoginPlayerProvider";
 import { EditProfile } from "../components/pages/EditProfile";
+import { History } from "../components/pages/History";
 
 export const Router: VFC = memo(() => {
 	return (
@@ -21,6 +22,7 @@ export const Router: VFC = memo(() => {
 					<Route path="chat" element={<Chat />} />
 					<Route path="game" element={<Game />} />
 					<Route path="players" element={<Players />} />
+					<Route path="history" element={<History />} />
 					<Route path="edit" element={<EditProfile />} />
 				</Route>
 
