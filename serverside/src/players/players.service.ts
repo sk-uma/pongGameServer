@@ -12,7 +12,6 @@ import { Player } from './player.entity';
 
 import * as bcrypt from 'bcrypt';
 import { CredentialDto } from './dto/credential.player.dto';
-import { AvatarFileService } from './avatarFile.service';
 
 @Injectable()
 export class PlayersService {
@@ -88,6 +87,100 @@ export class PlayersService {
 	async updatePlayerImgUrl(name: string, imgUrl: string): Promise<Player> {
 		const player = await this.findByName(name);
 		player.imgUrl = imgUrl;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerWin(name: string, win: number): Promise<Player> {
+		const player = await this.findByName(name);
+		player.win = win;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerLose(name: string, lose: number): Promise<Player> {
+		const player = await this.findByName(name);
+		player.lose = lose;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerExp(name: string, exp: number): Promise<Player> {
+		const player = await this.findByName(name);
+		player.exp = exp;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async updatePlayerLevel(name: string, level: number): Promise<Player> {
+		const player = await this.findByName(name);
+		player.level = level;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async addFriend(name: string, friendName: string): Promise<Player> {
+		const player = await this.findByName(name);
+		const friend = await this.findByName(friendName);
+		if (player.friends.includes(friendName)) {
+			throw new ForbiddenException(
+				`Friend with name "${friendName}" is already exist`,
+			);
+		} else if (name === friendName) {
+			throw new ForbiddenException(`Cannot add yourself as a friend.`);
+		} else {
+			player.friends.push(friend.name);
+		}
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async deleteFriend(name: string, friendName: string): Promise<Player> {
+		const player = await this.findByName(name);
+		const friend = await this.findByName(friendName);
+		if (!player.friends.includes(friendName)) {
+			throw new ForbiddenException(
+				`Friend with name "${friendName}" is not exist`,
+			);
+		} else {
+			player.friends = player.friends.filter(
+				(person) => person !== friendName,
+			);
+		}
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async blockFriend(name: string, friendName: string): Promise<Player> {
+		const player = await this.findByName(name);
+		const friend = await this.findByName(friendName);
+		if (player.blockList.includes(friendName)) {
+			throw new ForbiddenException(
+				`Block user with name "${friendName}" is already exist`,
+			);
+		} else if (name === friendName) {
+			throw new ForbiddenException(
+				`Cannot add yourself as a block user.`,
+			);
+		} else {
+			player.blockList.push(friend.name);
+		}
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	async unblockFriend(name: string, friendName: string): Promise<Player> {
+		const player = await this.findByName(name);
+		const friend = await this.findByName(friendName);
+		if (!player.blockList.includes(friendName)) {
+			throw new ForbiddenException(
+				`Block user with name "${friendName}" is not exist`,
+			);
+		} else {
+			player.blockList = player.blockList.filter(
+				(person) => person !== friendName,
+			);
+		}
 		await this.playersRepository.save(player);
 		return player;
 	}

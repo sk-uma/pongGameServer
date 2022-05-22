@@ -1,3 +1,4 @@
+import { constUrl } from "../constant/constUrl";
 import { useCallback } from "react";
 import axios from "axios";
 
@@ -8,7 +9,7 @@ export const useResetLoginPlayer = () => {
 	const name = localStorage.getItem("loginName");
 
 	const resetLoginPlayer = useCallback(() => {
-		axios.get(`http://localhost:3001/players/${name}`).then((res) => {
+		axios.get(constUrl.serversideUrl + `/players/${name}`).then((res) => {
 			setLoginPlayer(res.data);
 		});
 	}, [name, setLoginPlayer]);

@@ -13,12 +13,13 @@ import {
 	Button,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { PrimaryButton } from "../../atoms/button/PrimaryButton";
 import { RepeatIcon, WarningTwoIcon } from "@chakra-ui/icons";
 import axios from "axios";
+import { PrimaryButton } from "../../atoms/button/PrimaryButton";
 import { useMessage } from "../../../hooks/useMessage";
 import { DeletePlayerModal } from "./DeletePlayerModal";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
+import { constUrl } from "../../../constant/constUrl";
 
 type Props = {
 	name: string;
@@ -47,7 +48,8 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 	const onClickEditPlayerName = () => {
 		axios
 			.patch(
-				`http://localhost:3001/players/editname/${name}/${playerName}`
+				constUrl.serversideUrl +
+					`/players/editname/${name}/${playerName}`
 			)
 			.then((res) => {
 				setLoginPlayer(res.data);
@@ -68,7 +70,9 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 
 	const onClickEditPassword = () => {
 		axios
-			.patch(`http://localhost:3001/players/editpass/${name}/${password}`)
+			.patch(
+				constUrl.serversideUrl + `/players/editpass/${name}/${password}`
+			)
 			.then(() => {
 				showMessage({
 					title: "Edit Player Password Successful",
@@ -94,20 +98,27 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 		if (avatarFile) {
 			formData.append("file", avatarFile);
 			axios
-				.put(`http://localhost:3001/avatar/update/${name}`, formData, {
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
-				})
+				.put(
+					constUrl.serversideUrl + `/avatar/update/${name}`,
+					formData,
+					{
+						headers: {
+							"Content-Type": "multipart/form-data",
+						},
+					}
+				)
 				.then(() => {
 					axios
 						.get(`http://localhost:3001/players/${name}`)
 						.then((res) => {
 							axios
 								.put(
-									`http://localhost:3001/players/editimgurl/${name}`,
+									constUrl.serversideUrl +
+										`/players/editimgurl/${name}`,
 									{
-										imgUrl: `http://localhost:3001/avatar/${name}`,
+										imgUrl:
+											constUrl.serversideUrl +
+											`/avatar/${name}`,
 									}
 								)
 								.then(() => {

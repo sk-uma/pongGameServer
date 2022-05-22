@@ -8,4 +8,6 @@ export type Player = {
 	lose: number;
 	level: number;
 	exp: number;
+	friends: string[];
+	blockList: string[];
 };

@@ -3,6 +3,7 @@ import { PlayersModule } from './players/players.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameModule } from './game/game.module';
 import { AvatarModule } from './avatar/avatar.module';
+import { HistoryModule } from './history/history.module';
 
 @Module({
 	imports: [
@@ -19,6 +20,7 @@ import { AvatarModule } from './avatar/avatar.module';
 		}),
 		AvatarModule,
 		GameModule,
+		HistoryModule,
 	],
 })
 export class AppModule {}
