@@ -17,6 +17,7 @@ import axios from "axios";
 import { PrimaryButton } from "../../atoms/button/PrimaryButton";
 import { useMessage } from "../../../hooks/useMessage";
 import defaultImage from "./default_panda.jpg";
+import { constUrl } from "../../../constant/constUrl";
 
 type Props = {
 	isOpen: boolean;
@@ -44,9 +45,9 @@ export const CreatePlayerModal: FC<Props> = memo((props) => {
 
 	const onClickCreateMyAccount = () => {
 		axios
-			.post(`http://localhost:3001/players`, {
+			.post(constUrl.serversideUrl + "/players", {
 				name: username,
-				imgUrl: `http://localhost:3001/avatar/${username}`,
+				imgUrl: constUrl.serversideUrl + `/avatar/${username}`,
 				password: password,
 				ftUser: false,
 			})
@@ -57,7 +58,7 @@ export const CreatePlayerModal: FC<Props> = memo((props) => {
 					.then((blob) => {
 						formData.append("file", blob, "default_panda.jpg");
 						axios.post(
-							`http://localhost:3001/avatar/${username}`,
+							constUrl.serversideUrl + `/avatar/${username}`,
 							formData,
 							{
 								headers: {

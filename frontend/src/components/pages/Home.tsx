@@ -20,17 +20,20 @@ export const Home: VFC = memo(() => {
 		loginPlayer && localStorage.setItem("loginName", loginPlayer.name);
 		!loginPlayer && localStorage.getItem("loginName") && resetLoginPlayer();
 		//		eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [code]);
 
 	if (loginPlayer) {
 		return (
 			<PlayerDetail
 				imgUrl={loginPlayer.imgUrl}
-				name={loginPlayer.displayName}
+				name={loginPlayer.name}
+				displayName={loginPlayer.displayName}
 				win={loginPlayer.win}
 				lose={loginPlayer.lose}
 				level={loginPlayer.level}
 				exp={loginPlayer.exp}
+				friends={loginPlayer.friends}
+				blockList={loginPlayer.blockList}
 			/>
 		);
 	} else {

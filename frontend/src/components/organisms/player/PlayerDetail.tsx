@@ -1,4 +1,4 @@
-import { memo, FC, useCallback } from "react";
+import { memo, FC, useCallback, useEffect } from "react";
 import {
 	Box,
 	Stack,
@@ -10,29 +10,57 @@ import {
 	Button,
 	Flex,
 	Progress,
+	Wrap,
+	WrapItem,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router";
+import { useAllPlayers } from "../../../hooks/useAllPlayers";
+import { FriendCard } from "./FriendCard";
+import { HistoryCard } from "../history/HisoryCard";
+import { useAllHistory } from "../../../hooks/useAllHistory";
 
 type Props = {
 	imgUrl: string;
 	name: string;
+	displayName: string;
 	win: number;
 	lose: number;
 	level: number;
 	exp: number;
+	friends: string[];
+	blockList: string[];
 };
 
 export const PlayerDetail: FC<Props> = memo((props) => {
-	const { imgUrl, name, win, lose, level, exp } = props;
+	const {
+		imgUrl,
+		name,
+		displayName,
+		win,
+		lose,
+		level,
+		exp,
+		friends,
+		blockList,
+	} = props;
+	const { getPlayers, players } = useAllPlayers();
+	const { getAllHistory, allHistory } = useAllHistory();
+
 	const navigate = useNavigate();
 	const onClickEditProfile = useCallback(() => {
 		navigate("/home/edit");
 	}, [navigate]);
 
+	useEffect(() => {
+		getPlayers();
+		getAllHistory();
+	}, [getPlayers, getAllHistory]);
+
 	return (
 		<Center>
-			<Box w="1500px" bg="white" p={20}>
+			<Box w="1500px" bg="white" pt={10} px={20} pb={20}>
+				<Text fontSize={{ base: "md", lg: "5xl" }}>Profile</Text>
 				<Grid
 					templateRows="repeat(2, 1fr)"
 					templateColumns="repeat(5, 1fr)"
@@ -55,7 +83,7 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 							fontSize={{ base: "xl", lg: "5xl" }}
 							fontWeight="bold"
 						>
-							{name}
+							{displayName}
 						</Text>
 					</GridItem>
 					<GridItem colSpan={2} bg="gray.50" borderRadius="10px">
@@ -121,6 +149,122 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 						Edit Profile
 					</Button>
 				</Flex>
+				<Box px={10} pt={10}>
+					<Text fontSize={{ base: "sm", lg: "3xl" }}>Friends</Text>
+					<Wrap
+						p={{ base: 4, md: 10 }}
+						align="left"
+						bg="gray.50"
+						borderRadius="10px"
+						mx={10}
+					>
+						{friends.length ? (
+							players
+								?.filter((player) =>
+									friends.includes(player.name)
+								)
+								.map((friend) => (
+									<WrapItem key={friend.name} mx="auto">
+										<FriendCard
+											loginName={name}
+											imgUrl={friend.imgUrl}
+											name={friend.name}
+											displayName={friend.displayName}
+											level={friend.level}
+											isfriend={true}
+										/>
+									</WrapItem>
+								))
+						) : (
+							<Text
+								fontSize={{ base: "sm", lg: "2xl" }}
+								color="gray"
+							>
+								No Friends
+							</Text>
+						)}
+					</Wrap>
+				</Box>
+				<Box px={10} pt={3}>
+					<Text fontSize={{ base: "sm", lg: "3xl" }}>Block List</Text>
+					<Wrap
+						p={{ base: 4, md: 10 }}
+						align="left"
+						bg="gray.50"
+						borderRadius="10px"
+						mx={10}
+					>
+						{blockList.length ? (
+							players
+								?.filter((player) =>
+									blockList.includes(player.name)
+								)
+								.map((friend) => (
+									<WrapItem key={friend.name} mx="auto">
+										<FriendCard
+											loginName={name}
+											imgUrl={friend.imgUrl}
+											name={friend.name}
+											displayName={friend.displayName}
+											level={friend.level}
+											isfriend={false}
+										/>
+									</WrapItem>
+								))
+						) : (
+							<Text
+								fontSize={{ base: "sm", lg: "2xl" }}
+								color="gray"
+							>
+								Empty
+							</Text>
+						)}
+					</Wrap>
+				</Box>
+				<Center>
+					<Box
+						w={{ base: "500px", lg: "1000px" }}
+						bg="white"
+						pt={{ base: 5, lg: 10 }}
+						px={{ base: 10, lg: 20 }}
+						pb={{ base: 10, lg: 20 }}
+					>
+						<Text fontSize={{ base: "sm", lg: "3xl" }}>
+							History
+						</Text>
+						<Flex justify="center">
+							<Wrap
+								bgColor="gray.50"
+								mx={{ base: 5, lg: 10 }}
+								p={{ base: 4, lg: 8 }}
+								w={{ base: "400px", lg: "800px" }}
+								borderRadius="5px"
+								justify="center"
+							>
+								{allHistory
+									.filter(
+										(res) =>
+											name === res.leftPlayer ||
+											name === res.rightPlayer
+									)
+									.map((history) => (
+										<WrapItem py={2}>
+											<HistoryCard
+												leftPlayer={history.leftPlayer}
+												rightPlayer={
+													history.rightPlayer
+												}
+												leftScore={history.leftScore}
+												rightScore={history.rightScore}
+												winner={history.winner}
+												loser={history.loser}
+											/>
+										</WrapItem>
+									))}
+							</Wrap>
+						</Flex>
+					</Box>
+				</Center>
 			</Box>
 		</Center>
 	);

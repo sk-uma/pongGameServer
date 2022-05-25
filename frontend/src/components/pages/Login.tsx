@@ -14,6 +14,7 @@ import {
 import { PrimaryButton } from "../atoms/button/PrimaryButton";
 import { useAuth } from "../../hooks/useAuth";
 import { CreatePlayerModal } from "../organisms/player/CreatePlayerModal";
+import { constUrl } from "../../constant/constUrl";
 
 export const Login: VFC = memo(() => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,9 +32,7 @@ export const Login: VFC = memo(() => {
 	const onClickSignIn = () => login(userName, userPassword);
 
 	const onClickFtAuth = useCallback(
-		() =>
-			(window.location.href =
-				"https://api.intra.42.fr/oauth/authorize?client_id=5ec7a9808358afbd8a4a174c7d89d4ae27fc87b35477bf1065cc11387df68549&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fhome&response_type=code"),
+		() => (window.location.href = constUrl.ftApiAuthUrl),
 		[]
 	);
 
