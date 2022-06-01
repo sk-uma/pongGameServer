@@ -15,6 +15,8 @@ import axios from "axios";
 import { constUrl } from "../../../constant/constUrl";
 import { useResetLoginPlayer } from "../../../hooks/useResetLoginPlayer";
 
+//Profile画面のフレンドリストを表示するコンポーネント
+
 type Props = {
 	loginName: string;
 	imgUrl: string;

@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameModule } from './game/game.module';
 import { AvatarModule } from './avatar/avatar.module';
 import { HistoryModule } from './history/history.module';
+import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { HistoryModule } from './history/history.module';
 		AvatarModule,
 		GameModule,
 		HistoryModule,
+		TwoFactorAuthenticationModule,
 	],
 })
 export class AppModule {}

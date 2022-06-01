@@ -5,5 +5,7 @@ import {
 	LoginPlayerContextType,
 } from "../providers/LoginPlayerProvider";
 
+//グローバルスコープでloginPlayerを取得するためのhooks
+
 export const useLoginPlayer = (): LoginPlayerContextType =>
 	useContext(LoginPlayerContext);

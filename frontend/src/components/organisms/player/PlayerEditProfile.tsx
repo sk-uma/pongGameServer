@@ -20,13 +20,19 @@ import { useMessage } from "../../../hooks/useMessage";
 import { DeletePlayerModal } from "./DeletePlayerModal";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 import { constUrl } from "../../../constant/constUrl";
+import { SetTFAModal } from "./setTFAModal";
+
+//PlayerのEdit画面を表示するコンポーネント
 
 type Props = {
 	name: string;
+	isTFA: boolean;
+	ftUser: boolean;
+	TFAQR: string;
 };
 
 export const PlayerEditProfile: VFC<Props> = memo((props) => {
-	const { name } = props;
+	const { name, isTFA, ftUser, TFAQR } = props;
 	const { showMessage } = useMessage();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [playerName, setPlayerName] = useState<string>("");
@@ -146,7 +152,7 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 				<Heading as="h1" size="lg" textAlign="center">
 					{`Edit Profile for ${name} `}
 				</Heading>
-				<Stack pt={10}>
+				<Stack pt={10} spacing={10}>
 					<FormControl>
 						<FormLabel>Player Name</FormLabel>
 						<Flex justify="center">
@@ -168,27 +174,31 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 							</Grid>
 						</Flex>
 					</FormControl>
-					<FormControl>
-						<FormLabel>Password</FormLabel>
-						<Flex justify="center">
-							<Grid templateColumns="repeat(10, 1fr)" gap={3}>
-								<GridItem colSpan={9}>
-									<Input
-										value={password}
-										onChange={onChangePassword}
-									/>
-								</GridItem>
-								<GridItem colSpan={1}>
-									<PrimaryButton
-										disabled={password === ""}
-										onClick={onClickEditPassword}
-									>
-										Edit
-									</PrimaryButton>
-								</GridItem>
-							</Grid>
-						</Flex>
-					</FormControl>
+					{ftUser ? (
+						<></>
+					) : (
+						<FormControl>
+							<FormLabel>Password</FormLabel>
+							<Flex justify="center">
+								<Grid templateColumns="repeat(10, 1fr)" gap={3}>
+									<GridItem colSpan={9}>
+										<Input
+											value={password}
+											onChange={onChangePassword}
+										/>
+									</GridItem>
+									<GridItem colSpan={1}>
+										<PrimaryButton
+											disabled={password === ""}
+											onClick={onClickEditPassword}
+										>
+											Edit
+										</PrimaryButton>
+									</GridItem>
+								</Grid>
+							</Flex>
+						</FormControl>
+					)}
 					<FormControl>
 						<FormLabel>Avatar Image</FormLabel>
 						<Flex justify="right">
@@ -207,6 +217,12 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 							>
 								Change Avatar Image
 							</Button>
+						</Flex>
+					</FormControl>
+					<FormControl>
+						<FormLabel>Two Factor Authentication</FormLabel>
+						<Flex justify="right">
+							<SetTFAModal isTFA={isTFA} TFAQR={TFAQR} />
 						</Flex>
 					</FormControl>
 					<FormControl pt={10}>

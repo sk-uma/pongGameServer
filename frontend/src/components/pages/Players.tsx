@@ -6,9 +6,12 @@ import { PlayerCard } from "../organisms/player/PlayerCard";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { useResetLoginPlayer } from "../../hooks/useResetLoginPlayer";
 
+//全プレイヤー閲覧ページ
+
 export const Players: VFC = memo(() => {
 	const { getPlayers, players } = useAllPlayers();
 	const { loginPlayer } = useLoginPlayer();
+	//Reloadした場合など、loginPlayer情報が失われた時LoginPlayerを再設定
 	const { resetLoginPlayer } = useResetLoginPlayer();
 
 	useEffect(() => {

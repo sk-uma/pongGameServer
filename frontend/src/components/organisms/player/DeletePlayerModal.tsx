@@ -14,6 +14,8 @@ import { useNavigate } from "react-router";
 import { constUrl } from "../../../constant/constUrl";
 import { useAllPlayers } from "../../../hooks/useAllPlayers";
 
+//プレイヤー情報を削除するときに確認Modal画面を表示するコンポーネント
+
 type Props = {
 	name: string;
 	isOpen: boolean;

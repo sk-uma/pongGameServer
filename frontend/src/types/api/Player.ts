@@ -10,4 +10,6 @@ export type Player = {
 	exp: number;
 	friends: string[];
 	blockList: string[];
+	twoFactorAuthenticationQR: string;
+	isTwoFactorAuthenticationEnabled: boolean;
 };

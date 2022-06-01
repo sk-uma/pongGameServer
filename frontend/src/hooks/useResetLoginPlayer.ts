@@ -4,6 +4,8 @@ import axios from "axios";
 
 import { useLoginPlayer } from "./useLoginPlayer";
 
+//登録済みのlocalStorageからログイン名を呼び出し、ログイン情報を再取得する
+
 export const useResetLoginPlayer = () => {
 	const { setLoginPlayer } = useLoginPlayer();
 	const name = localStorage.getItem("loginName");

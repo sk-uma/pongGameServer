@@ -7,16 +7,19 @@ import { CreateHistoryDto } from './dto/create.history.dto';
 export class HistoryController {
 	constructor(private historyService: HistoryService) {}
 
+	//全対戦履歴の取得
 	@Get()
 	async findAll(): Promise<History[]> {
 		return this.historyService.findAll();
 	}
 
+	//特定プレイヤーの対戦履歴の取得
 	@Get(':name')
 	async findByName(@Param('name') name: string): Promise<History[]> {
 		return await this.historyService.findByName(name);
 	}
 
+	//新規対戦履歴の作成
 	@Post()
 	createHistory(
 		@Body() createHistoryDto: CreateHistoryDto,
@@ -24,6 +27,7 @@ export class HistoryController {
 		return this.historyService.createHistory(createHistoryDto);
 	}
 
+	//特定プレイヤーの対戦履歴の削除
 	@Delete(':name')
 	async deleteHistoryByName(@Param('name') name: string): Promise<void> {
 		return this.historyService.deleteHistoryByName(name);

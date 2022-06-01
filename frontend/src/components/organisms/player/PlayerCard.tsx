@@ -25,6 +25,8 @@ import { useResetLoginPlayer } from "../../../hooks/useResetLoginPlayer";
 import { constUrl } from "../../../constant/constUrl";
 import { useMessage } from "../../../hooks/useMessage";
 
+//簡易的なユーザー情報をカードで表示するコンポーネント
+
 type Props = {
 	imgUrl: string;
 	name: string;

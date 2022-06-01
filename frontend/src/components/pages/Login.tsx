@@ -16,6 +16,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { CreatePlayerModal } from "../organisms/player/CreatePlayerModal";
 import { constUrl } from "../../constant/constUrl";
 
+//ログインページ
+
 export const Login: VFC = memo(() => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { loading, login } = useAuth();
@@ -29,8 +31,10 @@ export const Login: VFC = memo(() => {
 	const onChangePassword = (e: ChangeEvent<HTMLInputElement>) =>
 		setPassword(e.target.value);
 
+	//通常ログイン用。loginユーザー情報を設定して、Homeページへ遷移。
 	const onClickSignIn = () => login(userName, userPassword);
 
+	//42Authorization用。事前に設定してあるAPIに遷移する
 	const onClickFtAuth = useCallback(
 		() => (window.location.href = constUrl.ftApiAuthUrl),
 		[]
