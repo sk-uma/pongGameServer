@@ -1,6 +1,7 @@
 import { Socket, io } from "socket.io-client";
 import React, { useEffect, CSSProperties, useState } from 'react';
 import { config } from "./PongConfig";
+import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 
 // export let socket: Socket;
 // export let isServer: boolean = false;
@@ -21,6 +22,8 @@ export function Pong() {
     textAlign: "center"
   }
 
+  const { loginPlayer } = useLoginPlayer();
+
   useEffect(() => {
     let g: Phaser.Game;
     gameInfo.socket = io("http://localhost:3001");
@@ -33,11 +36,17 @@ export function Pong() {
       console.log('disconnected...');
     });
 
+    gameInfo.socket.emit('joinRoom', {
+      user: {
+        name: loginPlayer?.name
+      }
+    });
+
     console.log("is connected", isConnected);
 
     gameInfo.socket.on('opponentIsReadyToStart', (data: any) => {
       console.log("ready to start");
-      gameInfo.roomID = data.roomID;
+      gameInfo.roomID = data.roomId;
       gameInfo.isServer = data.isServer;
       if (!g) {
         g = new Phaser.Game(config);
@@ -47,6 +56,8 @@ export function Pong() {
 
     return () => {
       g?.destroy(true);
+      gameInfo.socket?.emit('leaveRoom');
+
       gameInfo.socket?.disconnect();
     }
   }, []);

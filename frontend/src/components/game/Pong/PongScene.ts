@@ -129,7 +129,7 @@ export default class PongScene extends Phaser.Scene {
     // });
 
     this.gameInfo.socket.on('UpdateCheckedGameData', (data: any) => {
-      console.log(data);
+      // console.log(data);
       if (!this.gameInfo.isServer) {
         this.ball?.setVelocity(data.ball.velocity.x, data.ball.velocity.y);
         this.ball?.setPosition(data.ball.position.x, data.ball.position.y);
@@ -137,14 +137,21 @@ export default class PongScene extends Phaser.Scene {
       this.player2?.setVelocityY(data.player.velocity.y);
       this.player2?.setPosition(this.gameInfo.isServer ? 750 : 50, data.player.position.y);
     });
+
+    this.gameInfo.socket.on('PlayerLeaveRoom', (data: any) => {
+      this.ball?.setVelocity(0, 0);
+      this.ball?.setPosition(0, 0);
+    });
   }
 
   sendGameData(): void {
     // console.log({
     //   y: this.player1?.x
     // })
+    // console.log(this?.gameInfo.room_id);
     if (this.gameInfo.isServer) {
       this.gameInfo.socket.emit('updateGameData', {
+        room_id: this?.gameInfo.roomID,
         ball: {
           velocity: {
             x: this.ball?.body.velocity.x,
@@ -166,6 +173,7 @@ export default class PongScene extends Phaser.Scene {
       });
     } else {
       this.gameInfo.socket.emit('updateGameData', {
+        room_id: this?.gameInfo.roomID,
         player: {
           velocity: {
             y: this.player1?.body.velocity.y,
