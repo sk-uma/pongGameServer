@@ -64,7 +64,6 @@ export class PlayersController {
 	@Post('bytoken')
 	@UseGuards(JwtAuthGuard)
 	FindByToken(@Req() request: RequestWithPlayer) {
-		console.log(request.user);
 		return request.user;
 	}
 

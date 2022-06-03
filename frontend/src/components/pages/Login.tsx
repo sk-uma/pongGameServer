@@ -1,4 +1,11 @@
-import { memo, VFC, useCallback, useState, ChangeEvent } from "react";
+import {
+	memo,
+	VFC,
+	useCallback,
+	useState,
+	ChangeEvent,
+	useEffect,
+} from "react";
 import {
 	Flex,
 	Heading,
@@ -12,15 +19,17 @@ import {
 } from "@chakra-ui/react";
 
 import { PrimaryButton } from "../atoms/button/PrimaryButton";
-import { useAuth } from "../../hooks/useAuth";
 import { CreatePlayerModal } from "../organisms/player/CreatePlayerModal";
 import { constUrl } from "../../constant/constUrl";
+import { useSetToken } from "../../hooks/useSetToken";
+import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 
 //ログインページ
 
 export const Login: VFC = memo(() => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const { loading, login } = useAuth();
+	const { loading, setToken } = useSetToken();
+	const { setLoginPlayer } = useLoginPlayer();
 
 	const [userName, setUserName] = useState<string>("");
 	const [userPassword, setPassword] = useState<string>("");
@@ -31,14 +40,19 @@ export const Login: VFC = memo(() => {
 	const onChangePassword = (e: ChangeEvent<HTMLInputElement>) =>
 		setPassword(e.target.value);
 
-	//通常ログイン用。loginユーザー情報を設定して、Homeページへ遷移。
-	const onClickSignIn = () => login(userName, userPassword);
+	//通常ログイン用
+	const onClickSignIn = () => setToken(userName, userPassword);
 
 	//42Authorization用。事前に設定してあるAPIに遷移する
 	const onClickFtAuth = useCallback(
 		() => (window.location.href = constUrl.ftApiAuthUrl),
 		[]
 	);
+
+	useEffect(() => {
+		localStorage.setItem("AccessToken", "");
+		setLoginPlayer(null);
+	}, [setLoginPlayer]);
 
 	return (
 		<Flex align="center" justify="center" height="100vh">

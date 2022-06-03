@@ -69,7 +69,7 @@ export const SetTFAModal: VFC<Props> = memo((props) => {
 	const onClickTurnONTFA = () => {
 		axios
 			.post(
-				constUrl.serversideUrl + `/2fa/turnoff`,
+				constUrl.serversideUrl + `/2fa/turnon`,
 				{ twoFactorAuthenticationCode: TFACode },
 				{
 					headers: {

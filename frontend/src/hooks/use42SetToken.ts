@@ -1,24 +1,22 @@
 import { useCallback } from "react";
 import axios from "axios";
-import { useLoginPlayer } from "./useLoginPlayer";
-import { useMessage } from "./useMessage";
-import { useNavigate } from "react-router";
+
 import { constUrl } from "../constant/constUrl";
-import { useGetToken } from "./useGetToken";
 import { useCreateTFAQR } from "./useCreateTFAQR";
+import { useGetPlayerwithToken } from "./useGetPlayerWithToken";
 
 //42Authoraizationを使用して、ログインし、loginPlayerにそのユーザー情報を格納するhooks
 //ユーザーがまだ登録済みでない場合は新規にユーザー情報を作成する。
-//通常ログインの場合(codeがからの場合)はなにもしない
+//通常ログインの場合(codeが空の場合)はなにもしない
 
 //Token取得
-const getToken = (code: string) =>
+const get42Token = (code: string) =>
 	axios.post(constUrl.ftGetTokenAPI, {
 		grant_type: "authorization_code",
 		client_id: constUrl.ftClientId,
 		client_secret: constUrl.ftClientSecret,
 		code: code,
-		redirect_uri: constUrl.frontendUrl + "/home",
+		redirect_uri: constUrl.frontendUrl + "/tfa",
 	});
 
 //Tokenから42User情報取得
@@ -60,30 +58,35 @@ const create42Avatar = (playerName: string, imgUrl: string) =>
 			);
 		});
 
-export const use42User = () => {
-	const { setLoginPlayer } = useLoginPlayer();
-	const { showMessage } = useMessage();
-	const { GetToken } = useGetToken();
+const getAndSetToken = (name: string, password: string) =>
+	axios
+		.post(constUrl.serversideUrl + `/players/token`, {
+			name,
+			password,
+		})
+		.then((resToken) => {
+			localStorage.setItem("AccessToken", resToken.data.accessToken);
+		});
+
+export const use42SetToken = () => {
 	const { CreateTFAQR } = useCreateTFAQR();
+	const { getPlayerWithToken } = useGetPlayerwithToken();
 
-	const navigate = useNavigate();
-
-	const getFtUser = useCallback(
+	const setFtUserToken = useCallback(
 		(code: string | null) => {
 			if (code) {
-				getToken(code)
+				get42Token(code)
 					.then((tokenRes) => {
 						getMe(tokenRes.data.access_token)
 							.then((Me) => {
 								getPlayers(Me.data.login)
-									.then((res) => {
-										setLoginPlayer(res.data);
-										GetToken(Me.data.login, "42user");
-										showMessage({
-											title: "42 Authorization Successful",
-											status: "success",
+									.then(() => {
+										getAndSetToken(
+											Me.data.login,
+											"42user"
+										).then(() => {
+											getPlayerWithToken();
 										});
-										navigate("/home");
 									})
 									.catch(() => {
 										create42Player(
@@ -99,19 +102,13 @@ export const use42User = () => {
 														Me.data.login,
 														"42user"
 													).then(() => {
-														setLoginPlayer(
-															res.data
-														);
-														GetToken(
+														getAndSetToken(
 															Me.data.login,
 															"42user"
-														);
+														).then(() => {
+															getPlayerWithToken();
+														});
 													});
-													showMessage({
-														title: "42 Authorization Successful and Player Created",
-														status: "success",
-													});
-													navigate("/home");
 												});
 											})
 											.catch(() =>
@@ -126,7 +123,7 @@ export const use42User = () => {
 					.catch(() => console.log("Not Found AccessToken"));
 			}
 		},
-		[setLoginPlayer, showMessage, navigate, GetToken, CreateTFAQR]
+		[CreateTFAQR, getPlayerWithToken]
 	);
-	return { getFtUser };
+	return { setFtUserToken };
 };

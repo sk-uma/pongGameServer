@@ -21,9 +21,9 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
-import { useResetLoginPlayer } from "../../../hooks/useResetLoginPlayer";
 import { constUrl } from "../../../constant/constUrl";
 import { useMessage } from "../../../hooks/useMessage";
+import { useGetPlayerwithToken } from "../../../hooks/useGetPlayerWithToken";
 
 //簡易的なユーザー情報をカードで表示するコンポーネント
 
@@ -40,9 +40,9 @@ type Props = {
 export const PlayerCard: VFC<Props> = memo((props) => {
 	const { imgUrl, name, displayName, win, lose, level, exp } = props;
 	const { loginPlayer } = useLoginPlayer();
-	const { resetLoginPlayer } = useResetLoginPlayer();
 	const { showMessage } = useMessage();
 	const navigate = useNavigate();
+	const { getPlayerWithToken } = useGetPlayerwithToken();
 
 	const onClickUnFriend = () => {
 		axios
@@ -51,7 +51,7 @@ export const PlayerCard: VFC<Props> = memo((props) => {
 					`/players/deletefriend/${loginPlayer?.name}/${name}`
 			)
 			.then(() => {
-				resetLoginPlayer();
+				getPlayerWithToken();
 				showMessage({
 					title: `${name}, Unfriend Successful`,
 					status: "success",
@@ -69,7 +69,7 @@ export const PlayerCard: VFC<Props> = memo((props) => {
 				if (loginPlayer?.friends.includes(name)) {
 					onClickUnFriend();
 				} else {
-					resetLoginPlayer();
+					getPlayerWithToken();
 				}
 				showMessage({
 					title: `${name}, Block Successful`,
@@ -85,7 +85,7 @@ export const PlayerCard: VFC<Props> = memo((props) => {
 					`/players/unblock/${loginPlayer?.name}/${name}`
 			)
 			.then(() => {
-				resetLoginPlayer();
+				getPlayerWithToken();
 				showMessage({
 					title: `${name}, Unblock Successful`,
 					status: "success",
@@ -103,7 +103,7 @@ export const PlayerCard: VFC<Props> = memo((props) => {
 				if (loginPlayer?.blockList.includes(name)) {
 					onClickUnBlock();
 				} else {
-					resetLoginPlayer();
+					getPlayerWithToken();
 				}
 				showMessage({
 					title: `${name}, Add Friend Successful`,

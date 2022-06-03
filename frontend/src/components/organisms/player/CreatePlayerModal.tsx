@@ -14,6 +14,7 @@ import {
 	Button,
 } from "@chakra-ui/react";
 import axios from "axios";
+
 import { PrimaryButton } from "../../atoms/button/PrimaryButton";
 import { useMessage } from "../../../hooks/useMessage";
 import defaultImage from "./default_panda.jpg";

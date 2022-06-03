@@ -1,4 +1,12 @@
-import { memo, VFC, useState, ChangeEvent, useRef, useEffect } from "react";
+import {
+	memo,
+	VFC,
+	useState,
+	ChangeEvent,
+	useRef,
+	useEffect,
+	useCallback,
+} from "react";
 import {
 	Center,
 	Input,
@@ -15,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { RepeatIcon, WarningTwoIcon } from "@chakra-ui/icons";
 import axios from "axios";
+
 import { PrimaryButton } from "../../atoms/button/PrimaryButton";
 import { useMessage } from "../../../hooks/useMessage";
 import { DeletePlayerModal } from "./DeletePlayerModal";
@@ -43,8 +52,10 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 
 	const onChangePlayerName = (e: ChangeEvent<HTMLInputElement>) =>
 		setPlayerName(e.target.value);
+
 	const onChangePassword = (e: ChangeEvent<HTMLInputElement>) =>
 		setPassword(e.target.value);
+
 	const onChangeAvatarFile = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
 			setAvatarFile(e.target.files[0]);
@@ -99,7 +110,7 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 		inputRef.current?.click();
 	};
 
-	useEffect(() => {
+	const setAvatar = useCallback(() => {
 		const formData = new FormData();
 		if (avatarFile) {
 			formData.append("file", avatarFile);
@@ -143,8 +154,11 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 					});
 				});
 		}
-		//		eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [avatarFile]);
+	}, [showMessage, avatarFile, name]);
+
+	useEffect(() => {
+		setAvatar();
+	}, [setAvatar]);
 
 	return (
 		<Center>

@@ -23,8 +23,6 @@ export const Header: VFC = memo(() => {
 		navigate("/home/history");
 	}, [navigate]);
 	const onClickLogout = useCallback(() => {
-		localStorage.setItem("loginName", "");
-		localStorage.setItem("AccessToken", "");
 		navigate("/");
 	}, [navigate]);
 
