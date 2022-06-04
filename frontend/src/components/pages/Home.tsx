@@ -1,26 +1,19 @@
-import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { memo, VFC, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Center, Spinner } from "@chakra-ui/react";
 
 import { PlayerDetail } from "../organisms/player/PlayerDetail";
-import { use42User } from "../../hooks/use42User";
-import { Center, Spinner } from "@chakra-ui/react";
-import { useResetLoginPlayer } from "../../hooks/useResetLoginPlayer";
+import { useGetPlayerwithToken } from "../../hooks/useGetPlayerWithToken";
+import { useLoginPlayer } from "../../hooks/useLoginPlayer";
+
+//Loginした後のホームページ
 
 export const Home: VFC = memo(() => {
-	const [searchParams] = useSearchParams();
-	const code = searchParams.get("code");
-
 	const { loginPlayer } = useLoginPlayer();
-	const { getFtUser } = use42User();
-	const { resetLoginPlayer } = useResetLoginPlayer();
+	const { getPlayerWithToken } = useGetPlayerwithToken();
 
 	useEffect(() => {
-		getFtUser(code);
-		loginPlayer && localStorage.setItem("loginName", loginPlayer.name);
-		!loginPlayer && localStorage.getItem("loginName") && resetLoginPlayer();
-		//		eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [code]);
+		getPlayerWithToken();
+	}, [getPlayerWithToken]);
 
 	if (loginPlayer) {
 		return (

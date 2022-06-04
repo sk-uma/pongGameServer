@@ -8,6 +8,8 @@ type Props = {
 	name: string;
 };
 
+//対戦履歴カードの中でアバター画像と表示名を表示するコンポーネント
+
 export const PlayerDisplay: VFC<Props> = memo((props) => {
 	const { name } = props;
 	const [player, setPlayer] = useState<Player | null>(null);

@@ -3,6 +3,8 @@ import { Box, Text, Wrap, WrapItem, Center, Flex } from "@chakra-ui/react";
 import { useAllHistory } from "../../../hooks/useAllHistory";
 import { HistoryCard } from "./HisoryCard";
 
+//対戦履歴をボード表示するためのコンポーネント
+
 export const HistoryBoard: VFC = memo(() => {
 	const { getAllHistory, allHistory } = useAllHistory();
 
@@ -28,7 +30,7 @@ export const HistoryBoard: VFC = memo(() => {
 						justify="center"
 					>
 						{allHistory.map((history) => (
-							<WrapItem py={2}>
+							<WrapItem key={history.id} py={2}>
 								<HistoryCard
 									leftPlayer={history.leftPlayer}
 									rightPlayer={history.rightPlayer}

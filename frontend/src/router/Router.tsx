@@ -11,12 +11,16 @@ import { Players } from "../components/pages/Players";
 import { LoginPlayerProvider } from "../providers/LoginPlayerProvider";
 import { EditProfile } from "../components/pages/EditProfile";
 import { History } from "../components/pages/History";
+import { TFA } from "../components/pages/TFA";
+
+//ページ遷移設定
 
 export const Router: VFC = memo(() => {
 	return (
 		<LoginPlayerProvider>
 			<Routes>
 				<Route path="/" element={<Login />} />
+				<Route path="/tfa" element={<TFA />} />
 				<Route path="/home" element={<Layout />}>
 					<Route index element={<Home />} />
 					<Route path="chat" element={<Chat />} />

@@ -11,6 +11,8 @@ type Props = {
 	loser: string;
 };
 
+//ひとつの対戦履歴を表示するコンポーネント
+
 export const HistoryCard: VFC<Props> = memo((props) => {
 	const { leftPlayer, rightPlayer, leftScore, rightScore, winner } = props;
 

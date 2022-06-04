@@ -12,8 +12,11 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, MinusIcon, NotAllowedIcon, SunIcon } from "@chakra-ui/icons";
 import axios from "axios";
+
 import { constUrl } from "../../../constant/constUrl";
-import { useResetLoginPlayer } from "../../../hooks/useResetLoginPlayer";
+import { useGetPlayerwithToken } from "../../../hooks/useGetPlayerWithToken";
+
+//Profile画面のフレンドリストを表示するコンポーネント
 
 type Props = {
 	loginName: string;
@@ -26,7 +29,7 @@ type Props = {
 
 export const FriendCard: VFC<Props> = memo((props) => {
 	const { loginName, imgUrl, name, displayName, level, isfriend } = props;
-	const { resetLoginPlayer } = useResetLoginPlayer();
+	const { getPlayerWithToken } = useGetPlayerwithToken();
 
 	const onClickUnFriend = () => {
 		axios
@@ -34,7 +37,7 @@ export const FriendCard: VFC<Props> = memo((props) => {
 				constUrl.serversideUrl +
 					`/players/deletefriend/${loginName}/${name}`
 			)
-			.then(() => resetLoginPlayer());
+			.then(() => getPlayerWithToken());
 	};
 
 	const onClickBlock = () => {
@@ -50,7 +53,7 @@ export const FriendCard: VFC<Props> = memo((props) => {
 			.delete(
 				constUrl.serversideUrl + `/players/unblock/${loginName}/${name}`
 			)
-			.then(() => resetLoginPlayer());
+			.then(() => getPlayerWithToken());
 	};
 
 	const onClickAddFriend = () => {

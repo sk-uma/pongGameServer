@@ -2,6 +2,8 @@ import { memo, VFC, useCallback } from "react";
 import { Flex, Heading, Box, Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
 
+//ヘッダーにリンクを表示するためのレイアウトコンポーネント
+
 export const Header: VFC = memo(() => {
 	const navigate = useNavigate();
 
@@ -21,7 +23,6 @@ export const Header: VFC = memo(() => {
 		navigate("/home/history");
 	}, [navigate]);
 	const onClickLogout = useCallback(() => {
-		localStorage.setItem("loginName", "");
 		navigate("/");
 	}, [navigate]);
 

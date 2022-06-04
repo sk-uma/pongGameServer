@@ -4,6 +4,8 @@ import axios from "axios";
 import { constUrl } from "../constant/constUrl";
 import { History } from "../types/api/History";
 
+//全ての対戦履歴を取得するhooks
+
 export const useAllHistory = () => {
 	const [allHistory, setAllHistory] = useState<Array<History>>([]);
 

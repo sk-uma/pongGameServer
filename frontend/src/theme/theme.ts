@@ -1,4 +1,4 @@
-//全体ページのテーマ設定
+//全体ページのテーマ設定 App.tsxから設定
 import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({

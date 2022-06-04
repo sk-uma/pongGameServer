@@ -4,6 +4,8 @@ import axios from "axios";
 import { Player } from "../types/api/Player";
 import { constUrl } from "../constant/constUrl";
 
+//全てのプレイヤー情報を取得するhooks
+
 export const useAllPlayers = () => {
 	const [players, setPlayers] = useState<Array<Player>>([]);
 
