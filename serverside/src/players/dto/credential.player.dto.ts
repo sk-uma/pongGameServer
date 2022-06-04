@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 
-export class CredentialDto {
+export class CredentialPlayerDto {
 	@IsString()
 	@IsNotEmpty()
 	name: string;

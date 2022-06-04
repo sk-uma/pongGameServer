@@ -1,4 +1,4 @@
-import { memo, FC, useState, useEffect, ChangeEvent } from "react";
+import { memo, FC, useState, ChangeEvent } from "react";
 import {
 	Modal,
 	ModalOverlay,
@@ -14,6 +14,7 @@ import {
 	Button,
 } from "@chakra-ui/react";
 import axios from "axios";
+
 import { PrimaryButton } from "../../atoms/button/PrimaryButton";
 import { useMessage } from "../../../hooks/useMessage";
 import defaultImage from "./default_panda.jpg";
@@ -24,13 +25,13 @@ type Props = {
 	onClose: () => void;
 };
 
+//SignUpのModalを表示するコンポーネント
+
 export const CreatePlayerModal: FC<Props> = memo((props) => {
 	const { isOpen, onClose } = props;
 	const { showMessage } = useMessage();
 	const [username, setUserName] = useState("");
 	const [password, setPassword] = useState("");
-
-	useEffect(() => {}, []);
 
 	const onChangeUserName = (e: ChangeEvent<HTMLInputElement>) =>
 		setUserName(e.target.value);
@@ -41,6 +42,26 @@ export const CreatePlayerModal: FC<Props> = memo((props) => {
 		setUserName("");
 		setPassword("");
 		onClose();
+	};
+
+	//アカウント生成時に二要素認証用のQRコードも作成する
+	const CreateTFAQRCode = () => {
+		axios
+			.post(constUrl.serversideUrl + `/players/token`, {
+				name: username,
+				password,
+			})
+			.then((resToken) => {
+				axios.post(
+					constUrl.serversideUrl + `/2fa/create`,
+					{},
+					{
+						headers: {
+							Authorization: `Bearer ${resToken.data.accessToken}`,
+						},
+					}
+				);
+			});
 	};
 
 	const onClickCreateMyAccount = () => {
@@ -67,6 +88,7 @@ export const CreatePlayerModal: FC<Props> = memo((props) => {
 							}
 						);
 					});
+				CreateTFAQRCode();
 				showMessage({
 					title: "Create Yout Account Successful",
 					status: "success",

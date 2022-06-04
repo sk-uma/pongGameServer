@@ -1,5 +1,4 @@
 import { IsString, IsNotEmpty, IsBoolean } from 'class-validator';
-import { Express } from 'express';
 
 export class CreatePlayerDto {
 	@IsString()
@@ -18,5 +17,5 @@ export class CreatePlayerDto {
 	@IsNotEmpty()
 	ftUser: boolean;
 
-	avatarFile: Express.Multer.File;
+	//	avatarFile: Express.Multer.File;
 }

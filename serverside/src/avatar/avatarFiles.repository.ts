@@ -6,7 +6,7 @@ import { Express } from 'express';
 export class AvatarFilesRepository extends Repository<AvatarFile> {
 	async createAvatarFile(
 		name: string,
-		file: Express.Multer.File,
+		file: Express.Multer.File, //ファイル入力に対応させる
 	): Promise<AvatarFile> {
 		const avatarFile = this.create({
 			playername: name,

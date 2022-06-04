@@ -8,6 +8,9 @@ import {
 
 import { Player } from "../types/api/Player";
 
+//useLoginPlayer:グローバルスコープでloginPlayerを取得するためのhooksをしようするための
+//Contextを設定
+
 type LoginPlayer = Player;
 
 export type LoginPlayerContextType = {

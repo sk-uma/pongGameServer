@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import { useToast } from "@chakra-ui/react";
 
+//chakra-uiのToast機能を使い、アクション終了後にメッセージをポップアップさせるhooks
+
 type Props = {
 	title: string;
 	status: "info" | "warning" | "success" | "error";

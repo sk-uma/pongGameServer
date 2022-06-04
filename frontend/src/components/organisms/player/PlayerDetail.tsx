@@ -20,6 +20,8 @@ import { FriendCard } from "./FriendCard";
 import { HistoryCard } from "../history/HisoryCard";
 import { useAllHistory } from "../../../hooks/useAllHistory";
 
+//Profile画面を表示するためのコンポーネント
+
 type Props = {
 	imgUrl: string;
 	name: string;
@@ -51,6 +53,11 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 	const onClickEditProfile = useCallback(() => {
 		navigate("/home/edit");
 	}, [navigate]);
+
+	const progressVal = (ex: number, Lv: number) => {
+		const dif = ex - ((Lv * (Lv - 1)) / 2) * 100;
+		return (dif / (Lv * 100)) * 100;
+	};
 
 	useEffect(() => {
 		getPlayers();
@@ -123,7 +130,7 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 									hasStripe
 									colorScheme="green"
 									height={{ base: "20px", lg: "40px" }}
-									value={20}
+									value={progressVal(exp, level)}
 									borderRadius={5}
 									bg="gray.200"
 								/>
@@ -248,14 +255,28 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 											name === res.rightPlayer
 									)
 									.map((history) => (
-										<WrapItem py={2}>
+										<WrapItem key={history.id} py={2}>
 											<HistoryCard
-												leftPlayer={history.leftPlayer}
-												rightPlayer={
-													history.rightPlayer
+												leftPlayer={
+													name === history.rightPlayer
+														? history.rightPlayer
+														: history.leftPlayer
 												}
-												leftScore={history.leftScore}
-												rightScore={history.rightScore}
+												rightPlayer={
+													name === history.rightPlayer
+														? history.leftPlayer
+														: history.rightPlayer
+												}
+												leftScore={
+													name === history.rightPlayer
+														? history.rightScore
+														: history.leftScore
+												}
+												rightScore={
+													name === history.rightPlayer
+														? history.leftScore
+														: history.rightScore
+												}
 												winner={history.winner}
 												loser={history.loser}
 											/>

@@ -20,11 +20,13 @@ import { Readable } from 'stream';
 export class AvatarController {
 	constructor(private avatarService: AvatarService) {}
 
+	//全プレイヤーアバター情報の取得
 	@Get()
 	async findAll(): Promise<AvatarFile[]> {
 		return this.avatarService.findAll();
 	}
 
+	//特定プレイヤーのアバター情報の取得
 	@Get(':name')
 	async getDatabaseFileName(
 		@Param('name') name: string,
@@ -40,11 +42,13 @@ export class AvatarController {
 		return new StreamableFile(stream);
 	}
 
+	//特定プレイヤーのアバター情報の削除
 	@Delete('/:name')
 	deleteAvatarFile(@Param('name') name: string): Promise<void> {
 		return this.avatarService.deleteAvatarFile(name);
 	}
 
+	//新規アバター情報の作成
 	@Post(':name')
 	@UseInterceptors(FileInterceptor('file'))
 	createAvatarFile(
@@ -54,6 +58,7 @@ export class AvatarController {
 		return this.avatarService.createAvatarFile(name, file);
 	}
 
+	//アバター画像の更新
 	@Put('/update/:name')
 	@UseInterceptors(FileInterceptor('file'))
 	updateAvatarFile(

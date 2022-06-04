@@ -8,22 +8,25 @@ import { CreatePlayerDto } from './dto/create.player.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlayersRepository } from './players.repository';
 import { Player } from './player.entity';
-//import { JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
-import { CredentialDto } from './dto/credential.player.dto';
+import { CredentialPlayerDto } from './dto/credential.player.dto';
 
 @Injectable()
 export class PlayersService {
 	constructor(
 		@InjectRepository(PlayersRepository)
-		private playersRepository: PlayersRepository, //		private jwtService: JwtService,
+		private playersRepository: PlayersRepository,
+		private jwtService: JwtService,
 	) {}
 
+	//全プレイヤー情報の取得
 	async findAll(): Promise<Player[]> {
 		return await this.playersRepository.find();
 	}
 
+	//特定プレイヤー情報の取得
 	async findByName(name: string): Promise<Player> {
 		const found = await this.playersRepository.findOne(name);
 		if (!found) {
@@ -32,6 +35,7 @@ export class PlayersService {
 		return found;
 	}
 
+	//新規プレイヤーの作成
 	async createPlayer(createPlayerDto: CreatePlayerDto): Promise<Player> {
 		const found = await this.playersRepository.findOne({
 			name: createPlayerDto.name,
@@ -44,6 +48,7 @@ export class PlayersService {
 		return this.playersRepository.createPlayer(createPlayerDto);
 	}
 
+	//プレイヤー情報の削除
 	async deletePlayer(name: string): Promise<void> {
 		const result = await this.playersRepository.delete({ name });
 		if (result.affected === 0) {
@@ -51,10 +56,28 @@ export class PlayersService {
 		}
 	}
 
-	async signIn(credentialDto: CredentialDto): Promise<Player> {
-		const { name, password } = credentialDto;
+	//アクセストークンの取得
+	async GetAccessToken(
+		credentialPlayerDto: CredentialPlayerDto,
+	): Promise<{ accessToken: string }> {
+		const { name, password } = credentialPlayerDto;
 		const player = await this.playersRepository.findOne(name);
 
+		if (player && (await bcrypt.compare(password, player.password))) {
+			const payload = { name: player.name };
+			const accessToken = await this.jwtService.sign(payload);
+			return { accessToken };
+		} else {
+			throw new UnauthorizedException(`Check Your name and password`);
+		}
+	}
+
+	//プレイヤーのログイン
+	async signIn(credentialPlayerDto: CredentialPlayerDto): Promise<Player> {
+		const { name, password } = credentialPlayerDto;
+		const player = await this.playersRepository.findOne(name);
+
+		//暗号化されたパスワードを照合する
 		if (player && (await bcrypt.compare(password, player.password))) {
 			return player;
 		} else {
@@ -62,6 +85,7 @@ export class PlayersService {
 		}
 	}
 
+	//プレイヤーの表示名の更新
 	async updatePlayerDisplayName(
 		name: string,
 		displayName: string,
@@ -72,6 +96,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//プレイヤーのパスワードの更新
 	async updatePlayerPassword(
 		name: string,
 		password: string,
@@ -84,6 +109,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//プレイヤーの画像取得URLの更新
 	async updatePlayerImgUrl(name: string, imgUrl: string): Promise<Player> {
 		const player = await this.findByName(name);
 		player.imgUrl = imgUrl;
@@ -91,6 +117,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//プレイヤーの勝ち数の更新
 	async updatePlayerWin(name: string, win: number): Promise<Player> {
 		const player = await this.findByName(name);
 		player.win = win;
@@ -98,6 +125,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//プレイヤーの負け数の更新
 	async updatePlayerLose(name: string, lose: number): Promise<Player> {
 		const player = await this.findByName(name);
 		player.lose = lose;
@@ -105,6 +133,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//プレイヤーの経験値の更新
 	async updatePlayerExp(name: string, exp: number): Promise<Player> {
 		const player = await this.findByName(name);
 		player.exp = exp;
@@ -112,6 +141,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//プレイヤーのレベルの更新
 	async updatePlayerLevel(name: string, level: number): Promise<Player> {
 		const player = await this.findByName(name);
 		player.level = level;
@@ -119,6 +149,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//フレンドの追加
 	async addFriend(name: string, friendName: string): Promise<Player> {
 		const player = await this.findByName(name);
 		const friend = await this.findByName(friendName);
@@ -135,6 +166,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//フレンドの削除
 	async deleteFriend(name: string, friendName: string): Promise<Player> {
 		const player = await this.findByName(name);
 		const friend = await this.findByName(friendName);
@@ -151,6 +183,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//ブロックリストへの追加
 	async blockFriend(name: string, friendName: string): Promise<Player> {
 		const player = await this.findByName(name);
 		const friend = await this.findByName(friendName);
@@ -169,6 +202,7 @@ export class PlayersService {
 		return player;
 	}
 
+	//ブロックリストからの削除
 	async unblockFriend(name: string, friendName: string): Promise<Player> {
 		const player = await this.findByName(name);
 		const friend = await this.findByName(friendName);
@@ -183,5 +217,33 @@ export class PlayersService {
 		}
 		await this.playersRepository.save(player);
 		return player;
+	}
+
+	//2段階認証でsecretを設定する
+	async setTwoFactorAuthenticationSecret(secret: string, name: string) {
+		return this.playersRepository.update(name, {
+			twoFactorAuthenticationSecret: secret,
+		});
+	}
+
+	//2段階認証でQRCodeのdataURLを設定する
+	async setTwoFactorAuthenticationQR(dataURL: string, name: string) {
+		return this.playersRepository.update(name, {
+			twoFactorAuthenticationQR: dataURL,
+		});
+	}
+
+	//2段階認証をonに変更する
+	async turnOnTwoFactorAuthentication(name: string) {
+		return this.playersRepository.update(name, {
+			isTwoFactorAuthenticationEnabled: true,
+		});
+	}
+
+	//2段階認証をoffに変更する
+	async turnOffTwoFactorAuthentication(name: string) {
+		return this.playersRepository.update(name, {
+			isTwoFactorAuthenticationEnabled: false,
+		});
 	}
 }
