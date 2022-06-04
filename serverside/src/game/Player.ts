@@ -17,39 +17,42 @@ export class Player {
   }
 
   joinRoom(roomId: string) {
-    this.roomId = roomId;
     this.status = 'connected';
-    this.socket.join(this.roomId);
+    this.socket.join(roomId);
   }
 
-  reJoinRoom(socket: Socket) {
+  reJoinRoom(roomId: string, socket: Socket) {
     this.status = 'connected';
     this.socket = socket;
-    this.socket.join(this.roomId);
+    this.socket.join(roomId);
   }
 
-  leaveRoom() {
+  leaveRoom(roomId: string) {
     this.status = 'disconnected';
-    this.socket.leave(this.roomId);
+    this.socket.leave(roomId);
   }
 
-  getRoomId(): string {
-    return this.roomId;
-  }
+  // getRoomId(): string {
+  //   return this.roomId;
+  // }
 
   getName(): string {
     return this.playerName;
   }
 
-  sendGameStartMessage(): void {
+  getStatus(): string {
+    return this.status;
+  }
+
+  sendGameStartMessage(roomId: string): void {
     var message = {
-      roomId: `${this.roomId}`,
+      roomId: `${roomId}`,
       isServer: this.playerType == 'host'
     }
     if (this.playerType == 'host') {
       this.socket.emit('opponentIsReadyToStart', message)
     } else {
-      this.socket.broadcast.to(this.roomId).emit('opponentIsReadyToStart', message);
+      this.socket.broadcast.to(roomId).emit('opponentIsReadyToStart', message);
     }
   }
 }
