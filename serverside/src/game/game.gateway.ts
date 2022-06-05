@@ -65,7 +65,6 @@ export class GameGateway {
 
   @SubscribeMessage('events')
   findAll(@MessageBody() data: any): Observable<WsResponse<number>> {
-    // console.log(data);
     this.logger.log('event が呼ばれました');
     return from([1, 2, 3]).pipe(map(item => ({ event: 'events', data: item })));
   }
@@ -75,50 +74,61 @@ export class GameGateway {
     this.logger.log(data);
   }
 
-  // @SubscribeMessage('readyToStart')
-  // readyToStart(@ConnectedSocket() client: Socket): void {
-  //   if (this.isWaiting) {
-  //   } else {
-  //   }
-  // }
-
   @SubscribeMessage('updateGameData')
   loopGame(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
-    // this.logger.log(data, `from ${client.id}`);
-    client.broadcast.emit('UpdateCheckedGameData', data);
+    client.broadcast.to(data?.room_id).emit('UpdateCheckedGameData', data);
   }
 
   afterInit(server: Server) {
     this.logger.log('初期化しました');
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  @SubscribeMessage('joinRoom')
+  joinRoom(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
     if (this.isWaiting) {
-      console.log('ready...');
+      // 待機がいる場合
       client.join(this.waitingRoomID);
       client.emit('opponentIsReadyToStart', {
-        roomId: this.waitingRoomID,
+        roomId: `${this.waitingRoomID}`,
         isServer: false
       });
-      client.broadcast.emit('opponentIsReadyToStart', {
-        roomId: this.waitingRoomID,
+      client.broadcast.to(this.waitingRoomID).emit('opponentIsReadyToStart', {
+        roomId: `${this.waitingRoomID}`,
         isServer: true
       });
+      // this.logger.log(`ready... ${this.waitingRoomID}`);
       this.isWaiting = false;
-      this.waitingRoomID = "";
+      this.waitingRoomID = undefined;
     } else {
-      console.log('waiting...');
-      this.waitingRoomID = 'waitingRoomIDfromUserID';
+      // 待機がいない場合
+      this.waitingRoomID = `room_${data?.user?.name}`;
       client.join(this.waitingRoomID);
       this.isWaiting = true;
+      // this.logger.log(`waiting... ${this.waitingRoomID}`);
     }
     //クライアント接続時
-    this.logger.log(`Client connected: ${client.id}`);
+    this.logger.log(`Client connected(id, name, room_id): ${client.id} ${data?.user?.name} ${this.waitingRoomID}`);
+    // this.logger.log(this.server.sockets.manager);
+  }
+
+  @SubscribeMessage('leaveRoom')
+  leaveRoom(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
+    // this.logger.log(`leave Room ${data.roomID}`);
+    console.log(client.rooms);
+    for (const room of client.rooms) {
+      if (room !== client.id) {
+        client.broadcast.to(room).emit('PlayerLeaveRoom');
+      }
+    }
+    console.log(client.rooms);
+  }
+
+  handleConnection(client: Socket, ...args: any[]) {
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     //クライアント切断時
-    this.logger.log(`Client disconnected: ${client.id}`);
+    this.logger.log(`Client disconnected: ${client.id} ${client.rooms}`);
     client.leave(this.waitingRoomID);
     this.isWaiting = !this.isWaiting;
   }
