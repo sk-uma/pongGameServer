@@ -139,8 +139,17 @@ export default class PongScene extends Phaser.Scene {
     });
 
     this.gameInfo.socket.on('PlayerLeaveRoom', (data: any) => {
+      // console.log('leaved');
       this.ball?.setVelocity(0, 0);
-      this.ball?.setPosition(0, 0);
+      this.ball?.setPosition(400, 300);
+    });
+
+    this.gameInfo.socket.on('restartGame', (data: any) => {
+      if (this.gameInfo.isServer) {
+        let ballYSpeed: number = Phaser.Math.Between(-300, 300);
+        this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
+        this.ball?.setPosition(400, 300);
+      }
     });
   }
 

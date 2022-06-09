@@ -11,13 +11,14 @@ export class GameAdmin {
   private readonly debugLevel = 1;
 
   joinRoom(playerName: string, socket: Socket): void {
-    let room: Room = this.searchRoomByPlayerName(playerName);
+    let rtv = this.searchRoomByPlayerName(playerName);
+    let room = rtv?.room;
     if (room !== undefined) {
       room.reJoinRoom(playerName, socket);
       this.leavedList = this.leavedList.filter((x) => x !== room);
       this.playingList.push(room);
     } else if (this.isPublicWaiting) {
-      this.publicWaitingRoom.joinRoom(new Player(playerName, socket));
+      this.publicWaitingRoom.clientJoinRoom(new Player(playerName, socket, 'client'));
       this.playingList.push(this.publicWaitingRoom);
       this.isPublicWaiting = false;
     } else {
@@ -32,43 +33,87 @@ export class GameAdmin {
   leaveRoom(playerName: string, socket: Socket): void {
     for (const room of socket.rooms) {
       if (room !== socket.id) {
+        console.log("room:", room);
         socket.broadcast.to(room).emit('PlayerLeaveRoom');
       }
     }
-    var room: Room = this.searchRoomByPlayerName(playerName);
-    room.leaveRoom(playerName);
-    this.playingList = this.playingList.filter((x) => x !== room);
-    this.leavedList.push(room);
+
+    let rtv = this.searchRoomByPlayerName(playerName);
+    let room = rtv.room;
+    // console.log(playerName, room);
+    if (rtv.type === 'playing') {
+      room.leaveRoom(playerName);
+      this.playingList = this.playingList.filter((x) => x !== room);
+      this.leavedList.push(room);
+    } else if (rtv.type === 'publicWaiting') {
+      room.leaveRoom(playerName);
+      this.isPublicWaiting = !this.isPublicWaiting;
+    } else if (rtv.type === 'leaved') {
+      room.leaveRoom(playerName);
+      this.leavedList = this.leavedList.filter((x) => x !== room);
+    }
     if (this.debugLevel >= 1) {
       this.putGameStatus();
     }
   }
 
-  searchRoomByPlayerName(playerName: string): Room {
-    let room: Room = undefined;
+  searchRoomByPlayerName(playerName: string): {type: string, room?: Room} {
+    // let room: Room = undefined;
     for (const room of this.playingList) {
+      // console.log("room:", room);
       if (room.isPlayer(playerName)) {
-        return room;
+        return {
+          type: 'playing',
+          room: room
+        };
+      }
+    }
+    for (const room of this.leavedList) {
+      // console.log("room:", room);
+      if (room.isPlayer(playerName)) {
+        return {
+          type: 'leaved',
+          room: room
+        };
+      }
+    }
+    if (this.isPublicWaiting && this.publicWaitingRoom.isPlayer(playerName)) {
+      return {
+        type: 'publicWaiting',
+        room: this.publicWaitingRoom
       }
     }
     return undefined;
+  }
+
+  updateGameData(data: any, socket: Socket) {
+    for (const room of socket.rooms) {
+      if (room !== socket.id) {
+        socket.broadcast.to(room).emit('UpdateCheckedGameData', data);
+      }
+    }
   }
 
   /**
    * デバッグ用: 全ルームのステータス表示
    */
   putGameStatus(): void {
-    console.log('+---------- playing ----------+');
+
+    console.log('+-------------------- playing --------------------+');
     for (const room of this.playingList) {
       room.putRoomStatus();
     }
   
-    console.log('+---------- waiting ----------+');
-    this.publicWaitingRoom.putRoomStatus();
-  
-    console.log('+---------- Leaved  ----------+');
+    console.log('+-------------------- waiting --------------------+');
+    if (this.isPublicWaiting) {
+      this.publicWaitingRoom.putRoomStatus();
+    }
+
+    console.log('+-------------------- Leaved  --------------------+');
     for (const room of this.leavedList) {
       room.putRoomStatus();
     }
+
+    console.log();
   }
 }

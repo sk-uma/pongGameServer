@@ -24,6 +24,8 @@ export function Pong() {
 
   const { loginPlayer } = useLoginPlayer();
 
+  console.log(loginPlayer?.name);
+
   useEffect(() => {
     let g: Phaser.Game;
     gameInfo.socket = io("http://localhost:3001");
@@ -38,7 +40,7 @@ export function Pong() {
 
     gameInfo.socket.emit('joinRoom', {
       user: {
-        name: loginPlayer?.name
+        name: `${loginPlayer?.name}`
       }
     });
 
@@ -56,7 +58,11 @@ export function Pong() {
 
     return () => {
       g?.destroy(true);
-      gameInfo.socket?.emit('leaveRoom');
+      gameInfo.socket?.emit('leaveRoom', {
+        user: {
+          name: `${loginPlayer?.name}`
+        }
+      });
 
       gameInfo.socket?.disconnect();
     }
