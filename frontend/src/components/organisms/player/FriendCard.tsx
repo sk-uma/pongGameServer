@@ -25,10 +25,12 @@ type Props = {
 	displayName: string;
 	level: number;
 	isfriend: boolean;
+	status: string;
 };
 
 export const FriendCard: VFC<Props> = memo((props) => {
-	const { loginName, imgUrl, name, displayName, level, isfriend } = props;
+	const { loginName, imgUrl, name, displayName, level, status, isfriend } =
+		props;
 	const { getPlayerWithToken } = useGetPlayerwithToken();
 
 	const onClickUnFriend = () => {
@@ -70,7 +72,10 @@ export const FriendCard: VFC<Props> = memo((props) => {
 			<MenuButton>
 				<Flex px={3}>
 					<Avatar src={imgUrl}>
-						<AvatarBadge boxSize="1.25em" bg="green.500" />
+						<AvatarBadge
+							boxSize="1.25em"
+							bg={status === "LOGIN" ? "green.500" : "gray.300"}
+						/>
 					</Avatar>
 					<Box
 						ml="2"
@@ -86,7 +91,7 @@ export const FriendCard: VFC<Props> = memo((props) => {
 			{isfriend ? (
 				<MenuList>
 					<Text ml={3} color="gray">
-						Status
+						{`Status: ${status}`}
 					</Text>
 					<MenuItem onClick={onClickUnFriend} icon={<MinusIcon />}>
 						Unfriend

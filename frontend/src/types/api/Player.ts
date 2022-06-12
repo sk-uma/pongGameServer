@@ -12,4 +12,5 @@ export type Player = {
 	blockList: string[];
 	twoFactorAuthenticationQR: string;
 	isTwoFactorAuthenticationEnabled: boolean;
+	status: string;
 };

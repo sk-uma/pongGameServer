@@ -1,24 +1,12 @@
-import { memo, VFC, useEffect } from "react";
+import { memo, VFC } from "react";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { PlayerEditProfile } from "../organisms/player/PlayerEditProfile";
 import { Center, Spinner } from "@chakra-ui/react";
-import { useGetPlayerwithToken } from "../../hooks/useGetPlayerWithToken";
-//import { useResetLoginPlayer } from "../../hooks/useResetLoginPlayer";
 
 //プロフィール編集ページ
 
 export const EditProfile: VFC = memo(() => {
 	const { loginPlayer } = useLoginPlayer();
-	//Reloadした場合など、loginPlayer情報が失われた時LoginPlayerを再設定
-	//	const { resetLoginPlayer } = useResetLoginPlayer();
-	const { getPlayerWithToken } = useGetPlayerwithToken();
-
-	useEffect(() => {
-		getPlayerWithToken();
-		//		loginPlayer && localStorage.setItem("loginName", loginPlayer.name);
-		//		!loginPlayer && localStorage.getItem("loginName") && resetLoginPlayer();
-		//		eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	if (loginPlayer) {
 		return (

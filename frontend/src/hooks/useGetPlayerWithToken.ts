@@ -6,7 +6,7 @@ import { constUrl } from "../constant/constUrl";
 import { useLoginPlayer } from "./useLoginPlayer";
 import { useNavigate } from "react-router";
 
-//AccessTokenによりログインプレイヤーを特性し、loginPlayerに設定する
+//AccessTokenによりログインプレイヤーを特性し、オブジェクト登録する
 
 export const useGetPlayerwithToken = () => {
 	const { setLoginPlayer } = useLoginPlayer();

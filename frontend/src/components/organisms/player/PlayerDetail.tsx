@@ -178,6 +178,7 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 											name={friend.name}
 											displayName={friend.displayName}
 											level={friend.level}
+											status={friend.status}
 											isfriend={true}
 										/>
 									</WrapItem>
@@ -214,6 +215,7 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 											name={friend.name}
 											displayName={friend.displayName}
 											level={friend.level}
+											status={friend.status}
 											isfriend={false}
 										/>
 									</WrapItem>

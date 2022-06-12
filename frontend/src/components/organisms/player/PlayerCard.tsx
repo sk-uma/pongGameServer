@@ -35,10 +35,11 @@ type Props = {
 	lose: number;
 	level: number;
 	exp: number;
+	status: string;
 };
 
 export const PlayerCard: VFC<Props> = memo((props) => {
-	const { imgUrl, name, displayName, win, lose, level, exp } = props;
+	const { imgUrl, name, displayName, win, lose, level, exp, status } = props;
 	const { loginPlayer } = useLoginPlayer();
 	const { showMessage } = useMessage();
 	const navigate = useNavigate();
@@ -134,7 +135,16 @@ export const PlayerCard: VFC<Props> = memo((props) => {
 							m="auto"
 							name={displayName}
 						>
-							<AvatarBadge boxSize="50px" bg="green.500" />
+							<AvatarBadge
+								boxSize="50px"
+								bg={
+									loginPlayer?.name === name
+										? "green.500"
+										: status === "LOGIN"
+										? "green.500"
+										: "gray.300"
+								}
+							/>
 						</Avatar>
 						<Text fontSize="lg" fontWeight="bold">
 							{displayName}
@@ -150,7 +160,7 @@ export const PlayerCard: VFC<Props> = memo((props) => {
 			</MenuButton>
 			<MenuList>
 				<Text ml={3} color="gray">
-					Status
+					{`Status: ${status}`}
 				</Text>
 				{!loginPlayer?.friends.includes(name) &&
 					loginPlayer?.name !== name && (
