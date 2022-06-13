@@ -83,16 +83,16 @@ export class GameAdmin {
         room: this.publicWaitingRoom
       }
     }
-    return undefined;
+    return {type: 'notFound', room: undefined};
   }
 
-  updateGameData(data: any, socket: Socket) {
-    for (const room of socket.rooms) {
-      if (room !== socket.id) {
-        socket.broadcast.to(room).emit('UpdateCheckedGameData', data);
-      }
-    }
-  }
+  // updateGameData(data: any, socket: Socket) {
+  //   for (const room of socket.rooms) {
+  //     if (room !== socket.id) {
+  //       socket.broadcast.to(room).emit('UpdateCheckedGameData', data);
+  //     }
+  //   }
+  // }
 
   /**
    * デバッグ用: 全ルームのステータス表示
@@ -115,5 +115,13 @@ export class GameAdmin {
     }
 
     console.log();
+  }
+
+  eventGameData(data: any, socket: Socket) {
+    let rtv = this.searchRoomByPlayerName(data?.playerName);
+    let room = rtv.room;
+    if (rtv.type !== 'notFound') {
+      room.eventGameData(data, socket);
+    }
   }
 }

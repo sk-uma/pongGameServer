@@ -14,7 +14,7 @@ interface GameInfo {
 export let gameInfo: GameInfo = { };
 
 export function Pong() {
-  console.log('Pong component');
+  // console.log('Pong component');
 
   let [isConnected, setIsConnected] = useState(false);
 
@@ -24,18 +24,18 @@ export function Pong() {
 
   const { loginPlayer } = useLoginPlayer();
 
-  console.log(loginPlayer?.name);
+  // console.log(loginPlayer?.name);
 
   useEffect(() => {
     let g: Phaser.Game;
     gameInfo.socket = io("http://localhost:3001");
 
     gameInfo.socket.on('connect', () => {
-      console.log('connected....');
+      // console.log('connected....');
     });
 
     gameInfo.socket.on('disconnect', () => {
-      console.log('disconnected...');
+      // console.log('disconnected...');
     });
 
     gameInfo.socket.emit('joinRoom', {
@@ -44,10 +44,10 @@ export function Pong() {
       }
     });
 
-    console.log("is connected", isConnected);
+    // console.log("is connected", isConnected);
 
     gameInfo.socket.on('opponentIsReadyToStart', (data: any) => {
-      console.log("ready to start");
+      // console.log("ready to start");
       gameInfo.roomID = data.roomId;
       gameInfo.isServer = data.isServer;
       if (!g) {

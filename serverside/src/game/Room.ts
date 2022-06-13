@@ -98,6 +98,10 @@ export class Room {
     return undefined;
   }
 
+  eventGameData(data: any, socket: Socket) {
+    ;
+  }
+
   /**
    * デバッグ用: ルームステータスの表示
    */

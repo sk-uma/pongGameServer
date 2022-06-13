@@ -77,8 +77,20 @@ export class GameGateway {
   }
 
   @SubscribeMessage('updateGameData')
-  loopGame(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
+  updateGameData(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
     client.broadcast.to(data?.room_id).emit('UpdateCheckedGameData', data);
+  }
+
+  @SubscribeMessage('eventGameData')
+  eventGameData(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    // console.log('reply event data');
+    // client.broadcast.to(data?.room_id).emit('updateEventGameData', data);
+    for (const room of client.rooms) {
+      if (room !== client.id) {
+        client.broadcast.to(room).emit('updateEventGameData', data);
+      }
+    }
+    this.gameAdmin.eventGameData(data, client);
   }
 
   afterInit(server: Server) {

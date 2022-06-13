@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import io, {} from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import { useEffect } from 'react';
 import { gameInfo } from './Pong';
 // import player from './assets/player.png'
@@ -48,12 +48,18 @@ export default class PongScene extends Phaser.Scene {
   private ballXSpeed: number = 400;
   private gameInfo: any;
   private date?: Date;
+  private countDownGamestart: any;
+  private startTime: number = -1;
+  private stringDisplay : any;
+  private waitingFrag: boolean = false;
+  private alreadyStartedWaitingFrag: boolean = false;
+
+  private readonly waitingTime: number = 1500;
 
   constructor() {
     super({
       key: 'Main'
     })
-    
 
     // Socket
     // this.socket = io("http://localhost:3001");
@@ -61,7 +67,7 @@ export default class PongScene extends Phaser.Scene {
 
     // console.log("Pong constructor", socket);
 
-    console.log(gameInfo);
+    // console.log(gameInfo);
   }
 
   // init(): void { }
@@ -90,7 +96,8 @@ export default class PongScene extends Phaser.Scene {
     this.ball = this.physics.add.sprite(400, 300, "ball").setScale(0.1);
 
     let ballYSpeed: number = Phaser.Math.Between(-300, 300);
-    this.ball.setVelocity(this.ballXSpeed, ballYSpeed);
+    // this.ball.setVelocity(this.ballXSpeed, ballYSpeed);
+    this.ball.setVelocity(0, 0);
     this.ball.setCollideWorldBounds(true);
     this.ball.setBounce(1);
 
@@ -150,7 +157,31 @@ export default class PongScene extends Phaser.Scene {
         this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
         this.ball?.setPosition(400, 300);
       }
+      // this.countDownGamestart = this.time.addEvent({
+      //   delay: 1000,
+      //   callback: () => console.log('hoge'),
+      //   callbackScope: this,
+      //   repeat: 2,
+      // });
     });
+
+    if (!this.gameInfo.isServer) {
+      // console.log('set event socket');
+      this.gameInfo.socket.on('updateEventGameData', (data: any) => {
+        console.log('data', data);
+        if (data.eventType === 'startedWaiting') {
+          /**
+           * 開始前待機時間の同期
+           */
+          this.startTime = data.data.startTime;
+          console.log(this.startTime);
+        }
+      });
+    }
+
+    this.startTime = Date.now() + this.waitingTime;
+
+    this.stringDisplay = this.add.text(400, 100, "");
   }
 
   sendGameData(): void {
@@ -208,6 +239,29 @@ export default class PongScene extends Phaser.Scene {
 
     this.sendGameData();
     // console.log("Phaser update");
+
+    if (!this.waitingFrag) {
+      // Waiting
+      if (this.gameInfo.isServer && !this.alreadyStartedWaitingFrag) {
+        this.gameInfo.socket.emit('eventGameData', {
+          eventType: 'startedWaiting',
+          data: {
+            'startTime': this.startTime
+          }
+        });
+        this.alreadyStartedWaitingFrag = true;
+      }
+      if (this.startTime !== -1 && this.startTime - Date.now() >= 0) {
+        this.stringDisplay.text = `Waiting. ${Math.floor((this.startTime - Date.now()) / 1000)}`;
+      } else {
+        this.waitingFrag = true;
+        let ballYSpeed: number = Phaser.Math.Between(-300, 300);
+        this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
+      }
+    } else if (this.startTime !== -1) {
+      // Playing
+      this.stringDisplay.text = `${0} - ${0}`;
+    }
   }
 
   setSocket(): void {
