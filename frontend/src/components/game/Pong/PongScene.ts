@@ -53,6 +53,8 @@ export default class PongScene extends Phaser.Scene {
   private stringDisplay : any;
   private waitingFrag: boolean = false;
   private alreadyStartedWaitingFrag: boolean = false;
+  private hostPlayerScore: number = 0;
+  private clientPlayerScore: number = 0;
 
   private readonly waitingTime: number = 1500;
 
@@ -152,11 +154,17 @@ export default class PongScene extends Phaser.Scene {
     });
 
     this.gameInfo.socket.on('restartGame', (data: any) => {
+      // if (this.gameInfo.isServer) {
+      //   let ballYSpeed: number = Phaser.Math.Between(-300, 300);
+      //   this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
+      //   this.ball?.setPosition(400, 300);
+      // }
       if (this.gameInfo.isServer) {
-        let ballYSpeed: number = Phaser.Math.Between(-300, 300);
-        this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
-        this.ball?.setPosition(400, 300);
+        this.startTime = Date.now() + this.waitingTime;
       }
+      this.alreadyStartedWaitingFrag = false;
+      this.waitingFrag = false;
+      this.ball?.setVelocity(0, 0);
       // this.countDownGamestart = this.time.addEvent({
       //   delay: 1000,
       //   callback: () => console.log('hoge'),
@@ -237,7 +245,7 @@ export default class PongScene extends Phaser.Scene {
       this.player1?.setVelocityY(0);
     }
 
-    this.sendGameData();
+    // this.sendGameData();
     // console.log("Phaser update");
 
     if (!this.waitingFrag) {
@@ -252,16 +260,40 @@ export default class PongScene extends Phaser.Scene {
         this.alreadyStartedWaitingFrag = true;
       }
       if (this.startTime !== -1 && this.startTime - Date.now() >= 0) {
-        this.stringDisplay.text = `Waiting. ${Math.floor((this.startTime - Date.now()) / 1000)}`;
+        this.stringDisplay.text = `Waiting. ${1 + Math.floor((this.startTime - Date.now()) / 1000)}`;
       } else {
         this.waitingFrag = true;
-        let ballYSpeed: number = Phaser.Math.Between(-300, 300);
-        this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
+        if (this.gameInfo.isServer) {
+          let ballYSpeed: number = Phaser.Math.Between(-300, 300);
+          this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
+        }
+        this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
+        // console.log('set velocity');
       }
     } else if (this.startTime !== -1) {
       // Playing
-      this.stringDisplay.text = `${0} - ${0}`;
+      // this.stringDisplay.text = `${0} - ${0}`;
+      this.checkScore();
+      this.sendGameData();
     }
+  }
+
+  checkScore(): void {
+    if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x < 30) {
+      this.hostPlayerScore += 1;
+      this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
+      this.start();
+    } else if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x > 770) {
+      this.clientPlayerScore += 1;
+      this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
+      this.start();
+    }
+  }
+
+  start(): void {
+    this.ball?.setPosition(400, 300);
+    let ballYSpeed: number = Phaser.Math.Between(-300, 300);
+    this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
   }
 
   setSocket(): void {
