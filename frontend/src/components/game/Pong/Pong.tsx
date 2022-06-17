@@ -47,7 +47,7 @@ export function Pong() {
     // console.log("is connected", isConnected);
 
     gameInfo.socket.on('opponentIsReadyToStart', (data: any) => {
-      // console.log("ready to start");
+      console.log("ready to start");
       gameInfo.roomID = data.roomId;
       gameInfo.isServer = data.isServer;
       if (!g) {

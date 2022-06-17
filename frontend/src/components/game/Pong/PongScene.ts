@@ -2,44 +2,44 @@ import Phaser from 'phaser';
 import io, { Socket } from 'socket.io-client';
 import { useEffect } from 'react';
 import { gameInfo } from './Pong';
-// import player from './assets/player.png'
+import { endianness } from 'os';
+// import player from './assets/player.png';
 
-interface InitGameData {
-  playerName: string;
-  ball: {
-    velocity: {
-      x: number;
-      y: number;
-    };
-  };
-  time: any
-}
+type GameStatus = 'waiting' | 'standBy' | 'playing' | 'leaved' | 'end'
 
-interface UpdateGameData {
-  playerName: string;
-  ball: {
-    velocity: {
-      x: number | undefined;
-      y: number | undefined;
-    };
-    position: {
-      x: number | undefined;
-      y: number | undefined;
-    }
-  };
-  player: {
-    velocity: {
-      x?: number | undefined;
-      y: number | undefined;
-    };
-    position: {
-      x?: number | undefined;
-      y: number | undefined;
-    }
-  }
-  time: any
-}
-
+/**
+ * gameStatus
+ *    waiting: 対戦相手を待っている状態
+ *    standBy: ゲーム開始前の待機時間(s=5)
+ *    playing: 対戦中
+ *    leaved : どちらかのプレイヤーが離脱した
+ *    end    : ゲームが終了
+ * 
+ * gameStatus life cycle: 
+ * +----+------------+---------+--------------+
+ * | t  | HostPlayer |  Status | ClientPlayer |
+ * +----+------------+---------+--------------+
+ * | 0  | CreateRoom | waiting |              |
+ * +----+------------+---------+--------------+
+ * | 1  |            | standBy |   JoinRoom   |
+ * +----+------------+---------+--------------+
+ * | :  |            |    :    |              |
+ * +----+------------+---------+--------------+
+ * | 6  |            | Playing |              |
+ * +----+------------+---------+--------------+
+ * | 7  |  LeaveRoom |  leaved |              |
+ * +----+------------+---------+--------------+
+ * | 8  |  JoinRoom  | standBy |              |
+ * +----+------------+---------+--------------+
+ * |    |            |    :    |              |
+ * +----+------------+---------+--------------+
+ * | 13 |            | Playing |              |
+ * +----+------------+---------+--------------+
+ * |    |            |    :    |              |
+ * +----+------------+---------+--------------+
+ * |    |            |   end   |              |
+ * +----+------------+---------+--------------+
+ */
 export default class PongScene extends Phaser.Scene {
   private playerGroup?: Phaser.Physics.Arcade.Group;
   private player1?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -47,29 +47,22 @@ export default class PongScene extends Phaser.Scene {
   private ball?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private ballXSpeed: number = 400;
   private gameInfo: any;
-  private date?: Date;
-  private countDownGamestart: any;
   private startTime: number = -1;
   private stringDisplay : any;
-  private waitingFrag: boolean = false;
-  private alreadyStartedWaitingFrag: boolean = false;
+  // private waitingFrag: boolean = false;
+  // private alreadyStartedWaitingFrag: boolean = false;
   private hostPlayerScore: number = 0;
   private clientPlayerScore: number = 0;
+  private gameStatus: GameStatus = 'standBy';
 
-  private readonly waitingTime: number = 1500;
+  private readonly standByTime: number = 1500;
 
   constructor() {
     super({
       key: 'Main'
     })
 
-    // Socket
-    // this.socket = io("http://localhost:3001");
     this.gameInfo = gameInfo;
-
-    // console.log("Pong constructor", socket);
-
-    // console.log(gameInfo);
   }
 
   // init(): void { }
@@ -84,21 +77,18 @@ export default class PongScene extends Phaser.Scene {
    * オブジェクトの生成、ソケットの初期化等を行う
    */
   create(): void {
-    // Phaser
     this.playerGroup = this.physics.add.group();
 
     this.player1 = this.playerGroup.create(this.gameInfo.isServer ? 50 : 750, 300, "player");
-    this.player2 = this.playerGroup.create(this.gameInfo.isServer ? 750 : 50, 300, "player");
-
     this.player1?.setCollideWorldBounds(true);
-    this.player2?.setCollideWorldBounds(true);
     this.player1?.setImmovable(true);
+
+    this.player2 = this.playerGroup.create(this.gameInfo.isServer ? 750 : 50, 300, "player");
+    this.player2?.setCollideWorldBounds(true);
     this.player2?.setImmovable(true);
 
     this.ball = this.physics.add.sprite(400, 300, "ball").setScale(0.1);
 
-    let ballYSpeed: number = Phaser.Math.Between(-300, 300);
-    // this.ball.setVelocity(this.ballXSpeed, ballYSpeed);
     this.ball.setVelocity(0, 0);
     this.ball.setCollideWorldBounds(true);
     this.ball.setBounce(1);
@@ -107,38 +97,39 @@ export default class PongScene extends Phaser.Scene {
       // TODO
     }, undefined, this);
 
-    // this.ball.body.position.x
+    this.setSocketEvent();
 
-    // Socket
-    // this.socket = io("http://localhost:3001");
+    // this.startTime = Date.now() + this.standByTime;
+    this.stringDisplay = this.add.text(400, 100, "");
 
-    let time = Date.now()
-    let initGameData: InitGameData = {
-      playerName: "player1",
-      ball: {
-        velocity: {
-          x: this.ballXSpeed,
-          y: ballYSpeed
-        }
-      },
-      time: Date.now()
-    }
-    this.gameInfo.socket.emit('initGameData', initGameData);
+    this.startStandBy();
+  }
 
-    // this.socket.on('connect', () => {
-    //   console.log('connected!!!');
-    // })
-
-    // this.socket.on('disconnect', () => {
-    //   console.log('disconnected!!!');
-    // })
-
-    // this.socket.on('UpdateCheckedGameData', (data: any) => {
-    //   // console.log(data);
-    // });
+  /**
+   * Socketイベントの設定
+   * 
+   * Socket Event:
+   *    UpdateCheckedGameData
+   *        互いのプレイヤーの位置を受信し位置を同期する
+   *    PlayerLeaveRoom
+   *        対戦相手が離脱したことを受信する
+   *    restartGame
+   *        対戦相手が復帰したことを受信する
+   *    updateEventGameData (クライアント限定)
+   *        各種ゲーム内のイベント(下記参照)を受信する
+   * 
+   * Game Event:
+   *    startedStandBy
+   *        ゲームの開始前の待機時間
+   *    getPoint
+   *        得点を獲得
+   */
+  setSocketEvent(): void {
+    this.gameInfo.socket.on('hello', (data: any) => {
+      console.log(data);
+    })
 
     this.gameInfo.socket.on('UpdateCheckedGameData', (data: any) => {
-      // console.log(data);
       if (!this.gameInfo.isServer) {
         this.ball?.setVelocity(data.ball.velocity.x, data.ball.velocity.y);
         this.ball?.setPosition(data.ball.position.x, data.ball.position.y);
@@ -148,55 +139,46 @@ export default class PongScene extends Phaser.Scene {
     });
 
     this.gameInfo.socket.on('PlayerLeaveRoom', (data: any) => {
-      // console.log('leaved');
       this.ball?.setVelocity(0, 0);
       this.ball?.setPosition(400, 300);
+      this.gameStatus = 'leaved';
+      this.stringDisplay.text = "対戦相手が離脱しました。";
     });
 
     this.gameInfo.socket.on('restartGame', (data: any) => {
       // if (this.gameInfo.isServer) {
-      //   let ballYSpeed: number = Phaser.Math.Between(-300, 300);
-      //   this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
-      //   this.ball?.setPosition(400, 300);
+      //   this.startTime = Date.now() + this.standByTime;
       // }
-      if (this.gameInfo.isServer) {
-        this.startTime = Date.now() + this.waitingTime;
-      }
-      this.alreadyStartedWaitingFrag = false;
-      this.waitingFrag = false;
-      this.ball?.setVelocity(0, 0);
-      // this.countDownGamestart = this.time.addEvent({
-      //   delay: 1000,
-      //   callback: () => console.log('hoge'),
-      //   callbackScope: this,
-      //   repeat: 2,
-      // });
+      // this.alreadyStartedWaitingFrag = false;
+      // this.waitingFrag = false;
+      // this.ball?.setVelocity(0, 0);
+      // console.log('restart Game');
+      this.hostPlayerScore = data.gameData.hostPlayerScore;
+      this.clientPlayerScore = data.gameData.clientPlayerScore;
+      this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
+      // console.log(data);
+      this.startStandBy();
     });
 
     if (!this.gameInfo.isServer) {
-      // console.log('set event socket');
       this.gameInfo.socket.on('updateEventGameData', (data: any) => {
-        console.log('data', data);
-        if (data.eventType === 'startedWaiting') {
-          /**
-           * 開始前待機時間の同期
-           */
+        // console.log(data);
+        if (data.eventType === 'startedStandBy') {
           this.startTime = data.data.startTime;
-          console.log(this.startTime);
+          // console.log(this.startTime);
+        } else if (data.eventType === 'getPoint') {
+          this.hostPlayerScore = data.data.hostScore;
+          this.clientPlayerScore = data.data.clientScore;
+          this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
         }
       });
     }
-
-    this.startTime = Date.now() + this.waitingTime;
-
-    this.stringDisplay = this.add.text(400, 100, "");
   }
 
+  /**
+   * 毎フレームのゲームデータの送信
+   */
   sendGameData(): void {
-    // console.log({
-    //   y: this.player1?.x
-    // })
-    // console.log(this?.gameInfo.room_id);
     if (this.gameInfo.isServer) {
       this.gameInfo.socket.emit('updateGameData', {
         room_id: this?.gameInfo.roomID,
@@ -248,45 +230,70 @@ export default class PongScene extends Phaser.Scene {
     // this.sendGameData();
     // console.log("Phaser update");
 
-    if (!this.waitingFrag) {
-      // Waiting
-      if (this.gameInfo.isServer && !this.alreadyStartedWaitingFrag) {
-        this.gameInfo.socket.emit('eventGameData', {
-          eventType: 'startedWaiting',
-          data: {
-            'startTime': this.startTime
-          }
-        });
-        this.alreadyStartedWaitingFrag = true;
-      }
-      if (this.startTime !== -1 && this.startTime - Date.now() >= 0) {
+    if (this.gameStatus === 'standBy') {
+      if (this.startTime - Date.now() >= 0) {
+        // console.log('standby');
         this.stringDisplay.text = `Waiting. ${1 + Math.floor((this.startTime - Date.now()) / 1000)}`;
       } else {
-        this.waitingFrag = true;
         if (this.gameInfo.isServer) {
-          let ballYSpeed: number = Phaser.Math.Between(-300, 300);
-          this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
+          this.start();
         }
         this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
-        // console.log('set velocity');
+        this.gameStatus = 'playing';
       }
-    } else if (this.startTime !== -1) {
-      // Playing
-      // this.stringDisplay.text = `${0} - ${0}`;
-      this.checkScore();
+    } else if (this.gameStatus === 'playing') {
       this.sendGameData();
+      if (this.gameInfo.isServer) {
+        this.checkScore();
+      }
     }
+
+    // if (!this.waitingFrag) {
+    //   // Waiting
+    //   if (this.gameInfo.isServer && !this.alreadyStartedWaitingFrag) {
+    //     this.gameInfo.socket.emit('eventGameData', {
+    //       eventType: 'startedStandBy',
+    //       data: {
+    //         'startTime': this.startTime
+    //       }
+    //     });
+    //     this.alreadyStartedWaitingFrag = true;
+    //   }
+    //   if (this.startTime !== -1 && this.startTime - Date.now() >= 0) {
+    //     this.stringDisplay.text = `Waiting. ${1 + Math.floor((this.startTime - Date.now()) / 1000)}`;
+    //   } else {
+    //     this.waitingFrag = true;
+    //     if (this.gameInfo.isServer) {
+    //       let ballYSpeed: number = Phaser.Math.Between(-300, 300);
+    //       this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
+    //     }
+    //     this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
+    //     // console.log('set velocity');
+    //   }
+    // } else if (this.startTime !== -1) {
+    //   // Playing
+    //   // this.stringDisplay.text = `${0} - ${0}`;
+    //   this.sendGameData();
+    //   if (this.gameInfo.isServer) {
+    //     this.checkScore();
+    //   }
+    // }
   }
 
   checkScore(): void {
-    if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x < 30) {
+    if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x > 770) {
       this.hostPlayerScore += 1;
       this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
       this.start();
-    } else if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x > 770) {
+      this.sendScoreEvent();
+    } else if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x < 30) {
       this.clientPlayerScore += 1;
       this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
       this.start();
+      this.sendScoreEvent();
+    }
+    if (this.hostPlayerScore >= 10 || this.clientPlayerScore >= 10) {
+      this.gameOver();
     }
   }
 
@@ -296,7 +303,35 @@ export default class PongScene extends Phaser.Scene {
     this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
   }
 
-  setSocket(): void {
+  sendScoreEvent(): void {
+    this.gameInfo.socket.emit('eventGameData', {
+      roomId: this?.gameInfo.roomID,
+      eventType: 'getPoint',
+      data: {
+        'hostScore': this.hostPlayerScore,
+        'clientScore': this.clientPlayerScore
+      }
+    });
+  }
 
+  startStandBy(): void {
+    this.startTime = Date.now() + this.standByTime;
+    this.gameStatus = 'standBy';
+    // console.log('standBy');
+    if (this.gameInfo.isServer) {
+      this.gameInfo.socket.emit('eventGameData', {
+        roomId: this?.gameInfo.roomID,
+        eventType: 'startedStandBy',
+        data: {
+          'startTime': this.startTime
+        }
+      });
+    }
+  }
+
+  gameOver(): void {
+    this.gameInfo.socket.emit('gameOver', {
+      
+    })
   }
 }

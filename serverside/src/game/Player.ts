@@ -46,7 +46,7 @@ export class Player {
       roomId: roomId,
       isServer: this.playerType === 'host',
       gameData: payloadGameData
-    })
+    });
   }
 
   // broadcast(roomId: string, message: string, data?: any) {

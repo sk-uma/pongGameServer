@@ -33,7 +33,7 @@ export class GameAdmin {
   leaveRoom(playerName: string, socket: Socket): void {
     for (const room of socket.rooms) {
       if (room !== socket.id) {
-        console.log("room:", room);
+        // console.log("room:", room);
         socket.broadcast.to(room).emit('PlayerLeaveRoom');
       }
     }
@@ -86,6 +86,34 @@ export class GameAdmin {
     return {type: 'notFound', room: undefined};
   }
 
+  searchRoomByRoomId(roomId: string): {type: string, room?: Room} {
+    for (const room of this.playingList) {
+      // console.log("room:", room);
+      if (room.getRoomId() === roomId) {
+        return {
+          type: 'playing',
+          room: room
+        };
+      }
+    }
+    for (const room of this.leavedList) {
+      // console.log("room:", room);
+      if (room.getRoomId() === roomId) {
+        return {
+          type: 'leaved',
+          room: room
+        };
+      }
+    }
+    if (this.isPublicWaiting && this.publicWaitingRoom.getRoomId() === roomId) {
+      return {
+        type: 'publicWaiting',
+        room: this.publicWaitingRoom
+      }
+    }
+    return {type: 'notFound', room: undefined};
+  }
+
   // updateGameData(data: any, socket: Socket) {
   //   for (const room of socket.rooms) {
   //     if (room !== socket.id) {
@@ -118,8 +146,9 @@ export class GameAdmin {
   }
 
   eventGameData(data: any, socket: Socket) {
-    let rtv = this.searchRoomByPlayerName(data?.playerName);
+    let rtv = this.searchRoomByRoomId(data?.roomId);
     let room = rtv.room;
+    // console.log(rtv);
     if (rtv.type !== 'notFound') {
       room.eventGameData(data, socket);
     }

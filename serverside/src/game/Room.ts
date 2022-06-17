@@ -20,8 +20,8 @@ export class Room {
     this.hostPlayer.joinRoom(this.roomId);
     this.roomType = type;
     this.gameData = {
-      hostPoint: 0,
-      clientPoint: 0
+      hostPlayerScore: 0,
+      clientPlayerScore: 0
     }
   }
 
@@ -49,9 +49,12 @@ export class Room {
     // for (var room of socket.rooms) {
     //   console.log(room);
     // }
+    // console.log('rejoin');
     if ((player = this.getPlayer(playerName)) !== undefined) {
-      // console.log('rejoin');
+      // console.log(this.hostPlayer === undefined, this.clientPlayer === undefined);
+      // console.log(this.clientPlayer);
       player.reJoinRoom(this.roomId, socket);
+      socket.emit('hello', 'hello!!!!');
       this.hostPlayer.restartGame(this.roomId, this.gameData);
       this.clientPlayer?.restartGame(this.roomId, this.gameData);
     }
@@ -99,7 +102,15 @@ export class Room {
   }
 
   eventGameData(data: any, socket: Socket) {
-    ;
+    if (data.eventType === 'getPoint') {
+      this.gameData.hostPlayerScore = data.data.hostScore;
+      this.gameData.clientPlayerScore = data.data.clientScore;
+    }
+    // console.log(data);
+  }
+
+  getRoomId(): string {
+    return this.roomId;
   }
 
   /**
