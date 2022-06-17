@@ -7,6 +7,15 @@ import { endianness } from 'os';
 
 type GameStatus = 'waiting' | 'standBy' | 'playing' | 'leaved' | 'end'
 
+type StringDisplay = {
+  leavedMessageDisplay: any;
+  standByCountDownDisplay: any;
+  score: {
+    hostPlayerScoreDisplay: any;
+    clientPlayerScoreDisplay: any;
+  }
+}
+
 /**
  * gameStatus
  *    waiting: 対戦相手を待っている状態
@@ -48,14 +57,17 @@ export default class PongScene extends Phaser.Scene {
   private ballXSpeed: number = 400;
   private gameInfo: any;
   private startTime: number = -1;
-  private stringDisplay : any;
+  private stringDisplay: any;
   // private waitingFrag: boolean = false;
   // private alreadyStartedWaitingFrag: boolean = false;
-  private hostPlayerScore: number = 0;
-  private clientPlayerScore: number = 0;
+  // private hostPlayerScore: number = 0;
+  // private clientPlayerScore: number = 0;
   private gameStatus: GameStatus = 'standBy';
+  private display?: StringDisplay;
 
   private readonly standByTime: number = 1500;
+  // private readonly leavedMessage: string = '対戦相手が離脱しました\nしばらくお待ちください';
+  // private readonly standByMessage: string = `ゲーム開始まで1秒`
 
   constructor() {
     super({
@@ -63,6 +75,7 @@ export default class PongScene extends Phaser.Scene {
     })
 
     this.gameInfo = gameInfo;
+    // this.gameInfo.gameData.score.hostPlayerScore;
   }
 
   // init(): void { }
@@ -101,6 +114,15 @@ export default class PongScene extends Phaser.Scene {
 
     // this.startTime = Date.now() + this.standByTime;
     this.stringDisplay = this.add.text(400, 100, "");
+    this.display = {
+      leavedMessageDisplay: this.add.text(400, 250, "").setFontSize(30).setOrigin(0.5),
+      standByCountDownDisplay: this.add.text(400, 100, "").setFontSize(30).setOrigin(0.5),
+      score: {
+        hostPlayerScoreDisplay: this.add.text(250, 50, "").setFontSize(30).setOrigin(0.5),
+        clientPlayerScoreDisplay: this.add.text(550, 50, "").setFontSize(30).setOrigin(0.5),
+      }
+    }
+    this.reloadDisplayScore();
 
     this.startStandBy();
   }
@@ -142,7 +164,8 @@ export default class PongScene extends Phaser.Scene {
       this.ball?.setVelocity(0, 0);
       this.ball?.setPosition(400, 300);
       this.gameStatus = 'leaved';
-      this.stringDisplay.text = "対戦相手が離脱しました。";
+      // this.stringDisplay.text = "対戦相手が離脱しました。";
+      this.display!.leavedMessageDisplay.text = "対戦相手が離脱しました\nしばらくお待ちください"
     });
 
     this.gameInfo.socket.on('restartGame', (data: any) => {
@@ -153,23 +176,28 @@ export default class PongScene extends Phaser.Scene {
       // this.waitingFrag = false;
       // this.ball?.setVelocity(0, 0);
       // console.log('restart Game');
-      this.hostPlayerScore = data.gameData.hostPlayerScore;
-      this.clientPlayerScore = data.gameData.clientPlayerScore;
-      this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
+      // this.gameInfo.gameData.score.hostPlayerScore = data.gameData.hostPlayerScore;
+      // this.gameInfo.gameData.score.clientPlayerScore = data.gameData.clientPlayerScore;
+      // this.stringDisplay.text = `${this.gameInfo.gameData.score.hostPlayerScore} - ${this.gameInfo.gameData.score.clientPlayerScore}`;
       // console.log(data);
       this.startStandBy();
+      this.display!.leavedMessageDisplay.text = "";
     });
 
     if (!this.gameInfo.isServer) {
       this.gameInfo.socket.on('updateEventGameData', (data: any) => {
         // console.log(data);
         if (data.eventType === 'startedStandBy') {
+          this.ball?.setVelocity(0, 0);
+          this.ball?.setPosition(400, 300);
           this.startTime = data.data.startTime;
+          this.gameStatus = 'standBy';
           // console.log(this.startTime);
         } else if (data.eventType === 'getPoint') {
-          this.hostPlayerScore = data.data.hostScore;
-          this.clientPlayerScore = data.data.clientScore;
-          this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
+          this.gameInfo.gameData.score.hostPlayerScore = data.data.hostScore;
+          this.gameInfo.gameData.score.clientPlayerScore = data.data.clientScore;
+          // this.stringDisplay.text = `${this.gameInfo.gameData.score.hostPlayerScore} - ${this.gameInfo.gameData.score.clientPlayerScore}`;
+          this.reloadDisplayScore();
         }
       });
     }
@@ -233,20 +261,24 @@ export default class PongScene extends Phaser.Scene {
     if (this.gameStatus === 'standBy') {
       if (this.startTime - Date.now() >= 0) {
         // console.log('standby');
-        this.stringDisplay.text = `Waiting. ${1 + Math.floor((this.startTime - Date.now()) / 1000)}`;
+        // this.stringDisplay.text = `Waiting. ${1 + Math.floor((this.startTime - Date.now()) / 1000)}`;
+        this.display!.standByCountDownDisplay.text = `ゲーム開始まで${1 + Math.floor((this.startTime - Date.now()) / 1000)}秒`;
       } else {
         if (this.gameInfo.isServer) {
           this.start();
         }
-        this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
+        // this.stringDisplay.text = `${this.gameInfo.gameData.score.hostPlayerScore} - ${this.gameInfo.gameData.score.clientPlayerScore}`;
+        this.reloadDisplayScore();
         this.gameStatus = 'playing';
+        this.display!.standByCountDownDisplay.text = "";
       }
     } else if (this.gameStatus === 'playing') {
-      this.sendGameData();
+      // this.sendGameData();
       if (this.gameInfo.isServer) {
         this.checkScore();
       }
     }
+    this.sendGameData();
 
     // if (!this.waitingFrag) {
     //   // Waiting
@@ -267,7 +299,7 @@ export default class PongScene extends Phaser.Scene {
     //       let ballYSpeed: number = Phaser.Math.Between(-300, 300);
     //       this.ball?.setVelocity(this.ballXSpeed, ballYSpeed);
     //     }
-    //     this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
+    //     this.stringDisplay.text = `${this.gameInfo.gameData.score.hostPlayerScore} - ${this.gameInfo.gameData.score.clientPlayerScore}`;
     //     // console.log('set velocity');
     //   }
     // } else if (this.startTime !== -1) {
@@ -282,17 +314,21 @@ export default class PongScene extends Phaser.Scene {
 
   checkScore(): void {
     if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x > 770) {
-      this.hostPlayerScore += 1;
-      this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
-      this.start();
+      this.gameInfo.gameData.score.hostPlayerScore += 1;
+      // this.stringDisplay.text = `${this.gameInfo.gameData.score.hostPlayerScore} - ${this.gameInfo.gameData.score.clientPlayerScore}`;
+      // this.start();
+      this.reloadDisplayScore();
+      this.startStandBy();
       this.sendScoreEvent();
     } else if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x < 30) {
-      this.clientPlayerScore += 1;
-      this.stringDisplay.text = `${this.hostPlayerScore} - ${this.clientPlayerScore}`;
-      this.start();
+      this.gameInfo.gameData.score.clientPlayerScore += 1;
+      // this.stringDisplay.text = `${this.gameInfo.gameData.score.hostPlayerScore} - ${this.gameInfo.gameData.score.clientPlayerScore}`;
+      // this.start();
+      this.reloadDisplayScore();
+      this.startStandBy();
       this.sendScoreEvent();
     }
-    if (this.hostPlayerScore >= 10 || this.clientPlayerScore >= 10) {
+    if (this.gameInfo.gameData.score.hostPlayerScore >= 10 || this.gameInfo.gameData.score.clientPlayerScore >= 10) {
       this.gameOver();
     }
   }
@@ -308,13 +344,16 @@ export default class PongScene extends Phaser.Scene {
       roomId: this?.gameInfo.roomID,
       eventType: 'getPoint',
       data: {
-        'hostScore': this.hostPlayerScore,
-        'clientScore': this.clientPlayerScore
+        'hostScore': this.gameInfo.gameData.score.hostPlayerScore,
+        'clientScore': this.gameInfo.gameData.score.clientPlayerScore
       }
     });
   }
 
   startStandBy(): void {
+    // this.start();
+    this.ball?.setVelocity(0, 0);
+    this.ball?.setPosition(400, 300);
     this.startTime = Date.now() + this.standByTime;
     this.gameStatus = 'standBy';
     // console.log('standBy');
@@ -327,6 +366,11 @@ export default class PongScene extends Phaser.Scene {
         }
       });
     }
+  }
+
+  reloadDisplayScore(): void {
+    this.display!.score.hostPlayerScoreDisplay.text = `${this.gameInfo.gameData.score.hostPlayerScore}`;
+    this.display!.score.clientPlayerScoreDisplay.text = `${this.gameInfo.gameData.score.clientPlayerScore}`;
   }
 
   gameOver(): void {

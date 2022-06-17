@@ -154,3 +154,5 @@ export class GameAdmin {
     }
   }
 }
+
+export let gameAdmin: GameAdmin = new GameAdmin();

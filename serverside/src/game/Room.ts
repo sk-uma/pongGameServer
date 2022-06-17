@@ -5,13 +5,20 @@ import { Player } from "./Player";
 type Status = 'playing' | 'waiting' | 'leaved';
 type RoomType = 'private' | 'public';
 
+type GameData = {
+  score: {
+    hostPlayerScore: number;
+    clientPlayerScore: number;
+  }
+}
+
 export class Room {
   private status: Status = 'waiting';
   private hostPlayer: Player;
   private clientPlayer?: Player;
   private roomId: string;
   private roomType: RoomType;
-  private gameData;
+  private gameData: GameData;
   // private gameType: GameType;
 
   constructor(hostPlayer: Player, type: RoomType='public') {
@@ -20,8 +27,10 @@ export class Room {
     this.hostPlayer.joinRoom(this.roomId);
     this.roomType = type;
     this.gameData = {
-      hostPlayerScore: 0,
-      clientPlayerScore: 0
+      score: {
+        hostPlayerScore: 0,
+        clientPlayerScore: 0
+      }
     }
   }
 
@@ -33,8 +42,8 @@ export class Room {
     this.clientPlayer = clientPlayer;
     this.clientPlayer.joinRoom(this.roomId);
     this.status = 'playing';
-    this.hostPlayer.opponentIsReadyToStart(this.roomId);
-    this.clientPlayer?.opponentIsReadyToStart(this.roomId);
+    this.hostPlayer.opponentIsReadyToStart(this.roomId, this.gameData);
+    this.clientPlayer?.opponentIsReadyToStart(this.roomId, this.gameData);
     // clientPlayer.broadcast.to(this.roomId).emit('UpdateCheckedGameData', data);
     // this.hostPlayer.broadcast();
   }
@@ -53,7 +62,7 @@ export class Room {
     if ((player = this.getPlayer(playerName)) !== undefined) {
       // console.log(this.hostPlayer === undefined, this.clientPlayer === undefined);
       // console.log(this.clientPlayer);
-      player.reJoinRoom(this.roomId, socket);
+      player.reJoinRoom(this.roomId, socket, this.gameData);
       socket.emit('hello', 'hello!!!!');
       this.hostPlayer.restartGame(this.roomId, this.gameData);
       this.clientPlayer?.restartGame(this.roomId, this.gameData);
@@ -103,14 +112,35 @@ export class Room {
 
   eventGameData(data: any, socket: Socket) {
     if (data.eventType === 'getPoint') {
-      this.gameData.hostPlayerScore = data.data.hostScore;
-      this.gameData.clientPlayerScore = data.data.clientScore;
+      this.gameData.score.hostPlayerScore = data.data.hostScore;
+      this.gameData.score.clientPlayerScore = data.data.clientScore;
     }
     // console.log(data);
   }
 
   getRoomId(): string {
     return this.roomId;
+  }
+
+  // getScore(): {hostPlayerScore: number, clientPlayerScore: number} {
+  //   return {
+  //     hostPlayerScore: this.gameData.hostPlayerScore,
+  //     clientPlayerScore: this.gameData.clientPlayerScore
+  //   }
+  // }
+
+  getGameData(dataType: string): {type: string, data?: any} {
+    if (dataType === 'score') {
+      return {
+        type: 'score',
+        data: {
+          hostPlayerScore: this.gameData.score.hostPlayerScore,
+          clientPlayerScore: this.gameData.score.clientPlayerScore
+        }
+      };
+    } else {
+      return {type: 'notFound'};
+    }
   }
 
   /**

@@ -9,9 +9,22 @@ interface GameInfo {
   socket?: Socket;
   roomID?: String;
   isServer?: boolean;
+  gameData: {
+    score: {
+      hostPlayerScore: number;
+      clientPlayerScore: number;
+    }
+  }
 };
 
-export let gameInfo: GameInfo = { };
+export let gameInfo: GameInfo = {
+  gameData: {
+    score: {
+      hostPlayerScore: 0,
+      clientPlayerScore: 0
+    }
+  }
+};
 
 export function Pong() {
   // console.log('Pong component');
@@ -50,6 +63,7 @@ export function Pong() {
       console.log("ready to start");
       gameInfo.roomID = data.roomId;
       gameInfo.isServer = data.isServer;
+      gameInfo.gameData = data.gameData;
       if (!g) {
         g = new Phaser.Game(config);
       }

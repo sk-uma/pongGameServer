@@ -10,7 +10,7 @@ import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common'
-import { GameAdmin } from './GameAdmin';
+import { GameAdmin, gameAdmin } from './GameAdmin';
 
 interface InitGameData {
   playerName: string;
@@ -58,7 +58,7 @@ interface UpdateGameData {
 export class GameGateway {
   private isWaiting = false;
   private waitingRoomID: string;
-  private gameAdmin: GameAdmin = new GameAdmin();
+  private gameAdmin: GameAdmin = gameAdmin;
 
   @WebSocketServer()
   server: Server;
