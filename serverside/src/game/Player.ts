@@ -14,6 +14,7 @@ export class Player {
     this.playerName = playerName;
     this.status = 'connected';
     this.playerType = playerType;
+    this.socket = socket;
   }
 
   joinRoom(roomId: string) {
@@ -21,16 +22,37 @@ export class Player {
     this.socket.join(roomId);
   }
 
-  reJoinRoom(roomId: string, socket: Socket) {
+  reJoinRoom(roomId: string, socket: Socket, payloadGameData) {
     this.status = 'connected';
     this.socket = socket;
     this.socket.join(roomId);
+    this.opponentIsReadyToStart(roomId, payloadGameData);
   }
 
   leaveRoom(roomId: string) {
     this.status = 'disconnected';
     this.socket.leave(roomId);
   }
+
+  opponentIsReadyToStart(roomId, payloadGameData) {
+    this.socket.emit('opponentIsReadyToStart', {
+      roomId: roomId,
+      isServer: this.playerType === 'host',
+      gameData: payloadGameData
+    })
+  }
+
+  restartGame(roomId, payloadGameData) {
+    this.socket.emit('restartGame', {
+      roomId: roomId,
+      isServer: this.playerType === 'host',
+      gameData: payloadGameData
+    });
+  }
+
+  // broadcast(roomId: string, message: string, data?: any) {
+  //   this.socket.broadcast.to(roomId).emit(message, data);
+  // }
 
   // getRoomId(): string {
   //   return this.roomId;

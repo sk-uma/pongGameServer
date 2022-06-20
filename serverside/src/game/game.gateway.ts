@@ -10,6 +10,7 @@ import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common'
+import { GameAdmin, gameAdmin } from './GameAdmin';
 
 interface InitGameData {
   playerName: string;
@@ -57,6 +58,7 @@ interface UpdateGameData {
 export class GameGateway {
   private isWaiting = false;
   private waitingRoomID: string;
+  private gameAdmin: GameAdmin = gameAdmin;
 
   @WebSocketServer()
   server: Server;
@@ -71,12 +73,24 @@ export class GameGateway {
 
   @SubscribeMessage('initGameData')
   initGame(@MessageBody() data: any): void {
-    this.logger.log(data);
+    // this.logger.log(data);
   }
 
   @SubscribeMessage('updateGameData')
-  loopGame(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
+  updateGameData(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
     client.broadcast.to(data?.room_id).emit('UpdateCheckedGameData', data);
+  }
+
+  @SubscribeMessage('eventGameData')
+  eventGameData(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    // console.log('reply event data');
+    // client.broadcast.to(data?.room_id).emit('updateEventGameData', data);
+    for (const room of client.rooms) {
+      if (room !== client.id) {
+        client.broadcast.to(room).emit('updateEventGameData', data);
+      }
+    }
+    this.gameAdmin.eventGameData(data, client);
   }
 
   afterInit(server: Server) {
@@ -85,42 +99,47 @@ export class GameGateway {
 
   @SubscribeMessage('joinRoom')
   joinRoom(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
-    if (this.isWaiting) {
-      // 待機がいる場合
-      client.join(this.waitingRoomID);
-      client.emit('opponentIsReadyToStart', {
-        roomId: `${this.waitingRoomID}`,
-        isServer: false
-      });
-      client.broadcast.to(this.waitingRoomID).emit('opponentIsReadyToStart', {
-        roomId: `${this.waitingRoomID}`,
-        isServer: true
-      });
-      // this.logger.log(`ready... ${this.waitingRoomID}`);
-      this.isWaiting = false;
-      this.waitingRoomID = undefined;
-    } else {
-      // 待機がいない場合
-      this.waitingRoomID = `room_${data?.user?.name}`;
-      client.join(this.waitingRoomID);
-      this.isWaiting = true;
-      // this.logger.log(`waiting... ${this.waitingRoomID}`);
-    }
-    //クライアント接続時
-    this.logger.log(`Client connected(id, name, room_id): ${client.id} ${data?.user?.name} ${this.waitingRoomID}`);
-    // this.logger.log(this.server.sockets.manager);
+    // if (this.isWaiting) {
+    //   // 待機がいる場合
+    //   client.join(this.waitingRoomID);
+    //   client.emit('opponentIsReadyToStart', {
+    //     roomId: `${this.waitingRoomID}`,
+    //     isServer: false
+    //   });
+    //   client.broadcast.to(this.waitingRoomID).emit('opponentIsReadyToStart', {
+    //     roomId: `${this.waitingRoomID}`,
+    //     isServer: true
+    //   });
+    //   // this.logger.log(`ready... ${this.waitingRoomID}`);
+    //   this.isWaiting = false;
+    //   this.waitingRoomID = undefined;
+    // } else {
+    //   // 待機がいない場合
+    //   this.waitingRoomID = `room_${data?.user?.name}`;
+    //   client.join(this.waitingRoomID);
+    //   this.isWaiting = true;
+    //   // this.logger.log(`waiting... ${this.waitingRoomID}`);
+    // }
+    // //クライアント接続時
+    // this.logger.log(`Client connected(id, name, room_id): ${client.id} ${data?.user?.name} ${this.waitingRoomID}`);
+    // // this.logger.log(this.server.sockets.manager);
+    // console.log(data.user.name);
+    // this.gameAdmin.tmp("tmp");
+    this.gameAdmin.joinRoom(data.user.name, client);
   }
 
   @SubscribeMessage('leaveRoom')
   leaveRoom(@MessageBody() data: any, @ConnectedSocket() client: Socket): void {
     // this.logger.log(`leave Room ${data.roomID}`);
-    console.log(client.rooms);
-    for (const room of client.rooms) {
-      if (room !== client.id) {
-        client.broadcast.to(room).emit('PlayerLeaveRoom');
-      }
-    }
-    console.log(client.rooms);
+    // console.log(client.rooms);
+    // for (const room of client.rooms) {
+    //   if (room !== client.id) {
+    //     client.broadcast.to(room).emit('PlayerLeaveRoom');
+    //   }
+    // }
+    // console.log(client.rooms);
+
+    this.gameAdmin.leaveRoom(data.user.name, client);
   }
 
   handleConnection(client: Socket, ...args: any[]) {
@@ -129,8 +148,7 @@ export class GameGateway {
   handleDisconnect(@ConnectedSocket() client: Socket) {
     //クライアント切断時
     this.logger.log(`Client disconnected: ${client.id} ${client.rooms}`);
-    client.leave(this.waitingRoomID);
-    this.isWaiting = !this.isWaiting;
+    // client.leave(this.waitingRoomID);
+    // this.isWaiting = !this.isWaiting;
   }
 }
- 
