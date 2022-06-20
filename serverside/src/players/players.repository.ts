@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Player } from './player.entity';
 import { CreatePlayerDto } from './dto/create.player.dto';
 import * as bcrypt from 'bcrypt';
+import { PlayerStatus } from './playerStatus.enum';
 
 @EntityRepository(Player)
 export class PlayersRepository extends Repository<Player> {
@@ -22,6 +23,8 @@ export class PlayersRepository extends Repository<Player> {
 			lose: 0,
 			level: 1,
 			exp: 0,
+			status: PlayerStatus.LOGOUT,
+			clientId: '',
 			friends: [],
 			blockList: [],
 		});

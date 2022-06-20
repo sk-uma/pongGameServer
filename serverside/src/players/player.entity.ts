@@ -1,4 +1,5 @@
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { PlayerStatus } from './playerStatus.enum';
 
 @Entity()
 export class Player {
@@ -28,6 +29,12 @@ export class Player {
 
 	@Column()
 	exp: number;
+
+	@Column()
+	status: PlayerStatus;
+
+	@Column()
+	clientId: string;
 
 	@Column('simple-array')
 	friends: string[];

@@ -3,18 +3,15 @@ import { Wrap, WrapItem } from "@chakra-ui/react";
 
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { PlayerCard } from "../organisms/player/PlayerCard";
-import { useGetPlayerwithToken } from "../../hooks/useGetPlayerWithToken";
 
 //全プレイヤー閲覧ページ
 
 export const Players: VFC = memo(() => {
 	const { getPlayers, players } = useAllPlayers();
-	const { getPlayerWithToken } = useGetPlayerwithToken();
 
 	useEffect(() => {
 		getPlayers();
-		getPlayerWithToken();
-	}, [getPlayerWithToken, getPlayers]);
+	}, [getPlayers]);
 
 	return (
 		<Wrap p={{ base: 4, md: 10 }} justify="center" align="center">
@@ -28,6 +25,7 @@ export const Players: VFC = memo(() => {
 						lose={player.lose}
 						level={player.level}
 						exp={player.exp}
+						status={player.status}
 					/>
 				</WrapItem>
 			))}

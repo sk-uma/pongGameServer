@@ -22,6 +22,8 @@ import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from './guards/jwt.auth.guards';
 import RequestWithPlayer from '../two-factor-authentication/requestWithPlayer';
+import { PlayerStatus } from './playerStatus.enum';
+import { EditPlayerDto } from './dto/edit.player.dto';
 
 @Controller('players')
 export class PlayersController {
@@ -73,30 +75,21 @@ export class PlayersController {
 		return this.playersService.signIn(credentialPlayerDto);
 	}
 
-	//	@Post('upload')
-	//	@UseInterceptors(FileInterceptor('file'))
-	//	uploadFile(@UploadedFile() file: Express.Multer.File) {
-	//		console.log(file);
-	//	}
-
 	//プレイヤーの表示名の更新
-	@Patch('/editname/:name/:displayName')
+	@Post('/editname')
 	updatePlayerDisplayName(
-		@Param('name') name: string,
-		@Param('displayName') displayName: string,
+		@Body() editPlayerDto: EditPlayerDto,
 	): Promise<Player> {
-		return this.playersService.updatePlayerDisplayName(name, displayName);
+		return this.playersService.updatePlayerDisplayName(editPlayerDto);
 	}
 
 	//プレイヤーのパスワードの更新
-	@Patch('/editpass/:name/:password')
+	@Post('/editpass')
 	updatePlayerPassword(
-		@Param('name') name: string,
-		@Param('password') password: string,
+		@Body() editPlayerDto: EditPlayerDto,
 	): Promise<Player> {
-		return this.playersService.updatePlayerPassword(name, password);
+		return this.playersService.updatePlayerPassword(editPlayerDto);
 	}
-
 	//プレイヤーの画像取得URLの更新
 	@Put('/editimgurl/:name')
 	updatePlayerImgUrl(
@@ -176,5 +169,32 @@ export class PlayersController {
 		@Param('friendName') friendName: string,
 	): Promise<Player> {
 		return this.playersService.unblockFriend(name, friendName);
+	}
+
+	//プレイヤーの接続ステータスをログインに更新
+	@Patch('/statuslogin/:name/')
+	updateStatusLogin(@Param('name') name: string): Promise<Player> {
+		return this.playersService.updateStatusLogin(name);
+	}
+
+	//プレイヤーの接続ステータスをログアウトに更新
+	@Patch('/statuslogout/:name/')
+	updateStatusLogout(@Param('name') name: string): Promise<Player> {
+		return this.playersService.updateStatusLogout(name);
+	}
+
+	//プレイヤーの接続ClientIdを更新
+	@Patch('/updateId/:name/:clientId')
+	updateClientId(
+		@Param('name') name: string,
+		@Param('clientId') clientId: string,
+	): Promise<Player> {
+		return this.playersService.updateClientId(name, clientId);
+	}
+
+	//ClientIdからプレイヤーを特定してプレイヤー情報を取得する
+	@Get('/findbyclientid/:clientId')
+	async findByClientId(@Param('clientId') clientId: string): Promise<Player> {
+		return await this.playersService.findByClientId(clientId);
 	}
 }
