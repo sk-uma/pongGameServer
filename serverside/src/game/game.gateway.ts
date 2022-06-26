@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common'
 import { GameAdmin, gameAdmin } from './GameAdmin';
+import axios from 'axios';
 
 interface InitGameData {
   playerName: string;
@@ -143,6 +144,10 @@ export class GameGateway {
   }
 
   handleConnection(client: Socket, ...args: any[]) {
+    // let a = axios.get('http://localhost/history')
+    //   .then((res) => console.log('成功'))
+    //   .catch(error => { console.log("失敗") });
+    // console.log(a);
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {

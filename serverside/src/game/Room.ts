@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Socket } from "socket.io";
 import { GameStatus } from "./GameStatus";
 import { Player } from "./Player";
@@ -114,12 +115,23 @@ export class Room {
     if (data.eventType === 'getPoint') {
       this.gameData.score.hostPlayerScore = data.data.hostScore;
       this.gameData.score.clientPlayerScore = data.data.clientScore;
+    } else if (data.eventType === 'gameOver') {
+      axios.post('localhost:3001/history', {
+        leftPlayer: this.hostPlayer.getName(),
+        rightPlayer: this.clientPlayer.getName(),
+        leftScore: data.data.hostScore,
+        rightScore: data.data.clientScore
+      });
     }
-    // console.log(data);
+    // console.log(data.data);
   }
 
   getRoomId(): string {
     return this.roomId;
+  }
+
+  getHostPlayer(): Player {
+    return this.hostPlayer;
   }
 
   // getScore(): {hostPlayerScore: number, clientPlayerScore: number} {
@@ -141,6 +153,10 @@ export class Room {
     } else {
       return {type: 'notFound'};
     }
+  }
+
+  setStatus(status: Status) {
+    this.status = status;
   }
 
   /**

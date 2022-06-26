@@ -1,10 +1,11 @@
 import { Room } from './Room'
 import { Socket } from 'socket.io';
 import { Player } from './Player';
+import { PrivateRoomAdmin } from './PrivateRoomAdmin';
 
 export class GameAdmin {
   private playingList: Room [] = [];
-  private PrivatewaitingList: Room [] = [];
+  private PrivatewaitingList: PrivateRoomAdmin = new PrivateRoomAdmin();
   private leavedList: Room [] = [];
   private isPublicWaiting = false;
   private publicWaitingRoom: Room;
@@ -13,11 +14,13 @@ export class GameAdmin {
   joinRoom(playerName: string, socket: Socket): void {
     let rtv = this.searchRoomByPlayerName(playerName);
     let room = rtv?.room;
-    if (room !== undefined) {
+    if (rtv.type !== 'notFound') {
+      // 待機がいなかった場合
       room.reJoinRoom(playerName, socket);
       this.leavedList = this.leavedList.filter((x) => x !== room);
       this.playingList.push(room);
     } else if (this.isPublicWaiting) {
+      // 待機がいた場合
       this.publicWaitingRoom.clientJoinRoom(new Player(playerName, socket, 'client'));
       this.playingList.push(this.publicWaitingRoom);
       this.isPublicWaiting = false;
@@ -28,6 +31,10 @@ export class GameAdmin {
     if (this.debugLevel >= 1) {
       this.putGameStatus();
     }
+  }
+
+  joinPrivateRoom(data: any, socket: Socket): void {
+    
   }
 
   leaveRoom(playerName: string, socket: Socket): void {

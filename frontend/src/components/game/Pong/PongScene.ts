@@ -3,6 +3,8 @@ import io, { Socket } from 'socket.io-client';
 import { useEffect } from 'react';
 import { gameInfo } from './Pong';
 import { endianness } from 'os';
+import axios from 'axios';
+import { constUrl } from '../../../constant/constUrl';
 // import player from './assets/player.png';
 
 type GameStatus = 'waiting' | 'standBy' | 'playing' | 'leaved' | 'end'
@@ -328,7 +330,7 @@ export default class PongScene extends Phaser.Scene {
       this.startStandBy();
       this.sendScoreEvent();
     }
-    if (this.gameInfo.gameData.score.hostPlayerScore >= 10 || this.gameInfo.gameData.score.clientPlayerScore >= 10) {
+    if (this.gameInfo.gameData.score.hostPlayerScore > 10 || this.gameInfo.gameData.score.clientPlayerScore > 10) {
       this.gameOver();
     }
   }
@@ -344,8 +346,8 @@ export default class PongScene extends Phaser.Scene {
       roomId: this?.gameInfo.roomID,
       eventType: 'getPoint',
       data: {
-        'hostScore': this.gameInfo.gameData.score.hostPlayerScore,
-        'clientScore': this.gameInfo.gameData.score.clientPlayerScore
+        hostScore: this.gameInfo.gameData.score.hostPlayerScore,
+        clientScore: this.gameInfo.gameData.score.clientPlayerScore
       }
     });
   }
@@ -362,7 +364,7 @@ export default class PongScene extends Phaser.Scene {
         roomId: this?.gameInfo.roomID,
         eventType: 'startedStandBy',
         data: {
-          'startTime': this.startTime
+          startTime: this.startTime
         }
       });
     }
@@ -374,8 +376,21 @@ export default class PongScene extends Phaser.Scene {
   }
 
   gameOver(): void {
-    this.gameInfo.socket.emit('gameOver', {
-      
-    })
+    this.gameInfo.socket.emit('eventGameData', {
+      roomId: this?.gameInfo.roomID,
+      eventType: 'gameOver',
+      data: {
+        hostScore: this.gameInfo.gameData.score.hostPlayerScore,
+        clientScore: this.gameInfo.gameData.score.clientPlayerScore
+      }
+    });
+    this.gameStatus = 'end';
+    if (this.gameInfo.isServer) {
+      // axios.post(constUrl.serversideUrl + '/history', {
+      //   // leftPlayer: this.gameInfo
+      //   leftScore: this.gameInfo.gameData.score.hostPlayerScore,
+      //   rightScore: this.gameInfo.gameData.score.clientPlayerScore
+      // });
+    }
   }
 }
