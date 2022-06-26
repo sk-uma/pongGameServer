@@ -5,28 +5,34 @@ import { PrivateRoomAdmin } from './PrivateRoomAdmin';
 
 export class GameAdmin {
   private playingList: Room [] = [];
-  private PrivatewaitingList: PrivateRoomAdmin = new PrivateRoomAdmin();
+  private privatewaitingList: PrivateRoomAdmin = new PrivateRoomAdmin();
   private leavedList: Room [] = [];
   private isPublicWaiting = false;
   private publicWaitingRoom: Room;
   private readonly debugLevel = 1;
 
-  joinRoom(playerName: string, socket: Socket): void {
+  joinRoom(data: any, socket: Socket): void {
+    let playerName = data.user.name;
     let rtv = this.searchRoomByPlayerName(playerName);
     let room = rtv?.room;
-    if (rtv.type !== 'notFound') {
-      // 待機がいなかった場合
-      room.reJoinRoom(playerName, socket);
-      this.leavedList = this.leavedList.filter((x) => x !== room);
-      this.playingList.push(room);
-    } else if (this.isPublicWaiting) {
-      // 待機がいた場合
-      this.publicWaitingRoom.clientJoinRoom(new Player(playerName, socket, 'client'));
-      this.playingList.push(this.publicWaitingRoom);
-      this.isPublicWaiting = false;
-    } else {
-      this.publicWaitingRoom = new Room(new Player(playerName, socket), 'public');
-      this.isPublicWaiting = true;
+    if (data.mode === 'public') {
+      if (rtv.type !== 'notFound') {
+        // 待機がいなかった場合
+        room.reJoinRoom(playerName, socket);
+        this.leavedList = this.leavedList.filter((x) => x !== room);
+        this.playingList.push(room);
+      } else if (this.isPublicWaiting) {
+        // 待機がいた場合
+        this.publicWaitingRoom.clientJoinRoom(new Player(playerName, socket, 'client'));
+        this.playingList.push(this.publicWaitingRoom);
+        this.isPublicWaiting = false;
+      } else {
+        this.publicWaitingRoom = new Room(new Player(playerName, socket), 'public');
+        this.isPublicWaiting = true;
+      }
+    } else if (data.mode === 'private') {
+      // console.log(data.privateKey);
+      this.privatewaitingList.joinRoom(playerName, data.privateKey);
     }
     if (this.debugLevel >= 1) {
       this.putGameStatus();
@@ -91,6 +97,10 @@ export class GameAdmin {
       }
     }
     return {type: 'notFound', room: undefined};
+  }
+
+  getPrivateRoomAdmin(): PrivateRoomAdmin {
+    return this.privatewaitingList;
   }
 
   searchRoomByRoomId(roomId: string): {type: string, room?: Room} {

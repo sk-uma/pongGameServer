@@ -25,7 +25,9 @@ export class Room {
   constructor(hostPlayer: Player, type: RoomType='public') {
     this.hostPlayer = hostPlayer;
     this.roomId = `room_${hostPlayer.getName()}`;
-    this.hostPlayer.joinRoom(this.roomId);
+    if (type === 'public') {
+      this.hostPlayer.joinRoom(this.roomId);
+    }
     this.roomType = type;
     this.gameData = {
       score: {

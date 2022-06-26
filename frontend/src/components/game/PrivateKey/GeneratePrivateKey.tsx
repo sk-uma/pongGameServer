@@ -2,6 +2,8 @@ import { Box, Button, Center, Stack, Select, Text } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { constUrl } from "../../../constant/constUrl";
+import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 
 
 interface GeneratePrivateKeyForm {
@@ -19,9 +21,22 @@ export function GeneratePrivateKey() {
 
   const [isAlreadyGenerateKey, setIsAlreadyGenerateKey] = useState(false);
 
+  const { loginPlayer } = useLoginPlayer();
+
   const onSubmit: SubmitHandler<GeneratePrivateKeyForm> = (data) => {
-    console.log("data", data);
+    // console.log("data", data);
     // axios.get('').then();
+    let key = '';
+    axios
+      .get(constUrl.serversideUrl + '/game/privateKeyGen', {params: {
+        user: loginPlayer?.name,
+        gameType: data.gameType
+      }})
+      .then(
+        function(response) {
+          setPrivateKey(response.data.privateKey);
+        }
+      )
     setPrivateKey('world')
   }
 

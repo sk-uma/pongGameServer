@@ -38,13 +38,19 @@ export class PrivateRoomAdmin {
     let privateKey: string = this.generatePrivateKey(user);
     this.roomMap.set(privateKey, room);
     // this.roomList.push(room);
+    // console.log(this.roomMap);
     return {
+      status: 'success',
       privateKey: privateKey
     };
   }
 
   getRoomByPrivateKey(privateKey: string): Room {
     return this.roomMap[privateKey];
+  }
+
+  checkPrivateKey(privateKey: string): boolean {
+    return this.roomMap.has(privateKey);
   }
 
   getRoomByHostUser(hostUser: string): {status: ReturnStatus, room?: Room} {

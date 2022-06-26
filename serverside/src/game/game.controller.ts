@@ -38,11 +38,26 @@ export class GameController {
     };
   }
 
+  @Get('ckeckKey')
+  async chackKey(
+    @Query('key') key: string
+  ) {
+    let rtv = gameAdmin.getPrivateRoomAdmin().checkPrivateKey(key);
+    console.log("key", rtv);
+    if (!rtv) {
+      throw new HttpException({
+        status: HttpStatus.NOT_FOUND,
+        error: `Invalid privateKey(${key})`
+      }, 404);
+    }
+    return ;
+    // return {status: rtv.status == 'success' ? 'find' : 'notFound'};
+  }
+
   @Delete('privateKey')
   async deletePrivateKey(
     @Query('user') user: string
   ) {
-    ;
   }
 
   @Get('privateKeyGen')
@@ -50,6 +65,7 @@ export class GameController {
     @Query('user') user: string,
     @Query('gameType') gameType: string,
   ) {
-    return {key: ''};
+    let rtv = gameAdmin.getPrivateRoomAdmin().addPrivateRoom(user);
+    return {privateKey: rtv.privateKey};
   }
 }

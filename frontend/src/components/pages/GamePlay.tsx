@@ -1,5 +1,6 @@
 import { memo, useState, VFC } from "react";
 import { useLocation } from "react-router-dom";
+import { Pong } from "../game/Pong/Pong";
 
 interface gameMetaData {
   mode: string,
@@ -17,7 +18,11 @@ export const GamePlay: VFC = memo(() => {
 
   return (
     <>
-      {`mode: ${data.mode}, game: ${data.game}, data: ${data.data}`}
+      <Pong
+        mode={data.mode}
+        game={data.game}
+        privateKey={data.data?.privateKey}
+      />
     </>
   );
 });

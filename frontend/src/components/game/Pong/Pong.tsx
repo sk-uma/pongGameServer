@@ -26,8 +26,9 @@ export let gameInfo: GameInfo = {
   }
 };
 
-export function Pong() {
+export function Pong(props: {mode: string, game: string, privateKey?: string}) {
   // console.log('Pong component');
+  console.log(props);
 
   let [isConnected, setIsConnected] = useState(false);
 
@@ -51,12 +52,6 @@ export function Pong() {
       // console.log('disconnected...');
     });
 
-    gameInfo.socket.emit('joinRoom', {
-      user: {
-        name: `${loginPlayer?.name}`
-      }
-    });
-
     // console.log("is connected", isConnected);
 
     gameInfo.socket.on('opponentIsReadyToStart', (data: any) => {
@@ -68,6 +63,14 @@ export function Pong() {
         g = new Phaser.Game(config);
       }
       setIsConnected(true);
+    });
+
+    gameInfo.socket.emit('joinRoom', {
+      mode: props.mode,
+      privateKey: props.privateKey,
+      user: {
+        name: `${loginPlayer?.name}`
+      }
     });
 
     return () => {
