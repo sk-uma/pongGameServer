@@ -21,22 +21,6 @@ export class PrivateRoomAdmin {
   constructor() {
   }
 
-  addRoom(room: Room): void {
-    this.roomList.push(room);
-  }
-
-  removeRoomById(): void {
-    ;
-  }
-
-  getRoomById(): {statusCode: string, room?: Room} {
-    return ;
-  }
-
-  getRoomByPlayerName(): {statusCode: string, room?: Room} {
-    return ;
-  }
-
   joinRoom(playerName: string, socket: Socket, privateKey: string): {status: ReturnStatus, roomStatus?: RoomStatus, room?: Room} {
     let rtv: {status: ReturnStatus, metaRoom?: MetaRoomType} = this.getRoomByPrivateKey(privateKey);
     if (rtv.status === 'failure') {
@@ -88,6 +72,24 @@ export class PrivateRoomAdmin {
     // } else {
     //   return {status: 'failure'};
     // }
+  }
+
+  leaveRoom(playerName: string, socket: Socket, privateKey: string): {status: ReturnStatus} {
+    let rtv: {status: ReturnStatus, metaRoom?: MetaRoomType} = this.getRoomByPrivateKey(privateKey);
+    if (rtv.status === 'failure') {
+      return {status: 'failure'}
+    }
+    this.roomMap.set(privateKey, {status: 'nothing', master: rtv.metaRoom.master});
+    return {status: 'success'};
+  }
+
+  searchRoomByPlayerName(playerName: string): {status: ReturnStatus, room?: Room} {
+    for (const [privateKey, metaRoom] of this.roomMap) {
+      if (metaRoom.status !== 'nothing' && metaRoom.room.isPlayer(playerName)) {
+        return {status: 'success', room: metaRoom.room};
+      }
+    }
+    return {status: 'failure'};
   }
 
   addPrivateRoom(user: string) {

@@ -141,7 +141,7 @@ export class GameGateway {
     // }
     // console.log(client.rooms);
 
-    this.gameAdmin.leaveRoom(data.user.name, client);
+    this.gameAdmin.leaveRoom(data, client);
   }
 
   handleConnection(client: Socket, ...args: any[]) {

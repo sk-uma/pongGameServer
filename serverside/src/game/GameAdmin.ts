@@ -77,7 +77,8 @@ export class GameAdmin {
     
   }
 
-  leaveRoom(playerName: string, socket: Socket): void {
+  leaveRoom(data: any, socket: Socket): void {
+    let playerName = data.user.name;
     for (const room of socket.rooms) {
       if (room !== socket.id) {
         // console.log("room:", room);
@@ -92,12 +93,14 @@ export class GameAdmin {
       room.leaveRoom(playerName);
       this.playingList = this.playingList.filter((x) => x !== room);
       this.leavedList.push(room);
-    } else if (rtv.type === 'publicWaiting') {
-      room.leaveRoom(playerName);
-      this.isPublicWaiting = !this.isPublicWaiting;
     } else if (rtv.type === 'leaved') {
       room.leaveRoom(playerName);
       this.leavedList = this.leavedList.filter((x) => x !== room);
+    } else if (rtv.type === 'publicWaiting') {
+      room.leaveRoom(playerName);
+      this.isPublicWaiting = !this.isPublicWaiting;
+    } else if (rtv.type === 'privateWaiting') {
+      this.privatewaitingList.leaveRoom(playerName, socket, data.privateKey);
     }
     if (this.debugLevel >= 1) {
       this.putGameStatus();
@@ -105,6 +108,8 @@ export class GameAdmin {
   }
 
   searchRoomByPlayerName(playerName: string): {type: string, room?: Room} {
+    let rtv: any;
+
     // let room: Room = undefined;
     for (const room of this.playingList) {
       // console.log("room:", room);
@@ -125,12 +130,19 @@ export class GameAdmin {
       }
     }
     // console.log(this.isPublicWaiting, this.publicWaitingRoom.isPlayer(playerName));
+
     if (this.isPublicWaiting && this.publicWaitingRoom.isPlayer(playerName)) {
       return {
         type: 'publicWaiting',
         room: this.publicWaitingRoom
       }
     }
+
+    rtv = this.privatewaitingList.searchRoomByPlayerName(playerName)
+    if (rtv.status === 'success') {
+      return {type: 'privateWaiting', room: rtv.room};
+    }
+
     return {type: 'notFound', room: undefined};
   }
 
