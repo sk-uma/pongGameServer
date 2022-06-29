@@ -136,6 +136,10 @@ export class Room {
     return this.hostPlayer;
   }
 
+  getClientPlayer(): Player {
+    return this.clientPlayer;
+  }
+
   // getScore(): {hostPlayerScore: number, clientPlayerScore: number} {
   //   return {
   //     hostPlayerScore: this.gameData.hostPlayerScore,
@@ -159,6 +163,10 @@ export class Room {
 
   setStatus(status: Status) {
     this.status = status;
+  }
+
+  getStatus(): Status {
+    return this.status;
   }
 
   /**

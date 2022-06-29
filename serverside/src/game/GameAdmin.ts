@@ -15,25 +15,59 @@ export class GameAdmin {
     let playerName = data.user.name;
     let rtv = this.searchRoomByPlayerName(playerName);
     let room = rtv?.room;
-    if (data.mode === 'public') {
-      if (rtv.type !== 'notFound') {
-        // 待機がいなかった場合
-        room.reJoinRoom(playerName, socket);
-        this.leavedList = this.leavedList.filter((x) => x !== room);
-        this.playingList.push(room);
-      } else if (this.isPublicWaiting) {
-        // 待機がいた場合
-        this.publicWaitingRoom.clientJoinRoom(new Player(playerName, socket, 'client'));
-        this.playingList.push(this.publicWaitingRoom);
-        this.isPublicWaiting = false;
-      } else {
-        this.publicWaitingRoom = new Room(new Player(playerName, socket), 'public');
-        this.isPublicWaiting = true;
+
+    // console.log(rtv.type);
+
+    if (rtv.type === 'leaved') {
+      room.reJoinRoom(playerName, socket);
+      this.leavedList = this.leavedList.filter((x) => x !== room);
+      this.playingList.push(room);
+    } else if (rtv.type === 'notFound') {
+      if (data.mode === 'public') {
+        if (this.isPublicWaiting) {
+          // 待機がいた場合
+          this.publicWaitingRoom.clientJoinRoom(new Player(playerName, socket, 'client'));
+          this.playingList.push(this.publicWaitingRoom);
+          this.isPublicWaiting = false;
+        } else {
+          // 待機がいなかった場合
+          this.publicWaitingRoom = new Room(new Player(playerName, socket), 'public');
+          this.isPublicWaiting = true;
+        }
+      } else if (data.mode === 'private') {
+        // console.log(data.privateKey);
+        let rtv: any = this.privatewaitingList.joinRoom(playerName, socket, data.privateKey);
+        if (rtv.status === 'success' && rtv.roomStatus === 'playing') {
+          ;this.playingList.push(rtv.room);
+        }
       }
-    } else if (data.mode === 'private') {
-      // console.log(data.privateKey);
-      this.privatewaitingList.joinRoom(playerName, data.privateKey);
     }
+
+    // if (data.mode === 'public') {
+    //   // TODO: fix
+    //   // if (rtv.type !== 'notFound') {
+    //   if (rtv.type === 'leaved') {
+    //     room.reJoinRoom(playerName, socket);
+    //     this.leavedList = this.leavedList.filter((x) => x !== room);
+    //     this.playingList.push(room);
+    //   } else if (this.isPublicWaiting) {
+    //     // 待機がいた場合
+    //     this.publicWaitingRoom.clientJoinRoom(new Player(playerName, socket, 'client'));
+    //     this.playingList.push(this.publicWaitingRoom);
+    //     this.isPublicWaiting = false;
+    //   } else {
+    //     // 待機がいなかった場合
+    //     this.publicWaitingRoom = new Room(new Player(playerName, socket), 'public');
+    //     this.isPublicWaiting = true;
+    //   }
+    // } else if (data.mode === 'private') {
+    //   // console.log(data.privateKey);
+    //   let rtv: any = this.privatewaitingList.joinRoom(playerName, socket, data.privateKey);
+    //   if (rtv.status === 'success' && rtv.roomStatus === 'playing') {
+    //     ;this.playingList.push(rtv.room);
+    //   }
+    // }
+  
     if (this.debugLevel >= 1) {
       this.putGameStatus();
     }
@@ -90,6 +124,7 @@ export class GameAdmin {
         };
       }
     }
+    // console.log(this.isPublicWaiting, this.publicWaitingRoom.isPlayer(playerName));
     if (this.isPublicWaiting && this.publicWaitingRoom.isPlayer(playerName)) {
       return {
         type: 'publicWaiting',
