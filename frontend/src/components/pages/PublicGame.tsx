@@ -23,7 +23,7 @@ export const PublicGame: VFC = memo(() => {
           size='lg'
           variant='outline'
           leftIcon={<GiPingPongBat/>}
-          onClick={() => onClickGame('Pong')}
+          onClick={() => onClickGame('pong')}
           width='100%'
         >
           Pong
@@ -33,7 +33,7 @@ export const PublicGame: VFC = memo(() => {
           size='lg'
           variant='outline'
           leftIcon={<GiHypersonicMelon/>}
-          onClick={() => onClickGame('PongDX')}
+          onClick={() => onClickGame('pongDX')}
           width='100%'
         >
           Pong DX

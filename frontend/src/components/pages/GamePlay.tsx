@@ -20,7 +20,7 @@ export const GamePlay: VFC = memo(() => {
     <>
       <Pong
         mode={data.mode}
-        game={data.game}
+        gameType={data.game}
         privateKey={data.data?.privateKey}
       />
     </>

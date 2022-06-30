@@ -37,6 +37,7 @@ export class PrivateRoomAdmin {
       }
       let room: Room = new Room(new Player(playerName, socket));
       this.roomMap.set(privateKey, {status: roomMetaStatus, master: rtv.metaRoom.master, room: room});
+      // console.log(this.roomMap);
       return {status: 'success', roomStatus: 'waiting', room: this.roomMap.get(privateKey).room};
     } else if (rtv.metaRoom.status === 'masterOnly' || (rtv.metaRoom.status === 'slaveOnly' && rtv.metaRoom.master === playerName)) {
       this.roomMap.get(privateKey).room.clientJoinRoom(new Player(playerName, socket, 'client'));
@@ -76,6 +77,7 @@ export class PrivateRoomAdmin {
 
   leaveRoom(playerName: string, socket: Socket, privateKey: string): {status: ReturnStatus} {
     let rtv: {status: ReturnStatus, metaRoom?: MetaRoomType} = this.getRoomByPrivateKey(privateKey);
+    console.log(playerName, privateKey, rtv);    
     if (rtv.status === 'failure') {
       return {status: 'failure'}
     }
@@ -86,6 +88,15 @@ export class PrivateRoomAdmin {
   searchRoomByPlayerName(playerName: string): {status: ReturnStatus, room?: Room} {
     for (const [privateKey, metaRoom] of this.roomMap) {
       if (metaRoom.status !== 'nothing' && metaRoom.room.isPlayer(playerName)) {
+        return {status: 'success', room: metaRoom.room};
+      }
+    }
+    return {status: 'failure'};
+  }
+
+  searchRoomByRoomId(roomId: string): {status: ReturnStatus, room?: Room} {
+    for (const [privateKey, metaRoom] of this.roomMap) {
+      if (metaRoom.status !== 'nothing' && metaRoom.room.getRoomId() === roomId) {
         return {status: 'success', room: metaRoom.room};
       }
     }
@@ -124,6 +135,15 @@ export class PrivateRoomAdmin {
       }
     }
     return {status: 'failure'};
+  }
+
+  putAllRoomStatus(): void {
+    for (const [privateKey, metaRoom] of this.roomMap) {
+      // roomData.room.putRoomStatus();
+      if (metaRoom.status !== 'nothing') {
+        metaRoom.room.putRoomStatus();
+      }
+    }
   }
 
   private generatePrivateKey(user: string): string {

@@ -67,4 +67,21 @@ export class PublicWaitingRoomAdmin {
     }
     return {status: 'failure'};
   }
+
+  searchRoomByRoomId(roomId: string): {status: ReturnStatus, room?: Room} {
+    for (const [gameType, metaRoom] of this.roomMap) {
+      if (metaRoom.already && metaRoom.room.getRoomId() === roomId) {
+        return {status: 'success', room: metaRoom.room};
+      }
+    }
+    return {status: 'failure'};
+  }
+
+  putAllRoomStatus(): void {
+    for (const [gameType, metaRoom] of this.roomMap) {
+      if (metaRoom.already) {
+        metaRoom.room.putRoomStatus();
+      }
+    }
+  }
 }

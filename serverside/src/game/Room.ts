@@ -87,6 +87,14 @@ export class Room {
     this.status = 'leaved';
   }
 
+  startWatching(socket: Socket): void {
+    socket.join(this.roomId);
+  }
+
+  finishWatching(socket: Socket): void {
+    socket.leave(this.roomId);
+  }
+
   updateGameData(data: any, socket: Socket) {
     // TODO: check game data
     socket.broadcast.to(this.roomId).emit('UpdateCheckedGameData', data);

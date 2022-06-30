@@ -46,8 +46,8 @@ export function GameHome() {
           <form onSubmit={handleSubmit(onSubmitPrivateKey)}>
             <FormControl>
               <Select {...register('key')}>
-                <option value='Pong'>Pong</option>
-                <option value='PongDx'>Pong DX</option>
+                <option value='pong'>Pong</option>
+                <option value='pongDX'>Pong DX</option>
               </Select>
               {/* <Input 
                 id="hello" 

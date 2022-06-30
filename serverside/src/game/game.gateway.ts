@@ -144,6 +144,16 @@ export class GameGateway {
     this.gameAdmin.leaveRoom(data, client);
   }
 
+  @SubscribeMessage('startWatching')
+  startWatching(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    this.gameAdmin.startWatching(data, client);
+  }
+
+  @SubscribeMessage('finishWatching')
+  finishWatching(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    this.gameAdmin.finishWatching(data, client);
+  }
+
   handleConnection(client: Socket, ...args: any[]) {
     // let a = axios.get('http://localhost/history')
     //   .then((res) => console.log('成功'))

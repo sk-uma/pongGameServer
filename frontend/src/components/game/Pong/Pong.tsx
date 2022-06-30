@@ -26,7 +26,7 @@ export let gameInfo: GameInfo = {
   }
 };
 
-export function Pong(props: {mode: string, game: string, privateKey?: string}) {
+export function Pong(props: {mode: string, gameType: string, privateKey?: string}) {
   // console.log('Pong component');
   console.log(props);
 
@@ -68,6 +68,7 @@ export function Pong(props: {mode: string, game: string, privateKey?: string}) {
     gameInfo.socket.emit('joinRoom', {
       mode: props.mode,
       privateKey: props.privateKey,
+      gameType: props.gameType,
       user: {
         name: `${loginPlayer?.name}`
       }
@@ -76,6 +77,9 @@ export function Pong(props: {mode: string, game: string, privateKey?: string}) {
     return () => {
       g?.destroy(true);
       gameInfo.socket?.emit('leaveRoom', {
+        mode: props.mode,
+        privateKey: props.privateKey,
+        gameType: props.gameType,
         user: {
           name: `${loginPlayer?.name}`
         }
