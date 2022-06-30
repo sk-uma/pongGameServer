@@ -10,6 +10,7 @@ type RoomMetaStatus = 'masterOnly' | 'slaveOnly' | 'nothing';
 type MetaRoomType   = {
   status: RoomMetaStatus;
   master: string;
+  gameType: 'pong' | 'pongDX';
   room?: Room;
 }
 
@@ -35,8 +36,13 @@ export class PrivateRoomAdmin {
       } else {
         roomMetaStatus = 'slaveOnly';
       }
-      let room: Room = new Room(new Player(playerName, socket));
-      this.roomMap.set(privateKey, {status: roomMetaStatus, master: rtv.metaRoom.master, room: room});
+      let room: Room = new Room(new Player(playerName, socket), rtv.metaRoom.gameType);
+      this.roomMap.set(privateKey, {
+        status: roomMetaStatus,
+        master: rtv.metaRoom.master,
+        gameType: rtv.metaRoom.gameType,
+        room: room
+      });
       // console.log(this.roomMap);
       return {status: 'success', roomStatus: 'waiting', room: this.roomMap.get(privateKey).room};
     } else if (rtv.metaRoom.status === 'masterOnly' || (rtv.metaRoom.status === 'slaveOnly' && rtv.metaRoom.master === playerName)) {
@@ -81,7 +87,11 @@ export class PrivateRoomAdmin {
     if (rtv.status === 'failure') {
       return {status: 'failure'}
     }
-    this.roomMap.set(privateKey, {status: 'nothing', master: rtv.metaRoom.master});
+    this.roomMap.set(privateKey, {
+      status: 'nothing',
+      master: rtv.metaRoom.master,
+      gameType: rtv.metaRoom.gameType
+    });
     return {status: 'success'};
   }
 
@@ -103,11 +113,14 @@ export class PrivateRoomAdmin {
     return {status: 'failure'};
   }
 
-  addPrivateRoom(user: string) {
+  addPrivateRoom(user: string, gameType: string) {
     // let room: Room = Room(Player(), type='');
     // let room: Room = this.generatePrivateRoom(user);
     let privateKey: string = this.generatePrivateKey(user);
-    this.roomMap.set(privateKey, {status: 'nothing', master: user});
+    if (gameType !== 'pong' && gameType !== 'pongDX') {
+      return {status: 'failure'}
+    }
+    this.roomMap.set(privateKey, {status: 'nothing', master: user, gameType: gameType});
     // this.roomList.push(room);
     // console.log(this.roomMap);
     return {
@@ -150,12 +163,12 @@ export class PrivateRoomAdmin {
     return uuidv4();
   }
 
-  private generatePrivateRoom(user: string): Room {
-    let player: Player = new Player(user, undefined, 'host');
-    player.setStatus('disconnected');
-    let room: Room = new Room(player, 'private');
-    room.setStatus('leaved');
-    return room;
-    // let room: Room = Room();
-  }
+  // private generatePrivateRoom(user: string): Room {
+  //   let player: Player = new Player(user, undefined, 'host');
+  //   player.setStatus('disconnected');
+  //   let room: Room = new Room(player, 'private');
+  //   room.setStatus('leaved');
+  //   return room;
+  //   // let room: Room = Room();
+  // }
 }

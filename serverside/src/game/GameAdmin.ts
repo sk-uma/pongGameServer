@@ -210,6 +210,16 @@ export class GameAdmin {
     return {type: 'notFound'};
   }
 
+  getPlayingRoom() {
+    let rtv = [];
+    for (const room of this.playingList) {
+      rtv.push(
+        room.getRoomInfo()
+      );
+    }
+    return rtv;
+  }
+
   // updateGameData(data: any, socket: Socket) {
   //   for (const room of socket.rooms) {
   //     if (room !== socket.id) {

@@ -1,10 +1,13 @@
 import axios from "axios";
 import { Socket } from "socket.io";
+import { Pong } from "./Games/Pong";
+import { PongDX } from "./Games/PongDX";
 import { GameStatus } from "./GameStatus";
 import { Player } from "./Player";
 
 type Status = 'playing' | 'waiting' | 'leaved';
 type RoomType = 'private' | 'public';
+type GameType = Pong | PongDX;
 
 type GameData = {
   score: {
@@ -19,22 +22,28 @@ export class Room {
   private clientPlayer?: Player;
   private roomId: string;
   private roomType: RoomType;
-  private gameData: GameData;
+  // private gameData: GameData;
+  private gameType: GameType;
   // private gameType: GameType;
 
-  constructor(hostPlayer: Player, type: RoomType='public') {
+  constructor(hostPlayer: Player, gameType: 'pong' | 'pongDX', type: RoomType='public') {
     this.hostPlayer = hostPlayer;
     this.roomId = `room_${hostPlayer.getName()}`;
     if (type === 'public') {
       this.hostPlayer.joinRoom(this.roomId);
     }
     this.roomType = type;
-    this.gameData = {
-      score: {
-        hostPlayerScore: 0,
-        clientPlayerScore: 0
-      }
+    if (gameType === 'pong') {
+      this.gameType = new Pong();
+    } else if (gameType === 'pongDX') {
+      this.gameType = new PongDX();
     }
+    // this.gameData = {
+    //   score: {
+    //     hostPlayerScore: 0,
+    //     clientPlayerScore: 0
+    //   }
+    // }
   }
 
   /**
@@ -45,8 +54,10 @@ export class Room {
     this.clientPlayer = clientPlayer;
     this.clientPlayer.joinRoom(this.roomId);
     this.status = 'playing';
-    this.hostPlayer.opponentIsReadyToStart(this.roomId, this.gameData);
-    this.clientPlayer?.opponentIsReadyToStart(this.roomId, this.gameData);
+    // this.hostPlayer.opponentIsReadyToStart(this.roomId, this.gameData);
+    // this.clientPlayer?.opponentIsReadyToStart(this.roomId, this.gameData);
+    this.hostPlayer.opponentIsReadyToStart(this.roomId, this.gameType.getGameData());
+    this.clientPlayer?.opponentIsReadyToStart(this.roomId, this.gameType.getGameData());
     // clientPlayer.broadcast.to(this.roomId).emit('UpdateCheckedGameData', data);
     // this.hostPlayer.broadcast();
   }
@@ -65,10 +76,10 @@ export class Room {
     if ((player = this.getPlayer(playerName)) !== undefined) {
       // console.log(this.hostPlayer === undefined, this.clientPlayer === undefined);
       // console.log(this.clientPlayer);
-      player.reJoinRoom(this.roomId, socket, this.gameData);
+      player.reJoinRoom(this.roomId, socket, this.gameType.getGameData());
       socket.emit('hello', 'hello!!!!');
-      this.hostPlayer.restartGame(this.roomId, this.gameData);
-      this.clientPlayer?.restartGame(this.roomId, this.gameData);
+      this.hostPlayer.restartGame(this.roomId, this.gameType.getGameData());
+      this.clientPlayer?.restartGame(this.roomId, this.gameType.getGameData());
     }
     // for (var room of socket.rooms) {
     //   console.log(room);
@@ -122,17 +133,20 @@ export class Room {
   }
 
   eventGameData(data: any, socket: Socket) {
-    if (data.eventType === 'getPoint') {
-      this.gameData.score.hostPlayerScore = data.data.hostScore;
-      this.gameData.score.clientPlayerScore = data.data.clientScore;
-    } else if (data.eventType === 'gameOver') {
-      axios.post('localhost:3001/history', {
-        leftPlayer: this.hostPlayer.getName(),
-        rightPlayer: this.clientPlayer.getName(),
-        leftScore: data.data.hostScore,
-        rightScore: data.data.clientScore
-      });
-    }
+    this.gameType.callEvent(data, socket);
+
+    // if (data.eventType === 'getPoint') {
+    //   this.gameData.score.hostPlayerScore = data.data.hostScore;
+    //   this.gameData.score.clientPlayerScore = data.data.clientScore;
+    // } else if (data.eventType === 'gameOver') {
+    //   axios.post('localhost:3001/history', {
+    //     leftPlayer: this.hostPlayer.getName(),
+    //     rightPlayer: this.clientPlayer.getName(),
+    //     leftScore: data.data.hostScore,
+    //     rightScore: data.data.clientScore
+    //   });
+    // }
+
     // console.log(data.data);
   }
 
@@ -156,17 +170,18 @@ export class Room {
   // }
 
   getGameData(dataType: string): {type: string, data?: any} {
-    if (dataType === 'score') {
-      return {
-        type: 'score',
-        data: {
-          hostPlayerScore: this.gameData.score.hostPlayerScore,
-          clientPlayerScore: this.gameData.score.clientPlayerScore
-        }
-      };
-    } else {
-      return {type: 'notFound'};
-    }
+    // if (dataType === 'score') {
+    //   return {
+    //     type: 'score',
+    //     data: {
+    //       hostPlayerScore: this.gameData.score.hostPlayerScore,
+    //       clientPlayerScore: this.gameData.score.clientPlayerScore
+    //     }
+    //   };
+    // } else {
+    //   return {type: 'notFound'};
+    // }
+    return this.gameType.getGameDataByType(dataType);
   }
 
   setStatus(status: Status) {
@@ -175,6 +190,17 @@ export class Room {
 
   getStatus(): Status {
     return this.status;
+  }
+
+  getRoomInfo() {
+    return {
+      gameType: this.gameType.getName(),
+      roomId: this.roomId,
+      player: {
+        hostPlayer: this.hostPlayer.getName(),
+        clientPlayer: this.clientPlayer.getName()
+      }
+    }
   }
 
   /**

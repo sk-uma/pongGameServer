@@ -31,7 +31,7 @@ export class PublicWaitingRoomAdmin {
       this.roomMap.set(gameType, {already: false});
       return {status: 'success', roomStatus: 'playing', room: room};
     } else {
-      let room: Room = new Room(new Player(playerName, socket), 'public');
+      let room: Room = new Room(new Player(playerName, socket), gameType, 'public');
       this.roomMap.set(gameType, {already: true, room: room});
       return {status: 'success', roomStatus: 'waiting'};
     }

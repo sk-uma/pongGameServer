@@ -65,7 +65,12 @@ export class GameController {
     @Query('user') user: string,
     @Query('gameType') gameType: string,
   ) {
-    let rtv = gameAdmin.getPrivateRoomAdmin().addPrivateRoom(user);
+    let rtv = gameAdmin.getPrivateRoomAdmin().addPrivateRoom(user, gameType);
     return {privateKey: rtv.privateKey};
+  }
+
+  @Get('playing-room')
+  async getRoom() {
+    return gameAdmin.getPlayingRoom();
   }
 }
