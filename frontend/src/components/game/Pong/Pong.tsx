@@ -60,7 +60,11 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       gameInfo.isServer = data.isServer;
       gameInfo.gameData = data.gameData;
       if (!g) {
-        g = new Phaser.Game(config);
+        if (props.gameType === 'pong') {
+          g = new Phaser.Game(config);
+        } else {
+          g = new Phaser.Game(config);
+        }
       }
       setIsConnected(true);
     });

@@ -1,12 +1,14 @@
 import Phaser from 'phaser'
+import PongClassic from './PongClassic'
 import PongScene from './PongScene'
 
 export const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
-  backgroundColor: 0x222222,
+  backgroundColor: 0x000000,
+  pixelArt: true,
   scale: {
-    width: 800,
-    height: 600
+    width: 900,
+    height: 800
   },
   physics: {
     default: 'arcade',
@@ -15,5 +17,6 @@ export const config: Phaser.Types.Core.GameConfig = {
       fps: 60,
     },
   },
-  scene: [PongScene]
+  scene: [PongClassic]
+  // scene: [PongScene]
 }

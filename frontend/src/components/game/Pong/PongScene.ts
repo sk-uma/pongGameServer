@@ -83,8 +83,8 @@ export default class PongScene extends Phaser.Scene {
   // init(): void { }
 
   preload(): void {
-    this.load.image('player', `${window.location.origin}/assets/player.png`)
-    this.load.image('ball', `${window.location.origin}/assets/ball.png`)
+    this.load.image('player', `${window.location.origin}/assets/player.png`);
+    this.load.image('ball', `${window.location.origin}/assets/ball.png`);
   }
 
   /**
