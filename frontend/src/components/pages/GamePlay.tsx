@@ -12,9 +12,9 @@ export const GamePlay: VFC = memo(() => {
   const location = useLocation();
   const [data, setMode] = useState<gameMetaData>(location.state as gameMetaData);
 
-  console.log(
-    data
-  )
+  // console.log(
+  //   data
+  // )
 
   return (
     <>

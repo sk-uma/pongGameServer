@@ -2,6 +2,7 @@ import { Socket, io } from "socket.io-client";
 import React, { useEffect, CSSProperties, useState } from 'react';
 import { config } from "./PongConfig";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
+import { useNavigate } from "react-router-dom";
 
 // export let socket: Socket;
 // export let isServer: boolean = false;
@@ -13,7 +14,8 @@ interface GameInfo {
     score: {
       hostPlayerScore: number;
       clientPlayerScore: number;
-    }
+    },
+    nextServe: 'host' | 'client';
   }
 };
 
@@ -22,13 +24,14 @@ export let gameInfo: GameInfo = {
     score: {
       hostPlayerScore: 0,
       clientPlayerScore: 0
-    }
+    },
+    nextServe: 'host',
   }
 };
 
 export function Pong(props: {mode: string, gameType: string, privateKey?: string}) {
   // console.log('Pong component');
-  console.log(props);
+  // console.log(props);
 
   let [isConnected, setIsConnected] = useState(false);
 
@@ -39,6 +42,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
   const { loginPlayer } = useLoginPlayer();
 
   // console.log(loginPlayer?.name);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let g: Phaser.Game;
@@ -55,10 +59,10 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
     // console.log("is connected", isConnected);
 
     gameInfo.socket.on('opponentIsReadyToStart', (data: any) => {
-      console.log("ready to start");
       gameInfo.roomID = data.roomId;
       gameInfo.isServer = data.isServer;
       gameInfo.gameData = data.gameData;
+      console.log("ready to start", gameInfo.gameData.score.hostPlayerScore, gameInfo.gameData.score.clientPlayerScore);
       if (!g) {
         if (props.gameType === 'pong') {
           g = new Phaser.Game(config);
@@ -78,6 +82,21 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       }
     });
 
+    gameInfo.socket.on('gameResult', (data: any) => {
+      // console.log('gameResult');
+      g?.destroy(true);
+      gameInfo.socket?.emit('leaveRoom', {
+        mode: props.mode,
+        privateKey: props.privateKey,
+        gameType: props.gameType,
+        user: {
+          name: `${loginPlayer?.name}`
+        }
+      });
+      gameInfo.socket?.disconnect();
+      navigate('/home/game/result', {state: data});
+    });
+
     return () => {
       g?.destroy(true);
       gameInfo.socket?.emit('leaveRoom', {
@@ -91,7 +110,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
       gameInfo.socket?.disconnect();
     }
-  }, []);
+  }, [navigate]);
 
   if (!isConnected) {
     return (

@@ -8,6 +8,7 @@ type PongDXGameData = {
     hostPlayerScore: number;
     clientPlayerScore: number;
   }
+  nextServe: 'host' | 'client';
 };
 
 
@@ -20,7 +21,8 @@ export class PongDX implements GameInterface<PongDXGameData> {
       score: {
         hostPlayerScore: 0,
         clientPlayerScore: 0
-      }
+      },
+      nextServe: 'host'
     };
   }
 
@@ -51,15 +53,11 @@ export class PongDX implements GameInterface<PongDXGameData> {
 
   callEvent(data: any, socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>): void {
     if (data.eventType === 'getPoint') {
-      this.gameData.score.hostPlayerScore = data.data.hostScore;
-      this.gameData.score.clientPlayerScore = data.data.clientScore;
+      // this.gameData.score.hostPlayerScore = data.data.hostScore;
+      // this.gameData.score.clientPlayerScore = data.data.clientScore;
+      this.gameData = data.data;
     } else if (data.eventType === 'gameOver') {
-      // axios.post('localhost:3001/history', {
-      //   leftPlayer: this.hostPlayer.getName(),
-      //   rightPlayer: this.clientPlayer.getName(),
-      //   leftScore: data.data.hostScore,
-      //   rightScore: data.data.clientScore
-      // });
+      ;
     }
   }
 }

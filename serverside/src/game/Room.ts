@@ -77,7 +77,7 @@ export class Room {
       // console.log(this.hostPlayer === undefined, this.clientPlayer === undefined);
       // console.log(this.clientPlayer);
       player.reJoinRoom(this.roomId, socket, this.gameType.getGameData());
-      socket.emit('hello', 'hello!!!!');
+      // socket.emit('hello', 'hello!!!!');
       this.hostPlayer.restartGame(this.roomId, this.gameType.getGameData());
       this.clientPlayer?.restartGame(this.roomId, this.gameType.getGameData());
     }
@@ -134,6 +134,21 @@ export class Room {
 
   eventGameData(data: any, socket: Socket) {
     this.gameType.callEvent(data, socket);
+    if (data.eventType === 'gameOver') {
+      let preloadData = {
+        gameType: this.gameType.getName(),
+        hostPlayer: {
+          name: this.hostPlayer.getName(),
+          score: this.gameType.getGameData().score.hostPlayerScore,
+        },
+        clientPlayer: {
+          name: this.clientPlayer.getName(),
+          score: this.gameType.getGameData().score.clientPlayerScore,
+        }
+      }
+      socket.broadcast.to(this.roomId).emit('gameResult', preloadData);
+      socket.emit('gameResult', preloadData);
+    }
 
     // if (data.eventType === 'getPoint') {
     //   this.gameData.score.hostPlayerScore = data.data.hostScore;
