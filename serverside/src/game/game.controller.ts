@@ -73,4 +73,20 @@ export class GameController {
   async getRoom() {
     return gameAdmin.getPlayingRoom();
   }
+
+  @Get('player-play-status')
+  async getPlayerPlayStatus(
+    @Query('user') user: string
+  ) {
+    let rtv = gameAdmin.searchRoomByPlayerName(user);
+    return {status: rtv.type};
+  }
+
+  @Get('already-generate-key')
+  async checkAlreadyGenerateKey(
+    @Query('user') user: string
+  ) {
+    let rtv = gameAdmin.getPrivateRoomAdmin().getRoomByMaster(user);
+    return {status: rtv.status === 'success'};
+  }
 }

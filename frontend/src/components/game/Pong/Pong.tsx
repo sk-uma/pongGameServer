@@ -3,6 +3,8 @@ import React, { useEffect, CSSProperties, useState } from 'react';
 import { config } from "./PongConfig";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { constUrl } from "../../../constant/constUrl";
 
 // export let socket: Socket;
 // export let isServer: boolean = false;
@@ -16,6 +18,10 @@ interface GameInfo {
       clientPlayerScore: number;
     },
     nextServe: 'host' | 'client';
+    latestPaddlePosition: {
+      host: number;
+      client: number;
+    }
   }
 };
 
@@ -26,6 +32,10 @@ export let gameInfo: GameInfo = {
       clientPlayerScore: 0
     },
     nextServe: 'host',
+    latestPaddlePosition: {
+      host: -1,
+      client: -1
+    }
   }
 };
 
@@ -94,6 +104,16 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
         }
       });
       gameInfo.socket?.disconnect();
+
+      if (gameInfo.isServer) {
+        axios.post(constUrl.serversideUrl + '/history', {
+          leftPlayer: data.hostPlayer.name,
+          leftScore: data.hostPlayer.score,
+          rightPlayer: data.clientPlayer.name,
+          rightScore: data.clientPlayer.score,
+        });
+      }
+
       navigate('/home/game/result', {state: data});
     });
 

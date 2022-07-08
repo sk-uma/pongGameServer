@@ -75,6 +75,11 @@ export default class PongClassic extends Phaser.Scene {
     })
 
     this.gameInfo = gameInfo;
+
+    if (this.gameInfo.gameData.latestPaddlePosition.host === -1) {
+      this.gameInfo.gameData.latestPaddlePosition.host = DISPLAY_HEIGHT / 2;
+      this.gameInfo.gameData.latestPaddlePosition.client = DISPLAY_HEIGHT / 2;
+    }
   }
 
   // init(): void { }
@@ -95,11 +100,21 @@ export default class PongClassic extends Phaser.Scene {
   create(): void {
     this.playerGroup = this.physics.add.group();
 
-    this.player1 = this.playerGroup.create(this.gameInfo.isServer ? 50 : DISPLAY_WIDTH - 50, DISPLAY_HEIGHT / 2, "rectangle").setScale(10, 75).refreshBody().setOrigin(0.5);
+    this.player1 = this.playerGroup.create(
+      this.gameInfo.isServer ? 50 : DISPLAY_WIDTH - 50,
+      // DISPLAY_HEIGHT / 2,
+      this.gameInfo.isServer ? this.gameInfo.gameData.latestPaddlePosition.host : this.gameInfo.gameData.latestPaddlePosition.client,
+      "rectangle"
+    ).setScale(10, 75).refreshBody().setOrigin(0.5);
     this.player1?.setCollideWorldBounds(true);
     this.player1?.setImmovable(true);
 
-    this.player2 = this.playerGroup.create(this.gameInfo.isServer ? DISPLAY_WIDTH - 50 : 50, DISPLAY_HEIGHT / 2, "rectangle").setScale(10, 75).refreshBody().setOrigin(0.5);
+    this.player2 = this.playerGroup.create(
+      this.gameInfo.isServer ? DISPLAY_WIDTH - 50 : 50,
+      // DISPLAY_HEIGHT / 2,
+      this.gameInfo.isServer ? this.gameInfo.gameData.latestPaddlePosition.client : this.gameInfo.gameData.latestPaddlePosition.host,
+      "rectangle"
+    ).setScale(10, 75).refreshBody().setOrigin(0.5);
     this.player2?.setCollideWorldBounds(true);
     this.player2?.setImmovable(true);
 
@@ -286,10 +301,31 @@ export default class PongClassic extends Phaser.Scene {
     this.sendGameData();
   }
 
+  updateLatestPaddlePosition() {
+    let hostPosition, clientPosition;
+
+    if (this.gameInfo.isServer) {
+      hostPosition = this.player1?.body.position.y;
+      clientPosition = this.player2?.body.position.y;
+    } else {
+      hostPosition = this.player2?.body.position.y;
+      clientPosition = this.player1?.body.position.y;
+    }
+    this.gameInfo.gameData.latestPaddlePosition = {
+      host: hostPosition,
+      client: clientPosition
+    }
+  }
+
   checkScore(): void {
     if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x > DISPLAY_WIDTH - 30) {
       this.gameInfo.gameData.score.hostPlayerScore += 1;
       this.gameInfo.gameData.nextServe = 'client';
+      // this.gameInfo.gameData.latestPaddlePosition = {
+      //   host: this.player1?.body.position.y,
+      //   client: this.player2?.body.position.y,
+      // }
+      this.updateLatestPaddlePosition();
       this.reloadDisplayScore();
       this.startStandBy();
       this.sendScoreEvent();
@@ -297,6 +333,11 @@ export default class PongClassic extends Phaser.Scene {
     } else if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x < 30) {
       this.gameInfo.gameData.score.clientPlayerScore += 1;
       this.gameInfo.gameData.nextServe = 'host';
+      // this.gameInfo.gameData.latestPaddlePosition = {
+      //   host: this.player1?.body.position.y,
+      //   client: this.player2?.body.position.y,
+      // }
+      this.updateLatestPaddlePosition();
       this.reloadDisplayScore();
       this.startStandBy();
       this.sendScoreEvent();

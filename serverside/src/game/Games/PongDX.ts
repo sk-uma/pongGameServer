@@ -9,6 +9,10 @@ type PongDXGameData = {
     clientPlayerScore: number;
   }
   nextServe: 'host' | 'client';
+  latestPaddlePosition: {
+    host: number;
+    client: number;
+  }
 };
 
 
@@ -22,7 +26,11 @@ export class PongDX implements GameInterface<PongDXGameData> {
         hostPlayerScore: 0,
         clientPlayerScore: 0
       },
-      nextServe: 'host'
+      nextServe: 'host',
+      latestPaddlePosition: {
+        host: -1,
+        client: -1
+      },
     };
   }
 

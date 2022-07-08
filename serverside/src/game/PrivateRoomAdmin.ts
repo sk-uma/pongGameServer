@@ -150,6 +150,17 @@ export class PrivateRoomAdmin {
     return {status: 'failure'};
   }
 
+  getRoomByMaster(master: string): {status: ReturnStatus, room?: Room} {
+    for (const [key, roomData] of this.roomMap) {
+      let roomMaster = roomData.master;
+      let room: Room = roomData.room;
+      if (master === roomMaster) {
+        return {status: 'success', room};
+      }
+    }
+    return {status: 'failure'};
+  }
+
   putAllRoomStatus(): void {
     for (const [privateKey, metaRoom] of this.roomMap) {
       // roomData.room.putRoomStatus();

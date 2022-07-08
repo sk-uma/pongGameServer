@@ -120,7 +120,9 @@ export class Room {
   // }
 
   isPlayer(playerName: string): boolean {
-    return (this.hostPlayer?.getName() == playerName) || (this.clientPlayer?.getName() == playerName);
+    console.log(playerName, this.hostPlayer?.getName(), this.clientPlayer?.getName())
+    console.log(this.hostPlayer?.getName() === playerName, this.clientPlayer?.getName() === playerName);
+    return (this.hostPlayer?.getName() === playerName) || (this.clientPlayer?.getName() === playerName);
   }
 
   getPlayer(playerName: string): Player {
