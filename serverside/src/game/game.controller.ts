@@ -77,7 +77,7 @@ export class GameController {
   @Get('player-play-status')
   async getPlayerPlayStatus(
     @Query('user') user: string
-  ) {
+  ): Promise<{status: string}> {
     let rtv = gameAdmin.searchRoomByPlayerName(user);
     return {status: rtv.type};
   }
