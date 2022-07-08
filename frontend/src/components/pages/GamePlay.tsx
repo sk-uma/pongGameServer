@@ -1,3 +1,4 @@
+import { Box, Center, Text } from "@chakra-ui/react";
 import { memo, useState, VFC } from "react";
 import { useLocation } from "react-router-dom";
 import { Pong } from "../game/Pong/Pong";
@@ -17,12 +18,14 @@ export const GamePlay: VFC = memo(() => {
   // )
 
   return (
-    <>
-      <Pong
-        mode={data.mode}
-        gameType={data.game}
-        privateKey={data.data?.privateKey}
-      />
-    </>
+    <Box>
+      <Center>
+        <Pong
+          mode={data.mode}
+          gameType={data.game}
+          privateKey={data.data?.privateKey}
+        />
+      </Center>
+    </Box>
   );
 });

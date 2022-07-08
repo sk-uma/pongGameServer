@@ -1,10 +1,12 @@
 import { Socket, io } from "socket.io-client";
-import React, { useEffect, CSSProperties, useState } from 'react';
+import React, { useEffect, CSSProperties, useState, useRef } from 'react';
 import { config } from "./PongConfig";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { constUrl } from "../../../constant/constUrl";
+import { Box, Center, Spinner, Stack, Text, Link } from "@chakra-ui/react";
+import { IonPhaser } from '@ion-phaser/react';
 
 // export let socket: Socket;
 // export let isServer: boolean = false;
@@ -44,8 +46,14 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
   // console.log(props);
 
   let [isConnected, setIsConnected] = useState(false);
+  const gameRef = useRef<any>(null);
+  // const [gameInitialize, setGameInitialize] = useState(false);
+
+  // config.parent = gameRef.current;
 
 	const style: CSSProperties = {
+    // width: "1000px",
+    // height: "100vh",
     textAlign: "center"
   }
 
@@ -76,6 +84,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       if (!g) {
         if (props.gameType === 'pong') {
           g = new Phaser.Game(config);
+          // setGameInitialize(true);
         } else {
           g = new Phaser.Game(config);
         }
@@ -94,6 +103,10 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
     gameInfo.socket.on('gameResult', (data: any) => {
       // console.log('gameResult');
+      // if (gameRef.current) {
+      //   gameRef.current.destroy();
+      // }
+      // setGameInitialize(false);
       g?.destroy(true);
       gameInfo.socket?.emit('leaveRoom', {
         mode: props.mode,
@@ -119,6 +132,10 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
     return () => {
       g?.destroy(true);
+      // if (gameRef.current) {
+      //   gameRef.current.destroy();
+      // }
+      // setGameInitialize(false);
       gameInfo.socket?.emit('leaveRoom', {
         mode: props.mode,
         privateKey: props.privateKey,
@@ -132,22 +149,72 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
     }
   }, [navigate]);
 
+  // const Canvas = chakra('canvas');
+
+  // console.log('init:', gameInitialize);
+
   if (!isConnected) {
     return (
-      <div>
-        Standby...
-      </div>
+      <Box height='300px'>
+        <Center height='100%'>
+          <Stack>
+            <Center>
+              <Spinner size='xl' color='blue.500' thickness='4px'/>
+            </Center>
+            <Text fontSize='3xl'>
+              対戦相手を探しています...
+            </Text>
+          </Stack>
+        </Center>
+      </Box>
     )
   } else {
     return (
-      <div style={style}>
-          <a
-            className="App-link"
-            href="https://github.com/kevinshen56714/create-react-phaser3-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          > </a>
-      </div>
+      // <Box width='100vw'>
+      //   <Center>
+      //     <IonPhaser ref={gameRef} game={config} initialize={gameInitialize}/>
+      //   </Center>
+      // </Box>
+
+      <div
+        id="phaser-example"
+        // className="phaser-class"
+        style={style}
+      > </div>
+
+      // <div style={style}>
+      //   <a
+      //     className="App-link"
+      //     href="https://github.com/kevinshen56714/create-react-phaser3-app"
+      //     target="_blank"
+      //     rel="noopener noreferrer"
+      //   > </a>
+      // </div>
+
+      // <Box width='100%'>
+      //   <Center>
+      //     Hello
+      //     <div style={style}>
+      //       <a
+      //         className="App-link"
+      //         href="https://github.com/kevinshen56714/create-react-phaser3-app"
+      //         target="_blank"
+      //         rel="noopener noreferrer"
+      //       > </a>
+      //     </div>
+      //   </Center>
+      // </Box>
+
+      // <Box style={style}>
+      //   <Center>
+      //     <Link
+      //       className="App-link"
+      //       href="https://github.com/kevinshen56714/create-react-phaser3-app"
+      //       target="_blank"
+      //       rel="noopener noreferrer"
+      //     />
+      //   </Center>
+      // </Box>
     );
   }
 }
