@@ -1,6 +1,6 @@
 import { Socket, io } from "socket.io-client";
 import React, { useEffect, CSSProperties, useState, useRef } from 'react';
-import { config } from "./PongConfig";
+import { config, DXconfig } from "./PongConfig";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -84,9 +84,23 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       if (!g) {
         if (props.gameType === 'pong') {
           g = new Phaser.Game(config);
+          g.events.on('hidden', () => {
+            g?.destroy(true);
+            gameInfo.socket?.emit('leaveRoom', {
+              mode: props.mode,
+              privateKey: props.privateKey,
+              gameType: props.gameType,
+              user: {
+                name: `${loginPlayer?.name}`
+              }
+            });
+            gameInfo.socket?.disconnect();
+            navigate('/home/game');
+          });
+          // g.events.off('')
           // setGameInitialize(true);
         } else {
-          g = new Phaser.Game(config);
+          g = new Phaser.Game(DXconfig);
         }
       }
       setIsConnected(true);

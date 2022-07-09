@@ -9,6 +9,7 @@ import { RoomAlert } from "../game/Layout/RoomAlert";
 export const GameLayout: VFC = memo(() => {
   const [isLeaved, setIsLeaved] = useState(false);
   const { loginPlayer } = useLoginPlayer();
+  const [idx, setIdx] = useState(0);
 
   useEffect(() => {
     axios
@@ -22,9 +23,18 @@ export const GameLayout: VFC = memo(() => {
       })
   }, [isLeaved]);
 
+  // useEffect(() => {
+  //   setIdx(idx+1);
+  //   console.log('idx');
+  // }, [idx]);
+
   if (isLeaved) {
     return <RoomAlert/>
   } else {
-    return <Outlet/>
+    return (
+      <>
+        <Outlet/>
+      </>
+    )
   }
 });

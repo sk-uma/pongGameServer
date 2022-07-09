@@ -35,8 +35,8 @@ export const Router: VFC = memo(() => {
 						<Route path="private" element={<PrivateGame />} />
 						<Route path="public" element={<PublicGame />} />
 						<Route path="watch" element={<GameWatchHome />} />
-						<Route path="result" element={<GameResult />} />
 					</Route>
+					<Route path="game/result" element={<GameResult />} />
 					<Route path="game/play" element={<GamePlay />} />
 					<Route path="players" element={<Players />} />
 					<Route path="history" element={<History />} />

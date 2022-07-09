@@ -55,11 +55,13 @@ let DISPLAY_HEIGHT = 800;
  * |    |            |   end   |              |
  * +----+------------+---------+--------------+
  */
-export default class PongClassic extends Phaser.Scene {
+export default class PongDX extends Phaser.Scene {
   private playerGroup?: Phaser.Physics.Arcade.Group;
   private player1?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private player2?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private ball?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private impediment?: Phaser.Physics.Arcade.Group;
+
   private ballXSpeed: number = 400;
   private gameInfo: any;
   private startTime: number = -1;
@@ -102,7 +104,6 @@ export default class PongClassic extends Phaser.Scene {
 
     this.player1 = this.playerGroup.create(
       this.gameInfo.isServer ? 50 : DISPLAY_WIDTH - 50,
-      // DISPLAY_HEIGHT / 2,
       this.gameInfo.isServer ? this.gameInfo.gameData.latestPaddlePosition.host : this.gameInfo.gameData.latestPaddlePosition.client,
       "rectangle"
     ).setScale(10, 75).refreshBody().setOrigin(0.5);
@@ -111,7 +112,6 @@ export default class PongClassic extends Phaser.Scene {
 
     this.player2 = this.playerGroup.create(
       this.gameInfo.isServer ? DISPLAY_WIDTH - 50 : 50,
-      // DISPLAY_HEIGHT / 2,
       this.gameInfo.isServer ? this.gameInfo.gameData.latestPaddlePosition.client : this.gameInfo.gameData.latestPaddlePosition.host,
       "rectangle"
     ).setScale(10, 75).refreshBody().setOrigin(0.5);
@@ -122,6 +122,42 @@ export default class PongClassic extends Phaser.Scene {
     this.ball.setVelocity(0, 0);
     this.ball.setCollideWorldBounds(true);
     this.ball.setBounce(1);
+
+    // 障害物
+    // this.impediment = this.physics.add.sprite(DISPLAY_WIDTH / 2, 50, "rectangle").setScale(10, 30).refreshBody().setOrigin(0.5);
+    // this.impedimentTop = this.physics.add.group();
+    // {
+    //   let tmp;
+    //   tmp = this.impedimentTop.create(DISPLAY_WIDTH / 2, 0, "rectangle").setScale(10, 400).refreshBody().setOrigin(0.5).setImmovable(true);
+    //   tmp.setAngle(45);
+    //   this.impedimentTop.create(DISPLAY_WIDTH / 2, 0, "rectangle").setScale(400, 10).refreshBody().setOrigin(0.5).setImmovable(true);
+    // }
+    // this.impedimentBottom = this.physics.add.group();
+    // {
+    //   let tmp;
+    //   this.impedimentBottom.create(DISPLAY_WIDTH / 2, DISPLAY_HEIGHT, "rectangle").setScale(10, 400).refreshBody().setOrigin(0.5).setImmovable(true);
+    //   this.impedimentBottom.create(DISPLAY_WIDTH / 2, DISPLAY_HEIGHT, "rectangle").setScale(400, 10).refreshBody().setOrigin(0.5).setImmovable(true);
+    // }
+    // this.physics.add.collider(this.ball, [this.impedimentTop, this.impedimentBottom]);
+    // this.physics.add.collider(this.ball, [this.impediment]);
+    // this.impedimentBottom.rotate(0.1);
+    this.impediment = this.physics.add.group();
+    for (let i = 0; i < 10; i++) {
+      // let x = Phaser.Math.Between(200, DISPLAY_WIDTH - 200);
+      let x = 0;
+      do {
+        x = Phaser.Math.Between(200, DISPLAY_WIDTH - 200);
+      } while ((DISPLAY_WIDTH / 2 - 35 - 25) < x && x < (DISPLAY_WIDTH / 2 + 35 - 25));
+      let y = Phaser.Math.Between(0, DISPLAY_HEIGHT);
+
+      if (!gameInfo.isServer) {
+        x = 0; y = 0;
+      }
+      let tmp = this.impediment.create(x, y, "rectangle").setScale(50, 50).refreshBody().setOrigin(0.5).setImmovable(true);
+      tmp.visible = false;
+    }
+    this.physics.add.collider(this.ball, this.impediment);
+
 
     this.physics.add.collider(this.ball, this.playerGroup, (b, p) => {
       let sign = -1;
@@ -143,7 +179,6 @@ export default class PongClassic extends Phaser.Scene {
       leavedMessageDisplay: this.add.text(DISPLAY_WIDTH/2, 250, "").setFontSize(30).setOrigin(0.5),
       standByCountDownDisplay: this.add.text(DISPLAY_WIDTH/2, 100, "").setFontSize(30).setOrigin(0.5),
     }
-    // console.log('update score');
 
     this.startStandBy();
 
@@ -184,10 +219,6 @@ export default class PongClassic extends Phaser.Scene {
    *        得点を獲得
    */
   setSocketEvent(): void {
-    this.gameInfo.socket.on('hello', (data: any) => {
-      console.log(data);
-    })
-
     this.gameInfo.socket.on('UpdateCheckedGameData', (data: any) => {
       if (!this.gameInfo.isServer) {
         this.ball?.setVelocity(data.ball.velocity.x, data.ball.velocity.y);
@@ -198,7 +229,6 @@ export default class PongClassic extends Phaser.Scene {
     });
 
     this.gameInfo.socket.on('PlayerLeaveRoom', (data: any) => {
-      // console.log('PlayerLeaveRoom', data);
       this.ball?.setVelocity(0, 0);
       this.ball?.setPosition(DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2);
       this.gameStatus = 'leaved';
@@ -218,10 +248,14 @@ export default class PongClassic extends Phaser.Scene {
           this.ball?.setPosition(DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2);
           this.startTime = data.data.startTime;
           this.gameStatus = 'standBy';
+          // let i = 0;
+          // for (let elem of data.data.blockPosList) {
+          //   this.impediment!.getChildren()[i].body.position.x = elem.x;
+          //   this.impediment!.getChildren()[i].body.position.y = elem.y;
+          //   i++;
+          // }
         } else if (data.eventType === 'getPoint') {
           this.gameInfo.gameData = data.data;
-          // this.gameInfo.gameData.score.hostPlayerScore = data.data.hostScore;
-          // this.gameInfo.gameData.score.clientPlayerScore = data.data.clientScore;
           this.ball!.visible = false;
           this.reloadDisplayScore();
         }
@@ -270,11 +304,10 @@ export default class PongClassic extends Phaser.Scene {
     }
   }
 
-  // awayUpdate(): void {
-
-  // }
-
   update(): void {
+    // this.impedimentTop?.rotate(0.01);
+    // this.impedimentBottom?.rotate(0.01);
+
     let cursors = this.input.keyboard.createCursorKeys();
 
     if (cursors.up.isDown) {
@@ -325,10 +358,6 @@ export default class PongClassic extends Phaser.Scene {
     if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x > DISPLAY_WIDTH - 30) {
       this.gameInfo.gameData.score.hostPlayerScore += 1;
       this.gameInfo.gameData.nextServe = 'client';
-      // this.gameInfo.gameData.latestPaddlePosition = {
-      //   host: this.player1?.body.position.y,
-      //   client: this.player2?.body.position.y,
-      // }
       this.updateLatestPaddlePosition();
       this.reloadDisplayScore();
       this.startStandBy();
@@ -337,10 +366,6 @@ export default class PongClassic extends Phaser.Scene {
     } else if (this.ball?.body.position.x !== undefined && this.ball?.body.position.x < 30) {
       this.gameInfo.gameData.score.clientPlayerScore += 1;
       this.gameInfo.gameData.nextServe = 'host';
-      // this.gameInfo.gameData.latestPaddlePosition = {
-      //   host: this.player1?.body.position.y,
-      //   client: this.player2?.body.position.y,
-      // }
       this.updateLatestPaddlePosition();
       this.reloadDisplayScore();
       this.startStandBy();
@@ -358,17 +383,12 @@ export default class PongClassic extends Phaser.Scene {
     let ballYSpeed: number = Phaser.Math.Between(-300, 300);
     let serve = this.gameInfo.gameData.nextServe === 'client' ? 1 : -1;
     this.ball?.setVelocity(this.ballXSpeed * serve, ballYSpeed);
-    // this.ball?.setVelocity(this.ballXSpeed, 0);
   }
 
   sendScoreEvent(): void {
     this.gameInfo.socket.emit('eventGameData', {
       roomId: this?.gameInfo.roomID,
       eventType: 'getPoint',
-      // data: {
-      //   hostScore: this.gameInfo.gameData.score.hostPlayerScore,
-      //   clientScore: this.gameInfo.gameData.score.clientPlayerScore,
-      // }
       data: this.gameInfo.gameData
     });
   }
@@ -377,15 +397,28 @@ export default class PongClassic extends Phaser.Scene {
     this.ball?.setVelocity(0, 0);
     this.ball?.setPosition(DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2);
     this.ball!.visible = false;
-    // console.log(this.ball?.visible);
     this.startTime = Date.now() + this.standByTime;
     this.gameStatus = 'standBy';
     if (this.gameInfo.isServer) {
+      // let blockPosList: {x: number, y: number}[] = []
+      this.impediment?.getChildren().map((block) => {
+        // let x = Phaser.Math.Between(200, DISPLAY_WIDTH - 200);
+        // let y = Phaser.Math.Between(0, DISPLAY_HEIGHT);
+        let x = 0;
+        do {
+          x = Phaser.Math.Between(200, DISPLAY_WIDTH - 200);
+        } while ((DISPLAY_WIDTH / 2 - 35 - 25) < x && x < (DISPLAY_WIDTH / 2 + 35 - 25));
+        // console.log(DISPLAY_WIDTH / 2 - 100, x, DISPLAY_WIDTH / 2 + 100);
+        block.body.position.x = x;
+        block.body.position.y = Phaser.Math.Between(0, DISPLAY_HEIGHT);
+        // blockPosList.push({x, y});
+      });
       this.gameInfo.socket.emit('eventGameData', {
         roomId: this?.gameInfo.roomID,
         eventType: 'startedStandBy',
         data: {
-          startTime: this.startTime
+          startTime: this.startTime,
+          // blockPosList: blockPosList
         }
       });
     }
@@ -436,12 +469,5 @@ export default class PongClassic extends Phaser.Scene {
       }
     });
     this.gameStatus = 'end';
-    // if (this.gameInfo.isServer) {
-    //   // axios.post(constUrl.serversideUrl + '/history', {
-    //   //   // leftPlayer: this.gameInfo
-    //   //   leftScore: this.gameInfo.gameData.score.hostPlayerScore,
-    //   //   rightScore: this.gameInfo.gameData.score.clientPlayerScore
-    //   // });
-    // }
   }
 }
