@@ -12,6 +12,12 @@ import { LoginPlayerProvider } from "../providers/LoginPlayerProvider";
 import { EditProfile } from "../components/pages/EditProfile";
 import { History } from "../components/pages/History";
 import { TFA } from "../components/pages/TFA";
+import { PrivateGame } from "../components/pages/PrivateGame";
+import { PublicGame } from "../components/pages/PublicGame";
+import { GameWatchHome } from "../components/pages/GameWatchHome";
+import { GamePlay } from "../components/pages/GamePlay";
+import { GameResult } from "../components/pages/GameResult";
+import { GameLayout } from "../components/pages/GameLayout";
 
 //ページ遷移設定
 
@@ -24,7 +30,14 @@ export const Router: VFC = memo(() => {
 				<Route path="/home" element={<Layout />}>
 					<Route index element={<Home />} />
 					<Route path="chat" element={<Chat />} />
-					<Route path="game" element={<Game />} />
+					<Route path="game" element={<GameLayout />}>
+						<Route index element={<Game />} />
+						<Route path="private" element={<PrivateGame />} />
+						<Route path="public" element={<PublicGame />} />
+						<Route path="watch" element={<GameWatchHome />} />
+					</Route>
+					<Route path="game/result" element={<GameResult />} />
+					<Route path="game/play" element={<GamePlay />} />
 					<Route path="players" element={<Players />} />
 					<Route path="history" element={<History />} />
 					<Route path="edit" element={<EditProfile />} />

@@ -6,7 +6,7 @@ type PlayerType = 'host' | 'client';
 export class Player {
   private playerName: string;
   private socket: Socket;
-  private roomId: string;
+  // private roomId: string;
   private status: PlayerStatus = 'connected';
   private playerType: PlayerType;
 
@@ -32,6 +32,10 @@ export class Player {
   leaveRoom(roomId: string) {
     this.status = 'disconnected';
     this.socket.leave(roomId);
+  }
+
+  setStatus(status: PlayerStatus) {
+    this.status = status;
   }
 
   opponentIsReadyToStart(roomId, payloadGameData) {

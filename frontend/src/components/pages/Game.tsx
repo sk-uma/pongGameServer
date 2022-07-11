@@ -1,9 +1,9 @@
 import { memo, VFC, useEffect, CSSProperties } from "react";
-import { config } from "../game/Pong/PongConfig";
-import Phaser from 'phaser';
-import { useAllPlayers } from "../../hooks/useAllPlayers";
-import { io } from "socket.io-client";
-import { Pong } from "../game/Pong/Pong";
+import { Button, Center, Stack, Text } from "@chakra-ui/react";
+import { GiEarthAsiaOceania } from "react-icons/gi"
+import { RiChatPrivateLine } from "react-icons/ri"
+import { AiFillEye } from "react-icons/ai"
+import { useNavigate } from "react-router-dom";
 
 export const Game: VFC = memo(() => {
 
@@ -21,7 +21,60 @@ export const Game: VFC = memo(() => {
 	// 	};
 	// }, []);
 
+  const navigate = useNavigate();
+
+  const onClickPrivateRoom = () => {
+    navigate('/home/game/private', {state: {
+      mode: 'private',
+      data: {
+        key: 'hogehoge'
+      }
+    }});
+  };
+  const onClickPublicRoom = () => {
+    navigate('/home/game/public');
+  };
+  const onClickWatching = () => {
+    navigate('/home/game/watch')
+  };
+
 	return (
-		<Pong />
+		// <Pong />
+		// <GameHome />
+		<Center>
+      <Stack width="80%" maxWidth="800px" minWidth="300px">
+        <Text fontSize="6xl" width="100%">Game</Text>
+        <Button
+          colorScheme='teal'
+          size='lg'
+          variant='outline'
+          leftIcon={<GiEarthAsiaOceania />}
+          onClick={onClickPublicRoom}
+          width='100%'
+        >
+          公開マッチ
+        </Button>
+        <Button
+          colorScheme='teal'
+          size='lg'
+          variant='outline'
+          leftIcon={<RiChatPrivateLine />}
+          onClick={onClickPrivateRoom}
+          width='100%'
+        >
+          カスタムマッチ
+        </Button>
+        <Button
+          colorScheme='teal'
+          size='lg'
+          variant='outline'
+          leftIcon={<AiFillEye />}
+          onClick={onClickWatching}
+          width='100%'
+        >
+          観戦
+        </Button>
+      </Stack>
+		</Center>
 	);
 });

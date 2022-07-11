@@ -5,8 +5,10 @@
 	"dependencies": {
 		"@chakra-ui/icons": "^1.1.7",
 		"@chakra-ui/react": "^1.8.8",
-		"@emotion/react": "^11.9.0",
-		"@emotion/styled": "^11.8.1",
+		"@emotion/react": "^11.9.3",
+		"@emotion/styled": "^11.9.3",
+		"@ion-phaser/react": "^1.3.0",
+		"@mui/material": "^5.8.5",
 		"@testing-library/jest-dom": "^5.16.4",
 		"@testing-library/react": "^13.1.1",
 		"@testing-library/user-event": "^13.5.0",
@@ -20,10 +22,13 @@
 		"phaser": "^3.55.2",
 		"react": "17.0.2",
 		"react-dom": "17.0.2",
+		"react-hook-form": "^7.32.2",
+		"react-icons": "^4.4.0",
 		"react-router-dom": "^6.3.0",
 		"react-scripts": "5.0.1",
 		"socket.io-client": "^4.5.0",
 		"typescript": "^4.6.3",
+		"uuid": "^8.3.2",
 		"web-vitals": "^2.1.4"
 	},
 	"scripts": {
@@ -33,10 +38,17 @@
 		"eject": "react-scripts eject"
 	},
 	"eslintConfig": {
-		"extends": ["react-app", "react-app/jest"]
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
 	},
 	"browserslist": {
-		"production": [">0.2%", "not dead", "not op_mini all"],
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",

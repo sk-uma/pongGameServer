@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common'
 import { GameAdmin, gameAdmin } from './GameAdmin';
+import axios from 'axios';
 
 interface InitGameData {
   playerName: string;
@@ -125,7 +126,8 @@ export class GameGateway {
     // // this.logger.log(this.server.sockets.manager);
     // console.log(data.user.name);
     // this.gameAdmin.tmp("tmp");
-    this.gameAdmin.joinRoom(data.user.name, client);
+    console.log(data);
+    this.gameAdmin.joinRoom(data, client);
   }
 
   @SubscribeMessage('leaveRoom')
@@ -139,10 +141,24 @@ export class GameGateway {
     // }
     // console.log(client.rooms);
 
-    this.gameAdmin.leaveRoom(data.user.name, client);
+    this.gameAdmin.leaveRoom(data, client);
+  }
+
+  @SubscribeMessage('startWatching')
+  startWatching(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    this.gameAdmin.startWatching(data, client);
+  }
+
+  @SubscribeMessage('finishWatching')
+  finishWatching(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    this.gameAdmin.finishWatching(data, client);
   }
 
   handleConnection(client: Socket, ...args: any[]) {
+    // let a = axios.get('http://localhost/history')
+    //   .then((res) => console.log('成功'))
+    //   .catch(error => { console.log("失敗") });
+    // console.log(a);
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
