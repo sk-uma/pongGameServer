@@ -52,6 +52,11 @@ export function Watch(props: {room_id: string}) {
       console.log('disconnected...');
     });
 
+    gameInfo.socket.on('startWatchingData', (data: any) => {
+      console.log(data);
+      gameInfo.gameData = data;
+    });
+
     g = new Phaser.Game(config);
     gameInfo.socket.emit('startWatching', {
       roomId: props.room_id

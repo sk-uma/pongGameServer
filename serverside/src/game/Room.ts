@@ -103,6 +103,7 @@ export class Room {
 
   startWatching(socket: Socket): void {
     socket.join(this.roomId);
+    socket.emit('startWatchingData', this.gameType.getGameData());
   }
 
   finishWatching(socket: Socket): void {
