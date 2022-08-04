@@ -86,6 +86,9 @@ export class Room {
     // }
   }
 
+  // restartGame() {
+  // }
+
   /**
    * プレイヤーの切断処理
    * @param playerName 切断要求のあったプレーヤー名

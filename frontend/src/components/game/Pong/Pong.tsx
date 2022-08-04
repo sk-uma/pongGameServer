@@ -76,6 +76,9 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
     // console.log("is connected", isConnected);
 
+    /**
+     * 待機終了時の処理
+     */
     gameInfo.socket.on('opponentIsReadyToStart', (data: any) => {
       gameInfo.roomID = data.roomId;
       gameInfo.isServer = data.isServer;
@@ -101,6 +104,19 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
           // setGameInitialize(true);
         } else {
           g = new Phaser.Game(DXconfig);
+          g.events.on('hidden', () => {
+            g?.destroy(true);
+            gameInfo.socket?.emit('leaveRoom', {
+              mode: props.mode,
+              privateKey: props.privateKey,
+              gameType: props.gameType,
+              user: {
+                name: `${loginPlayer?.name}`
+              }
+            });
+            gameInfo.socket?.disconnect();
+            navigate('/home/game');
+          });
         }
       }
       setIsConnected(true);
@@ -115,12 +131,10 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       }
     });
 
+    /**
+     * ゲーム終了時の画面遷移
+     */
     gameInfo.socket.on('gameResult', (data: any) => {
-      // console.log('gameResult');
-      // if (gameRef.current) {
-      //   gameRef.current.destroy();
-      // }
-      // setGameInitialize(false);
       g?.destroy(true);
       gameInfo.socket?.emit('leaveRoom', {
         mode: props.mode,

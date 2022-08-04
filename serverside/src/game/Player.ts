@@ -47,11 +47,21 @@ export class Player {
   }
 
   restartGame(roomId, payloadGameData) {
-    this.socket.emit('restartGame', {
+    var message = {
       roomId: roomId,
       isServer: this.playerType === 'host',
       gameData: payloadGameData
-    });
+    };
+    if (this.playerType === 'host') {
+      this.socket.emit('restartGame', message);
+      this.socket.broadcast.to(roomId).emit('restartGame', message);
+    } else {
+    }
+    // this.socket.emit('restartGame', {
+    //   roomId: roomId,
+    //   isServer: this.playerType === 'host',
+    //   gameData: payloadGameData
+    // });
   }
 
   // broadcast(roomId: string, message: string, data?: any) {
@@ -73,9 +83,9 @@ export class Player {
   sendGameStartMessage(roomId: string): void {
     var message = {
       roomId: `${roomId}`,
-      isServer: this.playerType == 'host'
+      isServer: this.playerType === 'host'
     }
-    if (this.playerType == 'host') {
+    if (this.playerType === 'host') {
       this.socket.emit('opponentIsReadyToStart', message)
     } else {
       this.socket.broadcast.to(roomId).emit('opponentIsReadyToStart', message);
