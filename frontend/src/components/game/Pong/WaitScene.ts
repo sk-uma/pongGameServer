@@ -1,6 +1,3 @@
-rmport Phaser from 'phaser';
+import Phaser from "phaser";
 
-
-export class WaitScene extends Phaser.Scene {
-  
-}
+export class WaitScene extends Phaser.Scene {}
