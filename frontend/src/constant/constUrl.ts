@@ -18,7 +18,8 @@ export const constUrl = {
 	//42AuthorazationのSecret
 	ftClientSecret:
 		//		"811b6f2ae3b9ccb0fb01fe47113e2189280f6daa0a4ecadf082d3c1cd96670d6",
-		"d58a504f9063e32bdeb1328f9b6df6d7a6fbd240b8b783d429d41725cdf01791",
+		//"d58a504f9063e32bdeb1328f9b6df6d7a6fbd240b8b783d429d41725cdf01791",
+		"bfcc7cbd0936cf662aeb62b9d210cdd2af613468d45c4a8f4762e5e4077c3e0f",
 	//42ログインユーザーの自身の情報を得るためのAPI
 	ftGetMeAPI: "https://api.intra.42.fr/v2/me",
 } as const;
