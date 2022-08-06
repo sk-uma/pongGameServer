@@ -1,12 +1,32 @@
 import { Avatar, Box, Button, Center, SimpleGrid, Stack, Text } from "@chakra-ui/react";
-import { memo, VFC } from "react";
+import { memo, useEffect, VFC } from "react";
+import { usePlayingRoom } from "../../hooks/usePlayingRoom";
 import { RoomCard } from "../game/Watch/RoomCard";
 
 export const GameWatchHome: VFC = memo(() => {
+  const { getPlayingRoom, playingRoom } = usePlayingRoom();
+  
+  useEffect(() => getPlayingRoom(), [getPlayingRoom]);
+
+  // console.log(playingRoom);
+
   return (
     <Center>
       <SimpleGrid minChildWidth='400px' spacing='50px' width='80%'>
-        <RoomCard/>
+        {/* <RoomCard
+          room_id="room_1"
+          hostPlayer='1'
+          clientPlayer='3'
+        /> */}
+        {/* playingRoom.map(()) */}
+        {playingRoom.map((data: any) => (
+          <RoomCard
+            room_id={data.roomId}
+            hostPlayer={data.player.hostPlayer}
+            clientPlayer={data.player.clientPlayer}
+          />
+        ))}
+        
         {/* <Center>
           <Box width='400px' height='350px' border='1px' borderColor='gray' borderRadius='lg'>
             <Stack direction='column'>
@@ -52,7 +72,7 @@ export const GameWatchHome: VFC = memo(() => {
           </Box>
         </Center> */}
 
-        <Center>
+        {/* <Center>
           <Box width='400px' height='350px' bg='gray'></Box>
         </Center>
 
@@ -70,7 +90,7 @@ export const GameWatchHome: VFC = memo(() => {
         </Center>
         <Center>
           <Box width='400px' height='350px' bg='gray'></Box>
-        </Center>
+        </Center> */}
         {/* {
           for () {
             ;
