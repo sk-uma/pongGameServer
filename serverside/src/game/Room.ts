@@ -86,6 +86,9 @@ export class Room {
     // }
   }
 
+  // restartGame() {
+  // }
+
   /**
    * プレイヤーの切断処理
    * @param playerName 切断要求のあったプレーヤー名
@@ -100,6 +103,7 @@ export class Room {
 
   startWatching(socket: Socket): void {
     socket.join(this.roomId);
+    socket.emit('startWatchingData', this.gameType.getGameData());
   }
 
   finishWatching(socket: Socket): void {
