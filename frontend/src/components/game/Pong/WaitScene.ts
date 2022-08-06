@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+rmport Phaser from 'phaser';
 
 
 export class WaitScene extends Phaser.Scene {
