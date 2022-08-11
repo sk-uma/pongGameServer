@@ -79,6 +79,9 @@ export default class PongClassic extends Phaser.Scene {
     if (this.gameInfo.gameData.latestPaddlePosition.host === -1) {
       this.gameInfo.gameData.latestPaddlePosition.host = DISPLAY_HEIGHT / 2;
       this.gameInfo.gameData.latestPaddlePosition.client = DISPLAY_HEIGHT / 2;
+    } else {
+      this.gameInfo.gameData.latestPaddlePosition.host = this.gameInfo.gameData.latestPaddlePosition.host + (75 / 2);
+      this.gameInfo.gameData.latestPaddlePosition.client = this.gameInfo.gameData.latestPaddlePosition.client + (75 / 2);
     }
   }
 
@@ -300,6 +303,9 @@ export default class PongClassic extends Phaser.Scene {
     } else if (this.gameStatus === 'playing') {
       if (this.gameInfo.isServer) {
         this.checkScore();
+        this.gameInfo.gameData.latestPaddlePosition.host = this.player1?.body.position.y;
+      } else {
+        this.gameInfo.gameData.latestPaddlePosition.client = this.player1?.body.position.y;
       }
     }
     this.sendGameData();

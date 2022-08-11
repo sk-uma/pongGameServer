@@ -93,6 +93,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
               mode: props.mode,
               privateKey: props.privateKey,
               gameType: props.gameType,
+              gameData: gameInfo.gameData,
               user: {
                 name: `${loginPlayer?.name}`
               }
@@ -110,6 +111,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
               mode: props.mode,
               privateKey: props.privateKey,
               gameType: props.gameType,
+              gameData: gameInfo.gameData,
               user: {
                 name: `${loginPlayer?.name}`
               }
@@ -140,6 +142,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
         mode: props.mode,
         privateKey: props.privateKey,
         gameType: props.gameType,
+        gameData: gameInfo.gameData,
         user: {
           name: `${loginPlayer?.name}`
         }
@@ -168,6 +171,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
         mode: props.mode,
         privateKey: props.privateKey,
         gameType: props.gameType,
+        gameData: gameInfo.gameData,
         user: {
           name: `${loginPlayer?.name}`
         }

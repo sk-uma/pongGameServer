@@ -93,16 +93,16 @@ export class GameAdmin {
     let room = rtv.room;
     // console.log(playerName, rtv);
     if (rtv.type === 'playing') {
-      room.leaveRoom(playerName);
+      room.leaveRoom(data, playerName);
       this.playingList = this.playingList.filter((x) => x !== room);
       this.leavedList.push(room);
     } else if (rtv.type === 'leaved') {
-      room.leaveRoom(playerName);
+      room.leaveRoom(data, playerName);
       this.leavedList = this.leavedList.filter((x) => x !== room);
     } else if (rtv.type === 'publicWaiting') {
       // room.leaveRoom(playerName);
       // this.isPublicWaiting = !this.isPublicWaiting;
-      this.publicWaitingList.leaveRoom(playerName, socket, data.gameType);
+      this.publicWaitingList.leaveRoom(playerName, socket, data.gameType, data);
     } else if (rtv.type === 'privateWaiting') {
       this.privatewaitingList.leaveRoom(playerName, socket, data.privateKey);
     }
