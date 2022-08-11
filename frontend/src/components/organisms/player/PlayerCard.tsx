@@ -149,17 +149,7 @@ export const PlayerCard: VFC<Props> = memo((props) => {
 							m="auto"
 							name={displayName}
 						>
-							<AvatarBadge
-								boxSize="50px"
-								bg={
-									statusColor()
-									//									loginPlayer?.name === name
-									//										? "green.500"
-									//										: status === "LOGIN"
-									//										? "green.500"
-									//										: "gray.300"
-								}
-							/>
+							<AvatarBadge boxSize="50px" bg={statusColor()} />
 						</Avatar>
 						<Text fontSize="lg" fontWeight="bold">
 							{displayName}
