@@ -44,7 +44,15 @@ export class PlayersService {
 		});
 		if (found) {
 			throw new ForbiddenException(
-				`Player name "${createPlayerDto.name}" is already exist`,
+				`User name "${createPlayerDto.name}" is already exist`,
+			);
+		}
+		const foundDispName = await this.playersRepository.findOne({
+			displayName: createPlayerDto.name,
+		});
+		if (foundDispName) {
+			throw new ForbiddenException(
+				`Because Display name "${createPlayerDto.name}" is already exist, you cannot use "${createPlayerDto.name}."`,
 			);
 		}
 		return this.playersRepository.createPlayer(createPlayerDto);
@@ -87,11 +95,30 @@ export class PlayersService {
 		}
 	}
 
+	//プレイヤー初期ログインフラグをオフにする
+	async updatePlayerNotRookie(
+		name: string,
+		rookie: boolean,
+	): Promise<Player> {
+		const player = await this.findByName(name);
+		player.rookie = rookie;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
 	//プレイヤーの表示名の更新
 	async updatePlayerDisplayName(
 		editPlayerDto: EditPlayerDto,
 	): Promise<Player> {
 		const player = await this.findByName(editPlayerDto.name);
+		const found = await this.playersRepository.findOne({
+			displayName: editPlayerDto.displayName,
+		});
+		if (found) {
+			throw new ForbiddenException(
+				`Display name "${editPlayerDto.displayName}" is already exist`,
+			);
+		}
 		player.displayName = editPlayerDto.displayName;
 		await this.playersRepository.save(player);
 		return player;
@@ -257,6 +284,14 @@ export class PlayersService {
 	async updateStatusLogout(name: string): Promise<Player> {
 		const player = await this.findByName(name);
 		player.status = PlayerStatus.LOGOUT;
+		await this.playersRepository.save(player);
+		return player;
+	}
+
+	//プレイヤーの接続ステータスをゲーム中に更新
+	async updateStatusPlay(name: string): Promise<Player> {
+		const player = await this.findByName(name);
+		player.status = PlayerStatus.PLAY;
 		await this.playersRepository.save(player);
 		return player;
 	}

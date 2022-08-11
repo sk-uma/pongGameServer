@@ -117,6 +117,20 @@ export const PlayerCard: VFC<Props> = memo((props) => {
 		navigate("/home/edit");
 	};
 
+	const statusColor = () => {
+		if (loginPlayer?.name === name) {
+			return "green.500";
+		}
+		switch (status) {
+			case "LOGIN":
+				return "green.500";
+			case "PLAY":
+				return "yellow.300";
+			default:
+				return "gray.300";
+		}
+	};
+
 	return (
 		<Menu>
 			<MenuButton>
@@ -138,11 +152,12 @@ export const PlayerCard: VFC<Props> = memo((props) => {
 							<AvatarBadge
 								boxSize="50px"
 								bg={
-									loginPlayer?.name === name
-										? "green.500"
-										: status === "LOGIN"
-										? "green.500"
-										: "gray.300"
+									statusColor()
+									//									loginPlayer?.name === name
+									//										? "green.500"
+									//										: status === "LOGIN"
+									//										? "green.500"
+									//										: "gray.300"
 								}
 							/>
 						</Avatar>

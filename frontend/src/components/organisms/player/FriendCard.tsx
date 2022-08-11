@@ -67,15 +67,23 @@ export const FriendCard: VFC<Props> = memo((props) => {
 			.then(() => onClickUnBlock());
 	};
 
+	const statusColor = () => {
+		switch (status) {
+			case "LOGIN":
+				return "green.500";
+			case "PLAY":
+				return "yellow.300";
+			default:
+				return "gray.300";
+		}
+	};
+
 	return (
 		<Menu>
 			<MenuButton>
 				<Flex px={3}>
 					<Avatar src={imgUrl}>
-						<AvatarBadge
-							boxSize="1.25em"
-							bg={status === "LOGIN" ? "green.500" : "gray.300"}
-						/>
+						<AvatarBadge boxSize="1.25em" bg={statusColor()} />
 					</Avatar>
 					<Box
 						ml="2"

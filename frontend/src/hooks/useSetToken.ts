@@ -36,6 +36,7 @@ export const useSetToken = () => {
 						status: "error",
 					});
 					setLoading(false);
+					navigate("/");
 				});
 		},
 		[showMessage, setLoading, navigate, getPlayerWithToken]

@@ -16,6 +16,9 @@ export class Player {
 	ftUser: boolean;
 
 	@Column()
+	rookie: boolean;
+
+	@Column()
 	imgUrl: string;
 
 	@Column()
