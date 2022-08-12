@@ -75,6 +75,12 @@ export class PlayersController {
 		return this.playersService.signIn(credentialPlayerDto);
 	}
 
+	//プレイヤー初期ログインフラグをオフにする
+	@Patch('/editrookie/:name')
+	updatePlayerNotRookie(@Param('name') name: string): Promise<Player> {
+		return this.playersService.updatePlayerNotRookie(name, false);
+	}
+
 	//プレイヤーの表示名の更新
 	@Post('/editname')
 	updatePlayerDisplayName(
@@ -181,6 +187,12 @@ export class PlayersController {
 	@Patch('/statuslogout/:name/')
 	updateStatusLogout(@Param('name') name: string): Promise<Player> {
 		return this.playersService.updateStatusLogout(name);
+	}
+
+	//プレイヤーの接続ステータスをログアウトに更新
+	@Patch('/statusplay/:name/')
+	updateStatusPlay(@Param('name') name: string): Promise<Player> {
+		return this.playersService.updateStatusPlay(name);
 	}
 
 	//プレイヤーの接続ClientIdを更新

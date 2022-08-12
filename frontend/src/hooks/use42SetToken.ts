@@ -1,9 +1,11 @@
 import { useCallback } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 import { constUrl } from "../constant/constUrl";
 import { useCreateTFAQR } from "./useCreateTFAQR";
 import { useGetPlayerwithToken } from "./useGetPlayerWithToken";
+import { useMessage } from "./useMessage";
 
 //42Authoraizationを使用して、ログインし、loginPlayerにそのユーザー情報を格納するhooks
 //ユーザーがまだ登録済みでない場合は新規にユーザー情報を作成する。
@@ -71,6 +73,8 @@ const getAndSetToken = (name: string, password: string) =>
 export const use42SetToken = () => {
 	const { CreateTFAQR } = useCreateTFAQR();
 	const { getPlayerWithToken } = useGetPlayerwithToken();
+	const { showMessage } = useMessage();
+	const navigate = useNavigate();
 
 	const setFtUserToken = useCallback(
 		(code: string | null) => {
@@ -80,13 +84,21 @@ export const use42SetToken = () => {
 						getMe(tokenRes.data.access_token)
 							.then((Me) => {
 								getPlayers(Me.data.login)
-									.then(() => {
-										getAndSetToken(
-											Me.data.login,
-											"42user"
-										).then(() => {
-											getPlayerWithToken();
-										});
+									.then((user) => {
+										if (user.data.ftUser === false) {
+											showMessage({
+												title: `"${user.data.name}" is alredy exist. Sorry, you cannot use "42 Authorization".`,
+												status: "error",
+											});
+											navigate("/");
+										} else {
+											getAndSetToken(
+												Me.data.login,
+												"42user"
+											).then(() => {
+												getPlayerWithToken();
+											});
+										}
 									})
 									.catch(() => {
 										create42Player(
@@ -111,19 +123,33 @@ export const use42SetToken = () => {
 													});
 												});
 											})
-											.catch(() =>
-												console.log(
-													"Cannot create 42player"
-												)
-											);
+											.catch((e) => {
+												showMessage({
+													title: `Sorry, ${e.response.data.message}`,
+													status: "error",
+												});
+												navigate("/");
+											});
 									});
 							})
-							.catch(() => console.log("Not Found Me"));
+							.catch((e) => {
+								showMessage({
+									title: `Sorry, ${e.response.data.message}`,
+									status: "error",
+								});
+								navigate("/");
+							});
 					})
-					.catch(() => console.log("Not Found AccessToken"));
+					.catch((e) => {
+						showMessage({
+							title: `Sorry, ${e.response.data.message}`,
+							status: "error",
+						});
+						navigate("/");
+					});
 			}
 		},
-		[CreateTFAQR, getPlayerWithToken]
+		[CreateTFAQR, getPlayerWithToken, navigate, showMessage]
 	);
 	return { setFtUserToken };
 };

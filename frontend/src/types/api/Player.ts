@@ -4,6 +4,7 @@ export type Player = {
 	displayName: string;
 	password: string;
 	ftUser: boolean;
+	rookie: boolean;
 	win: number;
 	lose: number;
 	level: number;

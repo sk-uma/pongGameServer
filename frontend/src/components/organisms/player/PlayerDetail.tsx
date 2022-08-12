@@ -12,6 +12,7 @@ import {
 	Progress,
 	Wrap,
 	WrapItem,
+	useDisclosure,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router";
@@ -19,6 +20,7 @@ import { useAllPlayers } from "../../../hooks/useAllPlayers";
 import { FriendCard } from "./FriendCard";
 import { HistoryCard } from "../history/HisoryCard";
 import { useAllHistory } from "../../../hooks/useAllHistory";
+import { WelcomMessageModal } from "./WelcomMessageModal";
 
 //Profile画面を表示するためのコンポーネント
 
@@ -26,6 +28,7 @@ type Props = {
 	imgUrl: string;
 	name: string;
 	displayName: string;
+	rookie: boolean;
 	win: number;
 	lose: number;
 	level: number;
@@ -39,6 +42,7 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 		imgUrl,
 		name,
 		displayName,
+		rookie,
 		win,
 		lose,
 		level,
@@ -48,6 +52,7 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 	} = props;
 	const { getPlayers, players } = useAllPlayers();
 	const { getAllHistory, allHistory } = useAllHistory();
+	const { isOpen, onClose, onOpen } = useDisclosure();
 
 	const navigate = useNavigate();
 	const onClickEditProfile = useCallback(() => {
@@ -62,10 +67,13 @@ export const PlayerDetail: FC<Props> = memo((props) => {
 	useEffect(() => {
 		getPlayers();
 		getAllHistory();
+		rookie && onOpen();
+		// eslint-disable-next-line
 	}, [getPlayers, getAllHistory]);
 
 	return (
 		<Center>
+			<WelcomMessageModal name={name} isOpen={isOpen} onClose={onClose} />
 			<Box w="1500px" bg="white" pt={10} px={20} pb={20}>
 				<Text fontSize={{ base: "md", lg: "5xl" }}>Profile</Text>
 				<Grid

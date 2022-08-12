@@ -15,6 +15,7 @@ export const Home: VFC = memo(() => {
 				imgUrl={loginPlayer.imgUrl}
 				name={loginPlayer.name}
 				displayName={loginPlayer.displayName}
+				rookie={loginPlayer.rookie}
 				win={loginPlayer.win}
 				lose={loginPlayer.lose}
 				level={loginPlayer.level}

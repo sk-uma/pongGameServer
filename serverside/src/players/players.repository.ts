@@ -18,6 +18,7 @@ export class PlayersRepository extends Repository<Player> {
 			displayName: name,
 			password: hashPassword,
 			ftUser,
+			rookie: true,
 			imgUrl,
 			win: 0,
 			lose: 0,

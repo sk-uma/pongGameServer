@@ -97,9 +97,11 @@ export const CreatePlayerModal: FC<Props> = memo((props) => {
 			})
 			.catch((e) => {
 				showMessage({
-					title: `Sorry, User ${e.response.data.message}`,
+					title: `Sorry, ${e.response.data.message}`,
 					status: "error",
 				});
+				setUserName("");
+				setPassword("");
 			});
 	};
 
