@@ -47,6 +47,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
   let [isConnected, setIsConnected] = useState(false);
   const gameRef = useRef<any>(null);
+
   // const [gameInitialize, setGameInitialize] = useState(false);
 
   // config.parent = gameRef.current;
@@ -64,7 +65,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
   useEffect(() => {
     let g: Phaser.Game;
-    gameInfo.socket = io("http://localhost:3001");
+    gameInfo.socket = io(constUrl.serversideUrl);
 
     gameInfo.socket.on('connect', () => {
       // console.log('connected....');
@@ -87,8 +88,17 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       if (!g) {
         if (props.gameType === 'pong') {
           g = new Phaser.Game(config);
+          if (loginPlayer) {
+            // console.log('call patch');
+            axios.patch(constUrl.serversideUrl+`/players/statusplay/${loginPlayer?.name}`);
+          }
+
           g.events.on('hidden', () => {
             g?.destroy(true);
+            if (loginPlayer) {
+              // console.log('call patch');
+              axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
+            }
             gameInfo.socket?.emit('leaveRoom', {
               mode: props.mode,
               privateKey: props.privateKey,
@@ -105,8 +115,16 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
           // setGameInitialize(true);
         } else {
           g = new Phaser.Game(DXconfig);
+          if (loginPlayer) {
+            // console.log('call patch');
+            axios.patch(constUrl.serversideUrl+`/players/statusplay/${loginPlayer?.name}`);
+          }
           g.events.on('hidden', () => {
             g?.destroy(true);
+            if (loginPlayer) {
+              // console.log('call patch');
+              axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
+            }
             gameInfo.socket?.emit('leaveRoom', {
               mode: props.mode,
               privateKey: props.privateKey,
@@ -138,6 +156,10 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
      */
     gameInfo.socket.on('gameResult', (data: any) => {
       g?.destroy(true);
+      if (loginPlayer) {
+        // console.log('call patch');
+        axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
+      }
       gameInfo.socket?.emit('leaveRoom', {
         mode: props.mode,
         privateKey: props.privateKey,
@@ -163,6 +185,10 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
     return () => {
       g?.destroy(true);
+      if (loginPlayer) {
+        // console.log('call patch');
+        axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
+      }
       // if (gameRef.current) {
       //   gameRef.current.destroy();
       // }
