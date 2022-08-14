@@ -207,6 +207,8 @@ export default class PongClassic extends Phaser.Scene {
       this.gameStatus = 'leaved';
       this.display!.standByCountDownDisplay.text = '';
       this.display!.leavedMessageDisplay.text = "対戦相手が離脱しました\nしばらくお待ちください"
+      this.player1?.setVelocity(0, 0);
+      this.player2?.setVelocity(0, 0);
     });
 
     this.gameInfo.socket.on('restartGame', (data: any) => {
