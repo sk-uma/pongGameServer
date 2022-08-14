@@ -95,11 +95,13 @@ export const CreatePlayerModal: FC<Props> = memo((props) => {
 				});
 				onClose();
 			})
-			.catch(() => {
+			.catch((e) => {
 				showMessage({
-					title: `Sorry, User '${username}' is already exist. Change User name.`,
+					title: `Sorry, ${e.response.data.message}`,
 					status: "error",
 				});
+				setUserName("");
+				setPassword("");
 			});
 	};
 

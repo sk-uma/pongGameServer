@@ -5,6 +5,7 @@ import { GameModule } from './game/game.module';
 import { AvatarModule } from './avatar/avatar.module';
 import { HistoryModule } from './history/history.module';
 import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
+import { StatusModule } from './status/status.module';
 
 @Module({
 	imports: [
@@ -23,6 +24,7 @@ import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-f
 		GameModule,
 		HistoryModule,
 		TwoFactorAuthenticationModule,
+		StatusModule,
 	],
 })
 export class AppModule {}

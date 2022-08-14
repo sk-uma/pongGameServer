@@ -4,6 +4,7 @@ export type Player = {
 	displayName: string;
 	password: string;
 	ftUser: boolean;
+	rookie: boolean;
 	win: number;
 	lose: number;
 	level: number;
@@ -12,4 +13,5 @@ export type Player = {
 	blockList: string[];
 	twoFactorAuthenticationQR: string;
 	isTwoFactorAuthenticationEnabled: boolean;
+	status: string;
 };

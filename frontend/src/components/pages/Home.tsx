@@ -1,19 +1,13 @@
-import { memo, VFC, useEffect } from "react";
+import { memo, VFC } from "react";
 import { Center, Spinner } from "@chakra-ui/react";
 
 import { PlayerDetail } from "../organisms/player/PlayerDetail";
-import { useGetPlayerwithToken } from "../../hooks/useGetPlayerWithToken";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 
 //Loginした後のホームページ
 
 export const Home: VFC = memo(() => {
 	const { loginPlayer } = useLoginPlayer();
-	const { getPlayerWithToken } = useGetPlayerwithToken();
-
-	useEffect(() => {
-		getPlayerWithToken();
-	}, [getPlayerWithToken]);
 
 	if (loginPlayer) {
 		return (
@@ -21,12 +15,13 @@ export const Home: VFC = memo(() => {
 				imgUrl={loginPlayer.imgUrl}
 				name={loginPlayer.name}
 				displayName={loginPlayer.displayName}
+				rookie={loginPlayer.rookie}
 				win={loginPlayer.win}
 				lose={loginPlayer.lose}
 				level={loginPlayer.level}
 				exp={loginPlayer.exp}
-				friends={loginPlayer.friends}
-				blockList={loginPlayer.blockList}
+				friends={loginPlayer.friends.sort()}
+				blockList={loginPlayer.blockList.sort()}
 			/>
 		);
 	} else {

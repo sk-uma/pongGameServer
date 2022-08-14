@@ -12,7 +12,15 @@ export const useAllPlayers = () => {
 	const getPlayers = useCallback(() => {
 		axios
 			.get<Array<Player>>(constUrl.serversideUrl + "/players")
-			.then((res) => setPlayers(res.data))
+			.then((res) => {
+				setPlayers(
+					res.data.sort(function (a, b) {
+						if (a.displayName < b.displayName) return -1;
+						if (b.displayName < a.displayName) return 1;
+						return 0;
+					})
+				);
+			})
 			.catch(() => console.log("Not found players"));
 	}, []);
 	return { getPlayers, players };

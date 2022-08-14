@@ -1,28 +1,25 @@
 import {
 	IsString,
 	IsNotEmpty,
-	IsBoolean,
 	MaxLength,
 	MinLength,
+	IsOptional,
 } from 'class-validator';
 
-export class CreatePlayerDto {
+export class EditPlayerDto {
+	@IsString()
+	@IsNotEmpty()
+	@MaxLength(10)
+	name: string;
+
 	@IsString()
 	@MaxLength(10)
-	@IsNotEmpty()
-	name: string;
+	@IsOptional()
+	displayName: string;
 
 	@IsString()
 	//	@MinLength(6)
 	@MaxLength(12)
-	@IsNotEmpty()
+	@IsOptional()
 	password: string;
-
-	@IsString()
-	@IsNotEmpty()
-	imgUrl: string;
-
-	@IsBoolean()
-	@IsNotEmpty()
-	ftUser: boolean;
 }

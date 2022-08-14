@@ -64,10 +64,10 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 
 	const onClickEditPlayerName = () => {
 		axios
-			.patch(
-				constUrl.serversideUrl +
-					`/players/editname/${name}/${playerName}`
-			)
+			.post(constUrl.serversideUrl + `/players/editname`, {
+				name,
+				displayName: playerName,
+			})
 			.then((res) => {
 				setLoginPlayer(res.data);
 				showMessage({
@@ -76,9 +76,9 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 				});
 				setPlayerName("");
 			})
-			.catch(() => {
+			.catch((e) => {
 				showMessage({
-					title: `Sorry, Edit Player Name Failed.`,
+					title: e.response.data.message,
 					status: "error",
 				});
 				setPlayerName("");
@@ -87,9 +87,10 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 
 	const onClickEditPassword = () => {
 		axios
-			.patch(
-				constUrl.serversideUrl + `/players/editpass/${name}/${password}`
-			)
+			.post(constUrl.serversideUrl + `/players/editpass`, {
+				name,
+				password,
+			})
 			.then(() => {
 				showMessage({
 					title: "Edit Player Password Successful",
@@ -97,9 +98,9 @@ export const PlayerEditProfile: VFC<Props> = memo((props) => {
 				});
 				setPassword("");
 			})
-			.catch(() => {
+			.catch((e) => {
 				showMessage({
-					title: `Sorry, Edit Player Name Failed.`,
+					title: e.response.data.message,
 					status: "error",
 				});
 				setPassword("");
