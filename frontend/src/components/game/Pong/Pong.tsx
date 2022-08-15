@@ -84,7 +84,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       gameInfo.roomID = data.roomId;
       gameInfo.isServer = data.isServer;
       gameInfo.gameData = data.gameData;
-      console.log("ready to start", gameInfo.gameData.score.hostPlayerScore, gameInfo.gameData.score.clientPlayerScore);
+      // console.log("ready to start", gameInfo.gameData.score.hostPlayerScore, gameInfo.gameData.score.clientPlayerScore);
       if (!g) {
         if (props.gameType === 'pong') {
           g = new Phaser.Game(config);

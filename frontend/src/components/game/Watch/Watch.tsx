@@ -45,15 +45,15 @@ export function Watch(props: {room_id: string}) {
     gameInfo.socket = io("http://localhost:3001");
 
     gameInfo.socket.on('connect', () => {
-      console.log('connected....');
+      // console.log('connected....');
     });
 
     gameInfo.socket.on('disconnect', () => {
-      console.log('disconnected...');
+      // console.log('disconnected...');
     });
 
     gameInfo.socket.on('startWatchingData', (data: any) => {
-      console.log(data);
+      // console.log(data);
       gameInfo.gameData = data;
     });
 

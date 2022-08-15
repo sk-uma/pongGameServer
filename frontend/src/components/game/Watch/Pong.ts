@@ -134,7 +134,7 @@ export default class PongClassic extends Phaser.Scene {
 
   setSocketEvent(): void {
     this.gameInfo.socket.on('hello', (data: any) => {
-      console.log(data);
+      // console.log(data);
     })
 
     this.gameInfo.socket.on('UpdateCheckedGameData', (data: any) => {

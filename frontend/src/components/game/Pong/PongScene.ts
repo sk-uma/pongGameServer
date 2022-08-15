@@ -149,9 +149,9 @@ export default class PongScene extends Phaser.Scene {
    *        得点を獲得
    */
   setSocketEvent(): void {
-    this.gameInfo.socket.on('hello', (data: any) => {
-      console.log(data);
-    })
+    // this.gameInfo.socket.on('hello', (data: any) => {
+    //   console.log(data);
+    // })
 
     this.gameInfo.socket.on('UpdateCheckedGameData', (data: any) => {
       if (!this.gameInfo.isServer) {
@@ -163,7 +163,7 @@ export default class PongScene extends Phaser.Scene {
     });
 
     this.gameInfo.socket.on('PlayerLeaveRoom', (data: any) => {
-      console.log('PlayerLeaveRoom', data);
+      // console.log('PlayerLeaveRoom', data);
       this.ball?.setVelocity(0, 0);
       this.ball?.setPosition(400, 300);
       this.gameStatus = 'leaved';
