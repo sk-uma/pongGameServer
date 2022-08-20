@@ -81,6 +81,9 @@ export default class PongDX extends Phaser.Scene {
     if (this.gameInfo.gameData.latestPaddlePosition.host === -1) {
       this.gameInfo.gameData.latestPaddlePosition.host = DISPLAY_HEIGHT / 2;
       this.gameInfo.gameData.latestPaddlePosition.client = DISPLAY_HEIGHT / 2;
+    } else {	
+      this.gameInfo.gameData.latestPaddlePosition.host = this.gameInfo.gameData.latestPaddlePosition.host + (75 / 2);	
+      this.gameInfo.gameData.latestPaddlePosition.client = this.gameInfo.gameData.latestPaddlePosition.client + (75 / 2);	
     }
   }
 
@@ -234,6 +237,8 @@ export default class PongDX extends Phaser.Scene {
       this.gameStatus = 'leaved';
       this.display!.standByCountDownDisplay.text = '';
       this.display!.leavedMessageDisplay.text = "対戦相手が離脱しました\nしばらくお待ちください"
+      this.player1?.setVelocity(0, 0);
+      this.player2?.setVelocity(0, 0);
     });
 
     this.gameInfo.socket.on('restartGame', (data: any) => {
@@ -333,6 +338,9 @@ export default class PongDX extends Phaser.Scene {
     } else if (this.gameStatus === 'playing') {
       if (this.gameInfo.isServer) {
         this.checkScore();
+        this.gameInfo.gameData.latestPaddlePosition.host = this.player1?.body.position.y;	
+      } else {	
+        this.gameInfo.gameData.latestPaddlePosition.client = this.player1?.body.position.y;
       }
     }
     this.sendGameData();

@@ -40,6 +40,10 @@ export class Pong implements GameInterface<PongGameData> {
     return this.gameData;
   }
 
+  updateGameData(data: PongGameData) {
+    this.gameData = data;
+  }
+
   /**
    * TODO
    */

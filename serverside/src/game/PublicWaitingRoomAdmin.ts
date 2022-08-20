@@ -38,7 +38,7 @@ export class PublicWaitingRoomAdmin {
     return {status: 'failure'};
   }
 
-  leaveRoom(playerName: string, socket: Socket, gameType: GameType) {
+  leaveRoom(playerName: string, socket: Socket, gameType: GameType, data: any) {
     let rtv = this.getRoomByGameType(gameType);
     if (rtv.status === 'failure') {
       return {status: 'failure'};
@@ -46,7 +46,7 @@ export class PublicWaitingRoomAdmin {
 
     if (rtv.metaRoom.already && rtv.metaRoom.room.getHostPlayer().getName() == playerName) {
       let room: Room = rtv.metaRoom.room;
-      room.leaveRoom(playerName);
+      room.leaveRoom(data, playerName);
       this.roomMap.set(gameType, {already: false});
       return {status: 'success'};
     }

@@ -42,6 +42,10 @@ export class PongDX implements GameInterface<PongDXGameData> {
     return this.gameData;
   }
 
+  updateGameData(data: PongDXGameData) {
+    this.gameData = data;
+  }
+
   /**
    * TODO
    */

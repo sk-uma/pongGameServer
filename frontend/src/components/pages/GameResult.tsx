@@ -27,7 +27,7 @@ export const GameResult: VFC = memo(() => {
     getClientPlayer();
   }, [getHostPlayer, getClientPlayer]);
 
-  console.log(result);
+  // console.log(result);
 
   // return (
   //   <Center>

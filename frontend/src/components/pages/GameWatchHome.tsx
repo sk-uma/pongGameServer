@@ -20,11 +20,13 @@ export const GameWatchHome: VFC = memo(() => {
         /> */}
         {/* playingRoom.map(()) */}
         {playingRoom.map((data: any) => (
-          <RoomCard
-            room_id={data.roomId}
-            hostPlayer={data.player.hostPlayer}
-            clientPlayer={data.player.clientPlayer}
-          />
+          <div key={data.room_id}>
+            <RoomCard
+              room_id={data.roomId}
+              hostPlayer={data.player.hostPlayer}
+              clientPlayer={data.player.clientPlayer}
+            />
+          </div>
         ))}
         
         {/* <Center>

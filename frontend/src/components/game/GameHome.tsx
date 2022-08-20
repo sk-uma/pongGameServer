@@ -23,11 +23,11 @@ export function GameHome() {
   const [privateKey, setPrivateKey] = useState("Hello");
 
   const onSubmit: SubmitHandler<PrivateRoomForm> = (data) => {
-    console.log("data", data);
+    // console.log("data", data);
   }
 
   const onSubmitPrivateKey: SubmitHandler<PrivateRoomForm> = (data) => {
-    console.log(data);
+    // console.log(data);
     setPrivateKey('world')
   }
 

@@ -93,11 +93,12 @@ export class Room {
    * プレイヤーの切断処理
    * @param playerName 切断要求のあったプレーヤー名
    */
-  leaveRoom(playerName: string) {
+  leaveRoom(data: any, playerName: string) {
     var player: Player = undefined;
     if ((player = this.getPlayer(playerName)) !== undefined) {
       player.leaveRoom(this.roomId);
     }
+    this.gameType.updateGameData(data.gameData);
     this.status = 'leaved';
   }
 
