@@ -103,6 +103,8 @@ export default class PongDX extends Phaser.Scene {
    * オブジェクトの生成、ソケットの初期化等を行う
    */
   create(): void {
+    console.log('create');
+
     this.playerGroup = this.physics.add.group();
 
     this.player1 = this.playerGroup.create(
@@ -407,8 +409,10 @@ export default class PongDX extends Phaser.Scene {
     this.ball!.visible = false;
     this.startTime = Date.now() + this.standByTime;
     this.gameStatus = 'standBy';
+    console.log('isServer:', this.gameInfo.isServer);
     if (this.gameInfo.isServer) {
       // let blockPosList: {x: number, y: number}[] = []
+      console.log('reset block');
       this.impediment?.getChildren().map((block) => {
         // let x = Phaser.Math.Between(200, DISPLAY_WIDTH - 200);
         // let y = Phaser.Math.Between(0, DISPLAY_HEIGHT);
@@ -420,6 +424,7 @@ export default class PongDX extends Phaser.Scene {
         block.body.position.x = x;
         block.body.position.y = Phaser.Math.Between(0, DISPLAY_HEIGHT);
         // blockPosList.push({x, y});
+        return block;
       });
       this.gameInfo.socket.emit('eventGameData', {
         roomId: this?.gameInfo.roomID,

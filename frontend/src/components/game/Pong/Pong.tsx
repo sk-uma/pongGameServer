@@ -1,12 +1,12 @@
 import { Socket, io } from "socket.io-client";
-import React, { useEffect, CSSProperties, useState, useRef } from 'react';
+import React, { useEffect, CSSProperties, useState } from 'react';
 import { config, DXconfig } from "./PongConfig";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { constUrl } from "../../../constant/constUrl";
-import { Box, Center, Spinner, Stack, Text, Link } from "@chakra-ui/react";
-import { IonPhaser } from '@ion-phaser/react';
+import { Box, Center, Spinner, Stack, Text } from "@chakra-ui/react";
+// import { IonPhaser } from '@ion-phaser/react';
 
 // export let socket: Socket;
 // export let isServer: boolean = false;
@@ -46,7 +46,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
   // console.log(props);
 
   let [isConnected, setIsConnected] = useState(false);
-  const gameRef = useRef<any>(null);
+  // const gameRef = useRef<any>(null);
 
   // const [gameInitialize, setGameInitialize] = useState(false);
 
@@ -205,6 +205,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
       gameInfo.socket?.disconnect();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   // const Canvas = chakra('canvas');

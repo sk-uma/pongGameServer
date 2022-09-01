@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Center, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { Center, SimpleGrid } from "@chakra-ui/react";
 import { memo, useEffect, VFC } from "react";
 import { usePlayingRoom } from "../../hooks/usePlayingRoom";
 import { RoomCard } from "../game/Watch/RoomCard";
