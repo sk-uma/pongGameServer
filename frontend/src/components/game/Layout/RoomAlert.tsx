@@ -1,6 +1,6 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Center, HStack, useToast, VStack } from "@chakra-ui/react";
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Center, useToast, VStack } from "@chakra-ui/react";
 import axios from "axios";
-import { useState } from "react";
+// import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { constUrl } from "../../../constant/constUrl";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
@@ -9,7 +9,7 @@ import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 export function RoomAlert() {
   const navigate = useNavigate();
   const { loginPlayer } = useLoginPlayer();
-  const [isLeaved, setIsLeaved] = useState(true);
+  // const [isLeaved, setIsLeaved] = useState(true);
   const toast = useToast();
 
   const roomJoinClick = () => {

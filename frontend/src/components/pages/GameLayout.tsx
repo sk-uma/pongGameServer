@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Center } from "@chakra-ui/react";
+// import { Alert, AlertDescription, AlertIcon, AlertTitle, Center } from "@chakra-ui/react";
 import axios from "axios";
 import { memo, useEffect, useState, VFC } from "react";
 import { Outlet } from "react-router-dom";
@@ -9,7 +9,7 @@ import { RoomAlert } from "../game/Layout/RoomAlert";
 export const GameLayout: VFC = memo(() => {
   const [isLeaved, setIsLeaved] = useState(false);
   const { loginPlayer } = useLoginPlayer();
-  const [idx, setIdx] = useState(0);
+  // const [idx, setIdx] = useState(0);
 
   useEffect(() => {
     axios
@@ -21,6 +21,7 @@ export const GameLayout: VFC = memo(() => {
           setIsLeaved(true);
         }
       })
+    // eslint-disable-next-line
   }, [isLeaved]);
 
   // useEffect(() => {

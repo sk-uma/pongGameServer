@@ -1,4 +1,4 @@
-import { memo, VFC, useEffect, CSSProperties } from "react";
+import { memo, VFC } from "react";
 import { Button, Center, Stack, Text } from "@chakra-ui/react";
 import { GiEarthAsiaOceania } from "react-icons/gi"
 import { RiChatPrivateLine } from "react-icons/ri"

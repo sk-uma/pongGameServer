@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Center, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Stack, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Player } from "./Player";
 

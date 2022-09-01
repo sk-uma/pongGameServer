@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import PongClassic from './PongClassic'
 import PongDX from './PongDX'
-import PongScene from './PongScene'
+// import PongScene from './PongScene'
 
 export const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,

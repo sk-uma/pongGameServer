@@ -11,6 +11,7 @@ export const usePlayer = (playerName: string) => {
             .get<Player>(constUrl.serversideUrl + `/players/${playerName}`)
             .then((res => setPlayer(res.data)))
             .catch(() => console.log('not found player'));
+        // eslint-disable-next-line
     }, []);
     return {getPlayer, player};
 }

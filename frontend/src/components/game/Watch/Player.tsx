@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Center, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { Avatar, Center, Stack, Text } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { usePlayer } from "../../../hooks/usePlayer";
 

@@ -15,7 +15,7 @@ export function JoinPrivateRoom() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<JoinPrivateRoomForm>();
 
   const navigate = useNavigate();

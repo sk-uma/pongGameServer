@@ -1,6 +1,6 @@
 import { Center, Divider, Stack, Text } from "@chakra-ui/react";
-import { memo, useState, VFC } from "react";
-import { useLocation } from "react-router-dom";
+import { memo, VFC } from "react";
+// import { useLocation } from "react-router-dom";
 import { GeneratePrivateKey } from "../game/PrivateKey/GeneratePrivateKey";
 import { JoinPrivateRoom } from "../game/PrivateKey/JoinPrivateRoom";
 
