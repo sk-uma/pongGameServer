@@ -2,10 +2,9 @@
 database/docker
 
 # node_module
-frontend/node_modules
-frontend/package-lock.json
-serverside/node_modules
-serverside/package-lock.json
+services/frontend/srcs/node_modules
+services/frontend/srcs/build
+services/backend/srcs/node_modules
 
 # nest_dist
 serverside/dist
