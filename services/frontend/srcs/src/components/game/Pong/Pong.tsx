@@ -184,7 +184,10 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
     });
 
     return () => {
+      // console.log('is Active before destroy', g?.isRunning);
       g?.destroy(true);
+      // console.log('is Active after destroy', g?.isRunning);
+
       if (loginPlayer) {
         // console.log('call patch');
         axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
@@ -193,6 +196,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       //   gameRef.current.destroy();
       // }
       // setGameInitialize(false);
+      // console.log('send leaveRoom in Pong.tsx');
       gameInfo.socket?.emit('leaveRoom', {
         mode: props.mode,
         privateKey: props.privateKey,
@@ -202,6 +206,8 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
           name: `${loginPlayer?.name}`
         }
       });
+      console.log("socket", gameInfo.socket);
+      // console.log(Boolean(gameInfo.socket));
 
       gameInfo.socket?.disconnect();
     }

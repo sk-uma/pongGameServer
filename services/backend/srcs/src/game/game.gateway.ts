@@ -126,7 +126,7 @@ export class GameGateway {
     // // this.logger.log(this.server.sockets.manager);
     // console.log(data.user.name);
     // this.gameAdmin.tmp("tmp");
-    console.log(data);
+    // console.log(data);
     this.gameAdmin.joinRoom(data, client);
   }
 
@@ -141,6 +141,7 @@ export class GameGateway {
     // }
     // console.log(client.rooms);
 
+    // console.log('receive leaceRoom!!!!!!!!!!');
     this.gameAdmin.leaveRoom(data, client);
   }
 

@@ -19,7 +19,7 @@ export class GameAdmin {
     let room = rtv?.room;
 
     // console.log(rtv.type);
-    console.log(data);
+    // console.log(data);
 
     if (rtv.type === 'leaved') {
       room.reJoinRoom(playerName, socket);
@@ -106,6 +106,7 @@ export class GameAdmin {
     } else if (rtv.type === 'privateWaiting') {
       this.privatewaitingList.leaveRoom(playerName, socket, data.privateKey);
     }
+    // console.log('call leaved');
     if (this.debugLevel >= 1) {
       this.putGameStatus();
     }

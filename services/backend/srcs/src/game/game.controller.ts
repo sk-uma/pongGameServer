@@ -43,7 +43,7 @@ export class GameController {
     @Query('key') key: string
   ) {
     let rtv = gameAdmin.getPrivateRoomAdmin().checkPrivateKey(key);
-    console.log("key", rtv);
+    // console.log("key", rtv);
     if (!rtv) {
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,

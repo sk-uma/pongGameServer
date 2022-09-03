@@ -83,7 +83,7 @@ export class PrivateRoomAdmin {
 
   leaveRoom(playerName: string, socket: Socket, privateKey: string): {status: ReturnStatus} {
     let rtv: {status: ReturnStatus, metaRoom?: MetaRoomType} = this.getRoomByPrivateKey(privateKey);
-    console.log(playerName, privateKey, rtv);    
+    // console.log(playerName, privateKey, rtv);    
     if (rtv.status === 'failure') {
       return {status: 'failure'}
     }

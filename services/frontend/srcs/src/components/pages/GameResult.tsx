@@ -22,7 +22,7 @@ export const GameResult: VFC = memo(() => {
   // (location.state as GameResultType).hostPlayer.name;
   const result = location.state as GameResultType;
   const { getPlayer: getHostPlayer, player: hostPlayer } = usePlayer(result.hostPlayer.name);
-  const { getPlayer: getClientPlayer, player: clientPlayer } = usePlayer(result.hostPlayer.name);
+  const { getPlayer: getClientPlayer, player: clientPlayer } = usePlayer(result.clientPlayer.name);
   // setResult(result);
 
   useEffect(() => {
