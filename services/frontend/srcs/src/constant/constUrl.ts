@@ -13,13 +13,10 @@ export const constUrl = {
 	ftGetTokenAPI: "https://api.intra.42.fr/oauth/token",
 	//42AuthorazationのClientId
 	ftClientId:
-		//		"5ec7a9808358afbd8a4a174c7d89d4ae27fc87b35477bf1065cc11387df68549",
 		"3dab4327c691ea017b61965e590dfda08b58d6ae74e0a26a0dab87c222444569",
 	//42AuthorazationのSecret
 	ftClientSecret:
-		//		"811b6f2ae3b9ccb0fb01fe47113e2189280f6daa0a4ecadf082d3c1cd96670d6",
-		//"d58a504f9063e32bdeb1328f9b6df6d7a6fbd240b8b783d429d41725cdf01791",
-		"bfcc7cbd0936cf662aeb62b9d210cdd2af613468d45c4a8f4762e5e4077c3e0f",
+		"8f39bf5a9636c19786e97fbe06bd6f494dffc760df3ab9e055b623be623ff2a6",
 	//42ログインユーザーの自身の情報を得るためのAPI
 	ftGetMeAPI: "https://api.intra.42.fr/v2/me",
 } as const;
