@@ -103,7 +103,7 @@ export default class PongDX extends Phaser.Scene {
    * オブジェクトの生成、ソケットの初期化等を行う
    */
   create(): void {
-    // console.log('create');
+    console.log('create');
 
     this.playerGroup = this.physics.add.group();
 
