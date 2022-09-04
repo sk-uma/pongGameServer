@@ -32,6 +32,7 @@ export class Player {
   leaveRoom(roomId: string) {
     this.status = 'disconnected';
     this.socket.leave(roomId);
+    this.socket = undefined;
   }
 
   setStatus(status: PlayerStatus) {
@@ -64,19 +65,15 @@ export class Player {
     // });
   }
 
-  // broadcast(roomId: string, message: string, data?: any) {
-  //   this.socket.broadcast.to(roomId).emit(message, data);
-  // }
-
-  // getRoomId(): string {
-  //   return this.roomId;
-  // }
-
   getName(): string {
     return this.playerName;
   }
 
-  getStatus(): string {
+  getSocketId(): string {
+    return this.socket.id;
+  }
+
+  getStatus(): PlayerStatus {
     return this.status;
   }
 
