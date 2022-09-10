@@ -22,7 +22,7 @@ export function RoomAlert() {
         if (data.data.status === 'leaved') {
           navigate('/home/game/play', {state: {
             mode: 'public',
-            game: 'pong',
+            game: data.data.mode,
           }});
         } else {
           toast({
