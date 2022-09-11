@@ -74,44 +74,33 @@ export class GameController {
     return gameAdmin.getPlayingRoom();
   }
 
-  // @Get('game-mode')
-  // async getRoomByPlayerRoom(
-  //   @Query('user') user: string
-  // ): Promise<any> {
-  //   // console.log(user);
-  //   // console.log(gameAdmin.searchRoomByPlayerName(user));
-  //   // return gameAdmin.searchRoomByPlayerName(user);
-  //   let rtv = gameAdmin.searchRoomByPlayerName(user);
-  //   if (rtv.type === 'notFound') {
-  //     throw new HttpException({
-  //       status: HttpStatus.NOT_FOUND,
-  //       error: `Missing userName(${user})`
-  //     }, 404);
-  //   } else {
-  //     return {
-  //       type: rtv.type,
-  //       mode: rtv.room.getRoomInfo().gameType
-  //     }
-  //   }
-  // }
-
   @Get('player-play-status')
   async getPlayerPlayStatus(
     @Query('user') user: string
-  ): Promise<{status: string, mode: string}> {
+  ): Promise<{status: string, mode?: string}> {
     let rtv = gameAdmin.searchRoomByPlayerName(user);
+    // if (rtv.type === 'notFound') {
+    //   throw new HttpException({
+    //     status: HttpStatus.NOT_FOUND,
+    //     error: `Missing userName(${user})`
+    //   }, 404);
+    // } else {
+    //   return {
+    //     status: rtv.type,
+    //     mode: rtv.room.getRoomInfo().gameType
+    //   }
+    // }
     if (rtv.type === 'notFound') {
-      throw new HttpException({
-        status: HttpStatus.NOT_FOUND,
-        error: `Missing userName(${user})`
-      }, 404);
+      return {
+        status: rtv.type
+      }
     } else {
       return {
         status: rtv.type,
         mode: rtv.room.getRoomInfo().gameType
       }
     }
-    
+
     return {status: rtv.type, mode: rtv.room.getRoomInfo().gameType};
   }
 
@@ -120,6 +109,7 @@ export class GameController {
     @Query('user') user: string
   ) {
     let rtv = gameAdmin.getPrivateRoomAdmin().getRoomByMaster(user);
+    console.log(rtv);
     return {status: rtv.status === 'success'};
   }
 }

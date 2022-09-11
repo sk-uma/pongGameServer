@@ -34,6 +34,7 @@ export function RoomAlert() {
           // navigate('/home');
         }
       })
+      .catch(() => {})
   }
 
 	return (
