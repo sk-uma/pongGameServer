@@ -24,9 +24,6 @@ export function GeneratePrivateKey() {
   const { loginPlayer } = useLoginPlayer();
 
   const onSubmit: SubmitHandler<GeneratePrivateKeyForm> = (data) => {
-    // console.log("data", data);
-    // axios.get('').then();
-    // let key = '';
     axios
       .get(constUrl.serversideUrl + '/game/privateKeyGen', {params: {
         user: loginPlayer?.name,

@@ -43,7 +43,7 @@ export class GameController {
     @Query('key') key: string
   ) {
     let rtv = gameAdmin.getPrivateRoomAdmin().checkPrivateKey(key);
-    console.log("key", rtv);
+    // console.log("key", rtv);
     if (!rtv) {
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,
@@ -77,9 +77,31 @@ export class GameController {
   @Get('player-play-status')
   async getPlayerPlayStatus(
     @Query('user') user: string
-  ): Promise<{status: string}> {
+  ): Promise<{status: string, mode?: string}> {
     let rtv = gameAdmin.searchRoomByPlayerName(user);
-    return {status: rtv.type};
+    // if (rtv.type === 'notFound') {
+    //   throw new HttpException({
+    //     status: HttpStatus.NOT_FOUND,
+    //     error: `Missing userName(${user})`
+    //   }, 404);
+    // } else {
+    //   return {
+    //     status: rtv.type,
+    //     mode: rtv.room.getRoomInfo().gameType
+    //   }
+    // }
+    if (rtv.type === 'notFound') {
+      return {
+        status: rtv.type
+      }
+    } else {
+      return {
+        status: rtv.type,
+        mode: rtv.room.getRoomInfo().gameType
+      }
+    }
+
+    return {status: rtv.type, mode: rtv.room.getRoomInfo().gameType};
   }
 
   @Get('already-generate-key')
@@ -87,6 +109,7 @@ export class GameController {
     @Query('user') user: string
   ) {
     let rtv = gameAdmin.getPrivateRoomAdmin().getRoomByMaster(user);
+    console.log(rtv);
     return {status: rtv.status === 'success'};
   }
 }

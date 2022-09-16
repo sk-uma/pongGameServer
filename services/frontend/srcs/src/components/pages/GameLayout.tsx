@@ -21,6 +21,7 @@ export const GameLayout: VFC = memo(() => {
           setIsLeaved(true);
         }
       })
+      .catch((err) => {console.log('not found room', err)})
     // eslint-disable-next-line
   }, [isLeaved]);
 

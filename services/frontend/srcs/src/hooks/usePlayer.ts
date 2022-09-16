@@ -7,10 +7,12 @@ export const usePlayer = (playerName: string) => {
     const [player, setPlayer] = useState<Player>();
 
     const getPlayer = useCallback(() => {
-        axios
-            .get<Player>(constUrl.serversideUrl + `/players/${playerName}`)
-            .then((res => setPlayer(res.data)))
-            .catch(() => console.log('not found player'));
+        if (playerName) {
+            axios
+                .get<Player>(constUrl.serversideUrl + `/players/${playerName}`)
+                .then((res => setPlayer(res.data)))
+                .catch(() => console.log('not found player'));
+        }
         // eslint-disable-next-line
     }, []);
     return {getPlayer, player};

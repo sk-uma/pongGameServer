@@ -43,7 +43,8 @@ services:
     networks:
       - backend_network
     working_dir: /app
-    command: sh -c "npm install --legacy-peer-deps && npm start"
+    command: sh -c "npm install --legacy-peer-deps && npm run start"
+    # command: sh -c "tail -f /dev/null"
     ports:
       - '3000:3000'
 

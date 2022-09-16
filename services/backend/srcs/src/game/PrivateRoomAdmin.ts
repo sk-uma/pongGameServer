@@ -52,38 +52,10 @@ export class PrivateRoomAdmin {
       return {status: 'success', roomStatus: 'playing', room: room};
     }
     return {status: 'failure'};
-
-    // if (rtv.room.getStatus() === 'leaved') {
-    //   let roomMetaStatus: RoomMetaStatus;
-    //   if (rtv.room.getHostPlayer().getName() === playerName) {
-    //     // rtv.room.reJoinRoom(playerName, socket);
-    //     roomMetaStatus = 'masterOnly';
-    //   } else if (rtv.room.getClientPlayer().getName() === playerName) {
-    //     // rtv.room.clientJoinRoom(new Player(playerName, socket, 'client'));
-    //     roomMetaStatus = 'slaveOnly';
-    //   } else {
-    //     return {status: 'failure'};
-    //   }
-    //   rtv.room.setStatus('waiting');
-    //   return {status: 'success', roomStatus: 'waiting'};
-    // } else if (rtv.room.getStatus() === 'waiting') {
-    //   if (rtv.room.getHostPlayer().getName() === playerName) {
-    //     rtv.room.reJoinRoom(playerName, socket);
-    //   } else if (rtv.room.getClientPlayer().getName() === playerName) {
-    //     rtv.room.clientJoinRoom(new Player(playerName, socket, 'client'));
-    //   } else {
-    //     return {status: 'failure'};
-    //   }
-    //   rtv.room.setStatus('playing');
-    //   return {status: 'success', roomStatus: 'playing'};
-    // } else {
-    //   return {status: 'failure'};
-    // }
   }
 
   leaveRoom(playerName: string, socket: Socket, privateKey: string): {status: ReturnStatus} {
     let rtv: {status: ReturnStatus, metaRoom?: MetaRoomType} = this.getRoomByPrivateKey(privateKey);
-    console.log(playerName, privateKey, rtv);    
     if (rtv.status === 'failure') {
       return {status: 'failure'}
     }
@@ -114,15 +86,11 @@ export class PrivateRoomAdmin {
   }
 
   addPrivateRoom(user: string, gameType: string) {
-    // let room: Room = Room(Player(), type='');
-    // let room: Room = this.generatePrivateRoom(user);
     let privateKey: string = this.generatePrivateKey(user);
     if (gameType !== 'pong' && gameType !== 'pongDX') {
       return {status: 'failure'}
     }
     this.roomMap.set(privateKey, {status: 'nothing', master: user, gameType: gameType});
-    // this.roomList.push(room);
-    // console.log(this.roomMap);
     return {
       status: 'success',
       privateKey: privateKey
@@ -163,7 +131,6 @@ export class PrivateRoomAdmin {
 
   putAllRoomStatus(): void {
     for (const [privateKey, metaRoom] of this.roomMap) {
-      // roomData.room.putRoomStatus();
       if (metaRoom.status !== 'nothing') {
         metaRoom.room.putRoomStatus();
       }
@@ -173,13 +140,4 @@ export class PrivateRoomAdmin {
   private generatePrivateKey(user: string): string {
     return uuidv4();
   }
-
-  // private generatePrivateRoom(user: string): Room {
-  //   let player: Player = new Player(user, undefined, 'host');
-  //   player.setStatus('disconnected');
-  //   let room: Room = new Room(player, 'private');
-  //   room.setStatus('leaved');
-  //   return room;
-  //   // let room: Room = Room();
-  // }
 }

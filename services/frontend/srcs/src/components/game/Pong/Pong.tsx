@@ -41,16 +41,32 @@ export let gameInfo: GameInfo = {
   }
 };
 
+// export function Pong(props: {mode: string, gameType: string, privateKey?: string}) {
+//   useEffect(() => {
+//     gameInfo.socket = io(constUrl.serversideUrl);
+
+//     gameInfo.socket.on('connect', () => {
+//       gameInfo.socket?.emit('hello', 'connected');
+//     });
+
+//     gameInfo.socket.on('disconnect', () => {
+//       console.log('disconnected...');
+//     });
+//     return (() => {
+//       for (let i = 0; i < 1000; i++) {
+//         gameInfo.socket?.emit('hello', i);
+//       }
+//       // gameInfo.socket?.disconnect();
+//     })
+//   }, []);
+
+//   return (
+//   <></>
+//   );
+// }
+
 export function Pong(props: {mode: string, gameType: string, privateKey?: string}) {
-  // console.log('Pong component');
-  // console.log(props);
-
   let [isConnected, setIsConnected] = useState(false);
-  // const gameRef = useRef<any>(null);
-
-  // const [gameInitialize, setGameInitialize] = useState(false);
-
-  // config.parent = gameRef.current;
 
 	const style: CSSProperties = {
     // width: "1000px",
@@ -60,7 +76,6 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
   const { loginPlayer } = useLoginPlayer();
 
-  // console.log(loginPlayer?.name);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,34 +84,31 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
 
     gameInfo.socket.on('connect', () => {
       // console.log('connected....');
+      // gameInfo.socket?.emit('hello');
     });
 
     gameInfo.socket.on('disconnect', () => {
+      // console.log(gameInfo.socket);
       // console.log('disconnected...');
     });
-
-    // console.log("is connected", isConnected);
 
     /**
      * 待機終了時の処理
      */
-    gameInfo.socket.on('opponentIsReadyToStart', (data: any) => {
+    gameInfo.socket?.on('opponentIsReadyToStart', (data: any) => {
       gameInfo.roomID = data.roomId;
       gameInfo.isServer = data.isServer;
       gameInfo.gameData = data.gameData;
-      // console.log("ready to start", gameInfo.gameData.score.hostPlayerScore, gameInfo.gameData.score.clientPlayerScore);
       if (!g) {
         if (props.gameType === 'pong') {
           g = new Phaser.Game(config);
           if (loginPlayer) {
-            // console.log('call patch');
             axios.patch(constUrl.serversideUrl+`/players/statusplay/${loginPlayer?.name}`);
           }
 
           g.events.on('hidden', () => {
             g?.destroy(true);
             if (loginPlayer) {
-              // console.log('call patch');
               axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
             }
             gameInfo.socket?.emit('leaveRoom', {
@@ -108,21 +120,19 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
                 name: `${loginPlayer?.name}`
               }
             });
-            gameInfo.socket?.disconnect();
+            // console.log('before disconnect');
+            // gameInfo.socket?.disconnect();
             navigate('/home/game');
           });
-          // g.events.off('')
-          // setGameInitialize(true);
         } else {
           g = new Phaser.Game(DXconfig);
+          console.log('new Game!!');
           if (loginPlayer) {
-            // console.log('call patch');
             axios.patch(constUrl.serversideUrl+`/players/statusplay/${loginPlayer?.name}`);
           }
           g.events.on('hidden', () => {
             g?.destroy(true);
             if (loginPlayer) {
-              // console.log('call patch');
               axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
             }
             gameInfo.socket?.emit('leaveRoom', {
@@ -134,7 +144,8 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
                 name: `${loginPlayer?.name}`
               }
             });
-            gameInfo.socket?.disconnect();
+            // console.log('before disconnect');
+            // gameInfo.socket?.disconnect();
             navigate('/home/game');
           });
         }
@@ -142,7 +153,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       setIsConnected(true);
     });
 
-    gameInfo.socket.emit('joinRoom', {
+    gameInfo.socket?.emit('joinRoom', {
       mode: props.mode,
       privateKey: props.privateKey,
       gameType: props.gameType,
@@ -154,10 +165,9 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
     /**
      * ゲーム終了時の画面遷移
      */
-    gameInfo.socket.on('gameResult', (data: any) => {
+    gameInfo.socket?.on('gameResult', (data: any) => {
       g?.destroy(true);
       if (loginPlayer) {
-        // console.log('call patch');
         axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
       }
       gameInfo.socket?.emit('leaveRoom', {
@@ -169,7 +179,8 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
           name: `${loginPlayer?.name}`
         }
       });
-      gameInfo.socket?.disconnect();
+      // console.log('before disconnect');
+      // gameInfo.socket?.disconnect();
 
       if (gameInfo.isServer) {
         axios.post(constUrl.serversideUrl + '/history', {
@@ -183,16 +194,15 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       navigate('/home/game/result', {state: data});
     });
 
+    // console.log('send hello');
+
     return () => {
-      g?.destroy(true);
-      if (loginPlayer) {
-        // console.log('call patch');
-        axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
-      }
-      // if (gameRef.current) {
-      //   gameRef.current.destroy();
+      // console.log('id:', gameInfo.socket?.id, gameInfo.socket?.connected);
+      // for (let i = 0; i < 100; i++) {
+      //   gameInfo.socket?.emit('hello', i);
       // }
-      // setGameInitialize(false);
+      // console.log('id:', gameInfo.socket?.id, gameInfo.socket?.connected);
+      // console.log(gameInfo.socket);
       gameInfo.socket?.emit('leaveRoom', {
         mode: props.mode,
         privateKey: props.privateKey,
@@ -202,15 +212,16 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
           name: `${loginPlayer?.name}`
         }
       });
-
-      gameInfo.socket?.disconnect();
+      // gameInfo.socket?.emit('hello');
+      // console.log('id:', gameInfo.socket?.id, gameInfo.socket?.connected);
+      // gameInfo.socket?.disconnect();
+      if (loginPlayer) {
+        axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
+      }
+      g?.destroy(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate]);
-
-  // const Canvas = chakra('canvas');
-
-  // console.log('init:', gameInitialize);
+  }, []);
 
   if (!isConnected) {
     return (
@@ -229,51 +240,10 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
     )
   } else {
     return (
-      // <Box width='100vw'>
-      //   <Center>
-      //     <IonPhaser ref={gameRef} game={config} initialize={gameInitialize}/>
-      //   </Center>
-      // </Box>
-
       <div
         id="phaser-example"
-        // className="phaser-class"
         style={style}
       > </div>
-
-      // <div style={style}>
-      //   <a
-      //     className="App-link"
-      //     href="https://github.com/kevinshen56714/create-react-phaser3-app"
-      //     target="_blank"
-      //     rel="noopener noreferrer"
-      //   > </a>
-      // </div>
-
-      // <Box width='100%'>
-      //   <Center>
-      //     Hello
-      //     <div style={style}>
-      //       <a
-      //         className="App-link"
-      //         href="https://github.com/kevinshen56714/create-react-phaser3-app"
-      //         target="_blank"
-      //         rel="noopener noreferrer"
-      //       > </a>
-      //     </div>
-      //   </Center>
-      // </Box>
-
-      // <Box style={style}>
-      //   <Center>
-      //     <Link
-      //       className="App-link"
-      //       href="https://github.com/kevinshen56714/create-react-phaser3-app"
-      //       target="_blank"
-      //       rel="noopener noreferrer"
-      //     />
-      //   </Center>
-      // </Box>
     );
   }
 }

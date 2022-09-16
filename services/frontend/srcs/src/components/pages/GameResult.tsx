@@ -2,6 +2,7 @@ import { Avatar, Center, Stack, Text } from "@chakra-ui/react";
 import { memo, useEffect, VFC } from "react";
 import { useLocation } from "react-router-dom";
 import { usePlayer } from "../../hooks/usePlayer";
+import { PlayGame } from "../game/Pong/PlayGame";
 // import { PlayerCard } from "../organisms/player/PlayerCard";
 
 interface GameResultType {
@@ -21,8 +22,13 @@ export const GameResult: VFC = memo(() => {
   // const [result, setResult] = useState<GameResultType>(location.state as GameResultType);
   // (location.state as GameResultType).hostPlayer.name;
   const result = location.state as GameResultType;
-  const { getPlayer: getHostPlayer, player: hostPlayer } = usePlayer(result.hostPlayer.name);
-  const { getPlayer: getClientPlayer, player: clientPlayer } = usePlayer(result.hostPlayer.name);
+  // console.log(result);
+
+  // if (!result) {
+  //   return (<></>);
+  // }
+  const { getPlayer: getHostPlayer, player: hostPlayer } = usePlayer(result?.hostPlayer.name);
+  const { getPlayer: getClientPlayer, player: clientPlayer } = usePlayer(result?.clientPlayer.name);
   // setResult(result);
 
   useEffect(() => {

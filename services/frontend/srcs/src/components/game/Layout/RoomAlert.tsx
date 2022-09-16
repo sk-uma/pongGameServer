@@ -18,11 +18,11 @@ export function RoomAlert() {
         user: loginPlayer?.name
       }})
       .then((data) => {
-        console.log(data.data.status);
+        // console.log('roomStatus, playerName:', data.data.status, loginPlayer?.name);
         if (data.data.status === 'leaved') {
           navigate('/home/game/play', {state: {
             mode: 'public',
-            game: 'pong',
+            game: data.data.mode,
           }});
         } else {
           toast({
@@ -34,6 +34,7 @@ export function RoomAlert() {
           // navigate('/home');
         }
       })
+      .catch(() => {})
   }
 
 	return (
