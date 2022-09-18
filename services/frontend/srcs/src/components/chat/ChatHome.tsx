@@ -97,7 +97,8 @@ export const ChatHome: VFC = memo(() => {
                     currentRoomId={currentRoomId}
                     />
             </Box>
-            <Box width="75%" h="100vh" bg="#00eeee">
+            <Box width="75%" h="100vh" bg="#ffffff">
+            {/* <Box width="75%" h="100vh" bg="#00eeee"> */}
                 <Box bg="#aa0000">roomName {currentRoom?.name} {logindata?.loginPlayer?.name}</Box>
                 <Flex>
                     <Box width="70%" h="100vh">
