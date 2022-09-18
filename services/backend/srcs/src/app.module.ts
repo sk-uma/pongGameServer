@@ -6,28 +6,30 @@ import { AvatarModule } from './avatar/avatar.module';
 import { HistoryModule } from './history/history.module';
 import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
 import { StatusModule } from './status/status.module';
+import { ChatModule } from './chat/chat.module';
 // import { History } from './history/history.entity';
 // import { Player } from './players/player.entity';
 
 @Module({
-	imports: [
-		PlayersModule,
-		TypeOrmModule.forRoot({
-			type: 'postgres',
-			host: 'postgres',
-			port: 5432,
-			username: 'postgres',
-			password: 'postgres',
-			database: 'backend_db',
-			autoLoadEntities: true,
-			synchronize: true,
-			// entities: [ "src/**/**.entity{.ts,.js}" ],
-		}),
-		AvatarModule,
-		GameModule,
-		HistoryModule,
-		TwoFactorAuthenticationModule,
-		StatusModule,
-	],
+  imports: [
+    PlayersModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'postgres',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'backend_db',
+      autoLoadEntities: true,
+      synchronize: true,
+      // entities: [ "src/**/**.entity{.ts,.js}" ],
+    }),
+    AvatarModule,
+    GameModule,
+    HistoryModule,
+    TwoFactorAuthenticationModule,
+    StatusModule,
+    ChatModule,
+  ],
 })
 export class AppModule {}
