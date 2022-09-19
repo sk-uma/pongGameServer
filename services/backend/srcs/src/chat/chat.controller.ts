@@ -18,8 +18,13 @@ export class ChatController {
   //getLogs(): void {}
   //getLog(): void {}
   @Get('getAllRooms')
-  getRooms(): Promise<ChatRoomType[]> {
-    return this.chatService.getAllRooms();
+  async getRooms(): Promise<ChatRoomType[]> {
+    const ret = await this.chatService.getAllRooms();
+
+    ret.sort(function (a, b) {
+      return a.id > b.id ? -1 : 1;
+    });
+    return ret;
   }
 
   @Get('getAllLogs')
@@ -28,8 +33,13 @@ export class ChatController {
   }
 
   @Get('getAllData')
-  getAllData(): Promise<ChatAllDataType> {
-    return this.chatService.getAllData();
+  async getAllData(): Promise<ChatAllDataType> {
+    const ret = await this.chatService.getAllData();
+
+    ret.rooms.sort(function (a, b) {
+      return a.id > b.id ? -1 : 1;
+    });
+    return ret;
   }
 
   @Get('getRoomLog')
