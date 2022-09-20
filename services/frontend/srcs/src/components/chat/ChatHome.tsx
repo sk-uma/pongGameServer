@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Center, Flex, Text } from "@chakra-ui/react";
 import axios from "axios";
 import { memo, useContext, useEffect, useState, VFC } from "react"
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
@@ -87,7 +87,14 @@ export const ChatHome: VFC = memo(() => {
 
     return (
         <Flex width="100%" bg="ffffff">
-            <Box width="25%" h="100vh" bg="#ff838b">
+            <Box width="25%" h="100vh" bg="#ff838b"
+                sx={{
+                    height: {
+                        base: 'calc(100vh - 45.27px)',
+                        md: 'calc(100vh - 61.59px)'
+                    },
+                }}
+            >
                 <ChatLeftTable
                     LoadDataFlag={LoadDataFlag}
                     chatAllData={chatData}
@@ -97,12 +104,37 @@ export const ChatHome: VFC = memo(() => {
                     currentRoomId={currentRoomId}
                     />
             </Box>
-            <Box width="75%" h="100vh" bg="#ffffff">
+            <Box sx={{
+                width: '75%',
+                height: {
+                    base: 'calc(100vh - 45.27px)',
+                    md: 'calc(100vh - 61.59px)'
+                },
+                backgroundColor: 'white'
+            }}>
             {/* <Box width="75%" h="100vh" bg="#00eeee"> */}
-                <Box bg="#aa0000">roomName {currentRoom?.name} {logindata?.loginPlayer?.name}</Box>
-                <Flex>
-                    <Box width="70%" h="100vh">
-                            
+                <Box
+                    sx={{
+                        height: '40px',
+                        boxShadow: '0 4px 5px -5px rgba(0, 0, 0, .3)',
+                    }}
+                >
+                    <Center height='100%'>
+                        <Text as="b" fontSize="xl">
+                            {'# '}
+                        </Text>
+                        <Text as="b">
+                            {` ${currentRoom?.name}`}
+                        </Text>
+                        {/* roomName {currentRoom?.name} {logindata?.loginPlayer?.name} */}
+                    </Center>
+                </Box>
+                <Flex height='calc(100% - 40px)'>
+                    {/* <Box width="70%" h="100vh">  */}
+                    <Box sx={{
+                        width: 'calc(100% - 230px)',
+                        fontSize: 'md',
+                    }}> 
                     <ChatCenterHandle
                         chatAllData={chatData}
                         currentRoom={currentRoom}
@@ -110,7 +142,7 @@ export const ChatHome: VFC = memo(() => {
                         />
                     </Box>
 
-                    <Box width="30%" h="100vh" bg="#00ff00">
+                    <Box width="230px" h="100%" borderWidth='0 0 0 0.5px'>
                     <ChatRight
                         chatAllData={chatData}
                         currentRoom={currentRoom}

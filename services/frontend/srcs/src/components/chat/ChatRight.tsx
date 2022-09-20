@@ -1,13 +1,50 @@
-import { Avatar, Box, Flex, Link } from "@chakra-ui/react";
+import { Box, HStack, Image, Link, Stack, Text } from "@chakra-ui/react";
 import { memo, useEffect, VFC } from "react";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
+import { Player } from "../../types/api/Player";
 import { ChatUserMenu } from "./organisms/ChatUserMenu";
-import { ChatAllDataType, ChatLogType, ChatRoomType } from "./type/ChatType";
+import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 
 type Props = {
     chatAllData :ChatAllDataType | undefined;
     currentRoom : ChatRoomType | undefined;
     currentRoomId : string;
+}
+
+function PermissionTitle(props: {permission: String}) {
+    return (
+    <>
+        <Box style={{marginTop: '10px'}}>
+            <Text as="b" color='gray.600'>
+                {props.permission}
+            </Text>
+        </Box>
+    </>
+    );
+}
+
+function MemberCard(props: {user: Player}) {
+    return (
+    <>
+        <Box width='100%'>
+            <HStack>
+                <Image
+                    src={props.user.imgUrl}
+                    style={{
+                        borderRadius: '12%',
+                        height: '35px',
+                        width: '35px',
+                        objectFit: 'cover',
+                    }}
+                />
+                <Text as="b">
+                    {props.user.displayName}
+                </Text>
+            </HStack>
+            {/* </Image> */}
+        </Box>
+    </>
+    );
 }
 
 export const ChatRight: VFC<Props> = memo((props) => {
@@ -31,21 +68,40 @@ export const ChatRight: VFC<Props> = memo((props) => {
     const member_list =  players.filter((item) => currentRoom.member_list.includes(item.name));
 
     return (
-        <Box>
-            <Box>-- owener --</Box>
+        <Box marginLeft={'10px'}>
+            {/* <PermissionTitle> */}
+            <PermissionTitle permission={'owner'} />
+            <Stack>
             {
-                owner_list && owner_list[0].displayName
+                // owner_list && owner_list[0].displayName
+                owner_list.map((member, index) => {
+                    return (
+                        <MemberCard
+                            user={member}
+                            key={index}
+                        />
+                    );
+                })
             }
-            <Box>-- admin --</Box>
+            </Stack>
+            <PermissionTitle permission={'admin'} />
+            {/* <Box>-- admin --</Box> */}
+            <Stack>
             {
                 admin_list.map((member, index) => {
                     
                     return (
-                        <Box key={index}> {member.displayName} </Box>
+                        <MemberCard
+                            user={member}
+                            key={index}
+                        />
+                        // <Box key={index}> {member.displayName} </Box>
                     )
                 })
             }
-            <Box>-- member --</Box>
+            </Stack>
+            <PermissionTitle permission={'member'} />
+            {/* <Box>-- member --</Box> */}
             {
                 member_list.map((member, index) => {
                     return (

@@ -19,7 +19,8 @@ export const ChatMessage: VFC<Props> = memo((props) => {
                     height: 50,
                     borderRadius: '12%',
                     marginRight: '6px',
-                    marginTop: '6px'
+                    marginTop: '6px',
+                    objectFit: 'cover',
                 }}
                 src={props.user?.imgUrl}
                 alt={props.user?.displayName}

@@ -1,6 +1,6 @@
-import { Button, Flex, HStack, IconButton, Input, Menu, MenuButton, MenuItem, MenuList, Stack, Textarea } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList, Text, Textarea } from "@chakra-ui/react";
 import axios from "axios";
-import { ChangeEvent, ChangeEventHandler, memo, useContext, useEffect, useState, VFC } from "react";
+import { ChangeEventHandler, memo, useContext, useEffect, useState, VFC } from "react";
 import { GiGamepad } from "react-icons/gi";
 import { constUrl } from "../../constant/constUrl";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
@@ -93,37 +93,44 @@ export const ChatSendMessage: VFC<Props> = memo((props) => {
             />
     */
     return (
-        <Flex>
+        <Center>
+        <Flex style={{width: "calc(100% - 30px)"}}>
             <Textarea 
                 placeholder="message..."
                 bg="white"
                 value={text}
                 onChange={onChangeTextarea}
-                shadow="md"/> 
-            <Stack>
-                {/* <Button
-                    onClick={() => {}}
-                >
-                    Game
-                </Button> */}
+                shadow="md"
+                style={{height: '90px'}}
+            />
+            <Box
+                style={{
+                    marginLeft: '5px',
+                    height: '100px',
+                    width: '75px'
+                }}
+            >
                 <Menu>
                     <MenuButton
+                        style={{width: '100%', marginBottom: '8px'}}
                         as={IconButton}
                         icon={<GiGamepad/>}
                         // variant="outline"
                     />
                     <MenuList>
                         <MenuItem onClick={() => onClickInvaitGame('pong')}>
-                            invite to Pong
+                            <Text>invite to Pong</Text>
                         </MenuItem>
                         <MenuItem onClick={() => onClickInvaitGame('pongDX')}>
-                            invite to PongDX
+                            <Text>invite to PongDX</Text>
+                            {/* invite to PongDX */}
                         </MenuItem>
                     </MenuList>
                 </Menu>
                 <Button
                 bg="teal.400"
                 color="white"
+                width='100%'
                 _hover={{ opacity: 0.8 }}
                 //disabled={disabled}
                 //isLoading={loading}
@@ -131,7 +138,8 @@ export const ChatSendMessage: VFC<Props> = memo((props) => {
                 >
                     Send
                 </Button>            
-            </Stack>
+            </Box>
         </Flex>
+        </Center>
     );
 })

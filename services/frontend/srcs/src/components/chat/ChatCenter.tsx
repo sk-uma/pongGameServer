@@ -1,4 +1,4 @@
-import { Avatar, Box, Center, Flex, Stack } from "@chakra-ui/react";
+import { Box, Center, Flex, Stack } from "@chakra-ui/react";
 import { memo, useEffect, VFC } from "react";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
@@ -52,7 +52,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                         //     </Box>
                         // </Flex>
                         <Center key={index}>
-                            <Box style={{width: '95%'}}>
+                            <Box style={{width: 'calc(100% - 30px)'}}>
                                 <ChatMessage
                                     user={usr}
                                     log={log}
@@ -63,7 +63,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                 } else if (log.type === "invite") {
                     return (
                         <Center key={index}>
-                            <Box style={{width: '95%'}}>
+                            <Box style={{width: 'calc(100% - 30px)'}}>
                                 <ChartInvaitChatMessage
                                     user={usr}
                                     log={log}
@@ -75,6 +75,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                 }
                 })
             }
+            <div style={{height: '5px'}}></div>
         </Stack>
     );
 })
