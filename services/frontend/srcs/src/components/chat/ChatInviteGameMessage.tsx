@@ -44,7 +44,7 @@ export const ChartInvaitChatMessage: VFC<Props> = memo((props) => {
                 key: privateKey
             }})
             .then((response) => {
-                console.log(response.data.status, privateKey);
+                // console.log(response.data.status, privateKey);
                 if (response.data.status === 'found') {
                     setIsAvailable(true);
                 } else {

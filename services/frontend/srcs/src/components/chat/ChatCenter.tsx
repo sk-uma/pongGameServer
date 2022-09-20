@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Stack } from "@chakra-ui/react";
-import { memo, useEffect, VFC } from "react";
+import { createRef, memo, useCallback, useEffect, VFC } from "react";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChartInvaitChatMessage } from "./ChatInviteGameMessage";
@@ -24,6 +24,20 @@ export const ChatCenter: VFC<Props> = memo((props) => {
 
     let myMap: ChatLogType[] = [];
 
+    // const ref = createRef<HTMLDivElement>();
+    // const scrollToBottomOfChat = useCallback(() => {
+    //     // ref!.current!.scrollIntoView({
+    //     //     behavior: 'smooth',
+    //     //     block: 'start',
+    //     // });
+    //     ref!.current!.scrollIntoView(false);
+    // }, [ref]);
+
+    // useEffect(() => {
+    //     scrollToBottomOfChat();
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
+
     if (currentRoom && currentRoomId !== 'default' && chatAllData)
     {
         myMap = chatAllData.logs.filter((item) => item.roomId === currentRoomId)   
@@ -33,6 +47,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
 
     return (
         //<Flex w="100%" h="70vh" maxHeight='70vh' overflowY="scroll" flexDirection="column">
+        <>
         <Stack>
             {
                 myMap.map((log, index) => {
@@ -77,5 +92,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
             }
             <div style={{height: '5px'}}></div>
         </Stack>
+        {/* <div id="bottom-of-chat" ref={ref}>hello</div> */}
+        </>
     );
 })
