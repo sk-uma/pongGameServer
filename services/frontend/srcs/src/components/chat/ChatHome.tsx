@@ -5,6 +5,7 @@ import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChatCenterHandle } from "./ChatCenterHandle";
 import { ChatLeftTable } from "./ChatLeftTable";
 import { ChatRight } from "./ChatRight";
+import { ChatRoomHeader } from "./ChatRoomHeader";
 import { ChatContext } from "./provider/ChatProvider";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 
@@ -73,9 +74,16 @@ export const ChatHome: VFC = memo(() => {
             console.log('Chat/recv')
             console.log(ret);
             //LoadDataFlag();
-            setLoadDataFlag(new Date().toISOString());
+            //setLoadDataFlag(new Date().toISOString());
+            setChatData(ret);
+            const room = ret.rooms.find((room) => room.id === currentRoom?.id)
+            if (room)
+            {
+                setCurrentRoom(room);
+                //setCurrentRoomId(room.id);
+            }
             })                
-        }, [socket]);
+        }, [socket, currentRoom]);
 
       const LoadDataFlag = () => {
           setLoadDataFlag(new Date().toISOString());
@@ -98,6 +106,9 @@ export const ChatHome: VFC = memo(() => {
                     />
             </Box>
             <Box width="75%" h="100vh" bg="#00eeee">
+                {   currentRoom &&
+                <ChatRoomHeader currentRoom={currentRoom} currentRoomId={currentRoomId}/>
+                }
                 <Box bg="#aa0000">roomName {currentRoom?.name} {logindata?.loginPlayer?.name}</Box>
                 <Flex>
                     <Box width="70%" h="100vh">
