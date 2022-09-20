@@ -45,12 +45,15 @@ export class GameController {
     let rtv = gameAdmin.getPrivateRoomAdmin().checkPrivateKey(key);
     // console.log("key", rtv);
     if (!rtv) {
-      throw new HttpException({
-        status: HttpStatus.NOT_FOUND,
-        error: `Invalid privateKey(${key})`
-      }, 404);
+      // throw new HttpException({
+      //   status: HttpStatus.NOT_FOUND,
+      //   error: `Invalid privateKey(${key})`
+      // }, 404);
+      return {status: 'notFound'};
+    } else {
+      return {status: 'found'};
     }
-    return ;
+    // return ;
     // return {status: rtv.status == 'success' ? 'find' : 'notFound'};
   }
 

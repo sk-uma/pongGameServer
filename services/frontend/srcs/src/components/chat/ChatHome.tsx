@@ -5,6 +5,7 @@ import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChatCenterHandle } from "./ChatCenterHandle";
 import { ChatLeftTable } from "./ChatLeftTable";
 import { ChatRight } from "./ChatRight";
+import { ChatRoomHeader } from "./ChatRoomHeader";
 import { ChatContext } from "./provider/ChatProvider";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 
@@ -73,9 +74,16 @@ export const ChatHome: VFC = memo(() => {
             console.log('Chat/recv')
             console.log(ret);
             //LoadDataFlag();
-            setLoadDataFlag(new Date().toISOString());
+            //setLoadDataFlag(new Date().toISOString());
+            setChatData(ret);
+            const room = ret.rooms.find((room) => room.id === currentRoom?.id)
+            if (room)
+            {
+                setCurrentRoom(room);
+                //setCurrentRoomId(room.id);
+            }
             })                
-        }, [socket]);
+        }, [socket, currentRoom]);
 
       const LoadDataFlag = () => {
           setLoadDataFlag(new Date().toISOString());
@@ -112,34 +120,27 @@ export const ChatHome: VFC = memo(() => {
                 },
                 backgroundColor: 'white'
             }}>
-            {/* <Box width="75%" h="100vh" bg="#00eeee"> */}
                 <Box
                     sx={{
-                        height: '40px',
+                        height: '50px',
                         boxShadow: '0 4px 5px -5px rgba(0, 0, 0, .3)',
+                        justifyContent: 'center',
                     }}
                 >
-                    <Center height='100%'>
-                        <Text as="b" fontSize="xl">
-                            {'# '}
-                        </Text>
-                        <Text as="b">
-                            {` ${currentRoom?.name}`}
-                        </Text>
-                        {/* roomName {currentRoom?.name} {logindata?.loginPlayer?.name} */}
-                    </Center>
+                    {   currentRoom &&
+                    <ChatRoomHeader currentRoom={currentRoom} currentRoomId={currentRoomId}/>
+                    }
                 </Box>
-                <Flex height='calc(100% - 40px)'>
-                    {/* <Box width="70%" h="100vh">  */}
+                <Flex height='calc(100% - 50px)'>
                     <Box sx={{
                         width: 'calc(100% - 230px)',
                         fontSize: 'md',
-                    }}> 
-                    <ChatCenterHandle
-                        chatAllData={chatData}
-                        currentRoom={currentRoom}
-                        currentRoomId={currentRoomId}     
-                        />
+                    }}>
+                        <ChatCenterHandle
+                            chatAllData={chatData}
+                            currentRoom={currentRoom}
+                            currentRoomId={currentRoomId}     
+                            />
                     </Box>
 
                     <Box width="230px" h="100%" borderWidth='0 0 0 0.5px'>

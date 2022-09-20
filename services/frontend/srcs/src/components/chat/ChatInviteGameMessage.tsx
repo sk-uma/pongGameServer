@@ -1,6 +1,6 @@
 import { Box, Button, Flex, HStack, Image, Text } from "@chakra-ui/react";
 import axios from "axios";
-import { memo, VFC } from "react";
+import { memo, useEffect, useState, VFC } from "react";
 import { useNavigate } from "react-router-dom";
 import { constUrl } from "../../constant/constUrl";
 import { Player } from "../../types/api/Player";
@@ -15,6 +15,7 @@ type Props = {
 export const ChartInvaitChatMessage: VFC<Props> = memo((props) => {
     const navigate = useNavigate();
     let [type, privateKey] = props.log.text.split("@");
+    const [isAvailable, setIsAvailable] = useState(false);
 
     const onClick = () => {
         axios
@@ -22,20 +23,36 @@ export const ChartInvaitChatMessage: VFC<Props> = memo((props) => {
                 key: privateKey
             }})
             .then(function(response) {
-                navigate('/home/game/play', {state: {
-                    mode: 'private',
-                    game: type,
-                    data: {
-                    privateKey: privateKey
-                    }
-                }});
+                if (response.data.status === 'found') {
+                    navigate('/home/game/play', {state: {
+                        mode: 'private',
+                        game: type,
+                        data: {
+                        privateKey: privateKey
+                        }
+                    }});
+                } else {
+                    setIsAvailable(false);
+                    alert("無効なキーです");
                 }
-            )
-            .catch(() => {
-                    alert("無効なキーです")
-                }
-            )
+            });
     }
+
+    useEffect(() => {
+        axios
+            .get(constUrl.serversideUrl + '/game/ckeckKey', {params: {
+                key: privateKey
+            }})
+            .then((response) => {
+                console.log(response.data.status, privateKey);
+                if (response.data.status === 'found') {
+                    setIsAvailable(true);
+                } else {
+                    // console.log(privateKey);
+                    setIsAvailable(false);
+                }
+            });
+    }, []);
 
     return (
         <Flex style={{width: '100%'}}>
@@ -72,7 +89,7 @@ export const ChartInvaitChatMessage: VFC<Props> = memo((props) => {
                 </Text>
                 <Button
                     size="sm"
-                    // disabled={props.isOwn}
+                    disabled={!isAvailable}
                     onClick={onClick}
                 >
                     Join the Game

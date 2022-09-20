@@ -45,7 +45,6 @@ export const ChatCenterHandle: VFC<Props> = memo((props) => {
             />
             </Flex>
             <Box style={{bottom: '0px', height: '100px'}}>
-            {/* <Box alignItems='bottom' bg="#00ff99"> */}
                 <ChatSendMessage
                 currentRoom={currentRoom}
                 currentRoomId={currentRoomId}/>  
