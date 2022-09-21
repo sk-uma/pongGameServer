@@ -1,5 +1,7 @@
-import { Box, Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { ChangeEventHandler, memo, useCallback, useContext, useEffect, useState, VFC } from "react";
+import { GiEarthAsiaOceania } from "react-icons/gi";
+import { FaUserFriends, FaUserPlus } from "react-icons/fa";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { AddMemberModal } from "./modalWindow/addMemberModal";
@@ -75,6 +77,7 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
                 colorScheme='teal'
                 size='md'
                 variant='outline'
+                rightIcon={<FaUserFriends />}
                 //leftIcon={<GiEarthAsiaOceania />}
                 //onClick={onClickPublicRoom}
                 width='70%'
@@ -88,6 +91,7 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
                 colorScheme='teal'
                 size='md'
                 variant='outline'
+                rightIcon={<FaUserPlus />}
                 //leftIcon={<GiEarthAsiaOceania />}
                 //onClick={onClickPublicRoom}
                 width='70%'
