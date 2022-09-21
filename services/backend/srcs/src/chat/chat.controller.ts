@@ -69,7 +69,7 @@ export class ChatController {
     @Query('userName') ownerName: string,
     @Query('text') text: string,
   ): Promise<string> {
-    return this.chatService.createLog(roomId, ownerName, text);
+    return this.chatService.createLog(roomId, ownerName, text, 'message');
   }
 
   tmpRoomId = '66f7e73e-5ba5-4a00-bc76-d6153cf89e5e';

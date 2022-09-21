@@ -48,6 +48,7 @@ export class ChatGateway
       payload.roomId,
       payload.owner,
       payload.text,
+      payload.type,
     );
     this.logger.log(
       `${this.chatHeader}: send chatMessage: ${payload}: ${ret1}`,

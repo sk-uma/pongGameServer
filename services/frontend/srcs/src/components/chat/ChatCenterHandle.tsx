@@ -29,14 +29,22 @@ export const ChatCenterHandle: VFC<Props> = memo((props) => {
         )
     }
     return (
-        <Box>
-            <Flex w="100%" h="75vh" maxHeight='75vh' overflowY="scroll" flexDirection="column">
+        <Box style={{height: '100%'}}>
+            <Flex
+                sx={{
+                    width: '100%',
+                    height: 'calc(100% - 100px)',
+                    overflowY: 'scroll',
+                    flexDirection: "column",
+                }}
+            >
             <ChatCenter
                 chatAllData={chatAllData}
                 currentRoom={currentRoom}
-                currentRoomId={currentRoomId}/>
+                currentRoomId={currentRoomId}
+            />
             </Flex>
-            <Box alignItems='flex-end' bg="#00ff99">
+            <Box style={{bottom: '0px', height: '100px'}}>
                 <ChatSendMessage
                 currentRoom={currentRoom}
                 currentRoomId={currentRoomId}/>  

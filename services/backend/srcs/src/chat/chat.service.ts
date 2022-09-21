@@ -119,6 +119,7 @@ export class ChatService {
     roomId: string,
     ownerName: string,
     text: string,
+    type: string,
   ): Promise<string> {
     //user check
     const room = await this.chatRoomsRepository.findOne(roomId);
@@ -130,7 +131,7 @@ export class ChatService {
       owner: ownerName,
       time: new Date().toISOString(),
       text: text,
-      type: 'message',
+      type: type,
     };
 
     //update room

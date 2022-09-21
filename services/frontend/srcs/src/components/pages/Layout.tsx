@@ -45,7 +45,7 @@ export const Layout: VFC = memo(() => {
 	return (
 		<>
 			<HeaderLayout />
-			<Outlet />;
+			<Outlet />
 		</>
 	);
 });
