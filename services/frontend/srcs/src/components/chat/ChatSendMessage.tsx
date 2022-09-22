@@ -34,6 +34,9 @@ export const ChatSendMessage: VFC<Props> = memo((props) => {
     }
 
     const onClick = () => {
+        if (text.trim() === '') {
+            return ;
+        }
         let name: string;
         if (logindata && logindata.loginPlayer)
             name = logindata.loginPlayer.name;

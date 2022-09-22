@@ -25,18 +25,22 @@ export const ChatMessage: VFC<Props> = memo((props) => {
                 src={props.user?.imgUrl}
                 alt={props.user?.displayName}
             />
-            <Box>
+            <Box style={{width: 'calc(100% - 50px)'}}>
                 <Flex>
                     <HStack>
                         <Text as='b' size='md'>
                             {props.user?.displayName}
                         </Text>
                         <Text as="sub" color='gray' style={{marginBottom: '4px'}}>
-                            {props.log.time}
+                            {props.log.time.slice(0, 10) + ' ' + props.log.time.slice(11, 16)}
                         </Text>
                     </HStack>
                 </Flex>
-                <Text style={{whiteSpace: 'pre-wrap', width: '100%'}}>
+                <Text style={{
+                    whiteSpace: 'pre-wrap',
+                    width: '100%',
+                    textAlign: 'justify',
+                }}>
                     {props.log.text}
                 </Text>
             </Box>
