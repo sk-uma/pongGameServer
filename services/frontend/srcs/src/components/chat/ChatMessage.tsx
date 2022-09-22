@@ -25,7 +25,7 @@ export const ChatMessage: VFC<Props> = memo((props) => {
                 src={props.user?.imgUrl}
                 alt={props.user?.displayName}
             />
-            <Box>
+            <Box style={{width: 'calc(100% - 50px)'}}>
                 <Flex>
                     <HStack>
                         <Text as='b' size='md'>
@@ -36,7 +36,11 @@ export const ChatMessage: VFC<Props> = memo((props) => {
                         </Text>
                     </HStack>
                 </Flex>
-                <Text style={{whiteSpace: 'pre-wrap', width: '100%'}}>
+                <Text style={{
+                    whiteSpace: 'pre-wrap',
+                    width: '100%',
+                    textAlign: 'justify',
+                }}>
                     {props.log.text}
                 </Text>
             </Box>
