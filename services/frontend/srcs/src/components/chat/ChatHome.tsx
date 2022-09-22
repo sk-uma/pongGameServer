@@ -26,7 +26,7 @@ export const ChatHome: VFC = memo(() => {
         socket.on('disconnect', () => {
         });
  
-        const registUser = () => {
+        /*const registUser = () => {
             let name = "undefinedName";
             if (logindata && logindata.loginPlayer)
             {
@@ -35,9 +35,9 @@ export const ChatHome: VFC = memo(() => {
                 name = logindata.loginPlayer.name;
             }
             socket.emit('Chat/userConnect', name);
-          }
+          }*/
         
-        registUser();
+        //registUser();
         //getAllChatData();
         //console.log(allChatData);
 
@@ -47,7 +47,7 @@ export const ChatHome: VFC = memo(() => {
           //socket.off('Chat/pong');
         };
 
-      }, [socket, logindata]);
+      }, [socket]);
 
       useEffect(() => {
         const getChatData = async () => {
@@ -95,12 +95,14 @@ export const ChatHome: VFC = memo(() => {
 
     return (
         <Flex width="100%" bg="ffffff">
-            <Box width="25%" h="100vh" bg="#ff838b"
+            <Box width="25%" h="100vh" bg="teal"
                 sx={{
                     height: {
                         base: 'calc(100vh - 45.27px)',
                         md: 'calc(100vh - 61.59px)'
                     },
+                    overflowY: 'scroll',
+                    flexDirection: "column",
                 }}
             >
                 <ChatLeftTable
