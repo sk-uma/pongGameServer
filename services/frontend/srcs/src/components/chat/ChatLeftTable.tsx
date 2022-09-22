@@ -3,6 +3,7 @@ import axios from "axios";
 import { memo, useCallback, VFC } from "react";
 import { constUrl } from "../../constant/constUrl";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
+import { BrowseChannelsModal } from "./modalWindow/BrowseChannelsModal";
 import { ChatAddDirectMessageModal } from "./modalWindow/createDirectMessage";
 import { ChatRoomAddModal } from "./modalWindow/createRoom";
 import { InviteDmModal } from "./modalWindow/inviteDmModal";
@@ -40,8 +41,10 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
     const logindata = useLoginPlayer();
     const {isOpen, onOpen, onClose} = useDisclosure();
     const {isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2} = useDisclosure();
+    const {isOpen: isOpen3, onOpen: onOpen3, onClose: onClose3} = useDisclosure();
     const onClickRoom = useCallback(() => onOpen(), [onOpen]);
     const onClickRoom2 = useCallback(() => onOpen2(), [onOpen2]);
+    const onClickRoom3 = useCallback(() => onOpen3(), [onOpen3]);
 
     let name = 'default';
     if (logindata?.loginPlayer?.name)
@@ -137,7 +140,11 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 <ChatRoomAddModal isOpen={isOpen} onClose={onClose}/> 
             </Link></Box>
 
-            <Box><Link onClick={() => onClickRoomLinkByName('browseChannels')}>+ Browse channels</Link></Box>
+            <Link onClick={onClickRoom3}>+ Browse channel
+                <BrowseChannelsModal
+                    isOpen={isOpen3} onClose={onClose3}
+                    chatAllData={chatAllData}/>  
+            </Link>
 
             <PermissionTitle permission={' Direct messages'} color={'gray.300'} />
             {
