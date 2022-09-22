@@ -5,6 +5,7 @@ import { constUrl } from "../../constant/constUrl";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChatAddDirectMessageModal } from "./modalWindow/createDirectMessage";
 import { ChatRoomAddModal } from "./modalWindow/createRoom";
+import { InviteDmModal } from "./modalWindow/inviteDmModal";
 import { ChatDmMenu } from "./organisms/ChatDmMenu";
 import { ChatRoomMenu } from "./organisms/ChatMenu";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
@@ -18,11 +19,13 @@ type Props = {
     currentRoomId: string;
 }
 
-function PermissionTitle(props: {permission: String}) {
+//gray.300
+//white
+function PermissionTitle(props: {permission: String, color: string}) {
     return (
     <>
         <Box style={{marginTop: '10px'}}>
-            <Text as="b" color='white'>
+            <Text as="b" color={props.color}>
                 {props.permission}
             </Text>
         </Box>
@@ -92,7 +95,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
             <Button size="xs" onClick={LoadDataFlag}>ping</Button>
             log {chatAllData?.logs.length}
             room {chatAllData?.rooms.length}
-            <PermissionTitle permission={' Channnels'} />
+            <PermissionTitle permission={' Channnels'} color={'gray.300'} />
             {
                 chatAllData?.rooms.map((room, index) => {
                 let name = logindata?.loginPlayer?.name;
@@ -136,7 +139,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
 
             <Box><Link onClick={() => onClickRoomLinkByName('browseChannels')}>+ Browse channels</Link></Box>
 
-            <PermissionTitle permission={' Direct messages'} />
+            <PermissionTitle permission={' Direct messages'} color={'gray.300'} />
             {
                 chatAllData?.rooms.map((room, index) => {
                 let name = logindata?.loginPlayer?.name;
@@ -158,6 +161,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                                 onClick={() => onClickRoomLink(room)}
                                 fontWeight={800}>
                                 # {opponentName}        
+            <PermissionTitle permission={' Direct messages'} color={'gray.300'} />
                             </Link>
                         }
                         { !room.notVisited_list.includes(name) &&
@@ -189,9 +193,9 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 ;})
             }
             <Link onClick={onClickRoom2}>+ New message
-                <ChatAddDirectMessageModal
+                <InviteDmModal
                     isOpen={isOpen2} onClose={onClose2}
-                    roomId={currentRoomId} chatAllData={chatAllData}/> 
+                    chatAllData={chatAllData}/>  
             </Link>
         </Box>
     );
