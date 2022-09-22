@@ -1,4 +1,4 @@
-import { Box, Button, Link, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Link, useDisclosure, Text } from "@chakra-ui/react";
 import axios from "axios";
 import { memo, useCallback, VFC } from "react";
 import { constUrl } from "../../constant/constUrl";
@@ -16,6 +16,18 @@ type Props = {
     chatAllData :ChatAllDataType | undefined;
     setChatData : (data: ChatAllDataType) => void;
     currentRoomId: string;
+}
+
+function PermissionTitle(props: {permission: String}) {
+    return (
+    <>
+        <Box style={{marginTop: '10px'}}>
+            <Text as="b" color='white'>
+                {props.permission}
+            </Text>
+        </Box>
+    </>
+    );
 }
 
 export const ChatLeftTable: VFC<Props> = memo((props) => {
@@ -80,7 +92,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
             <Button size="xs" onClick={LoadDataFlag}>ping</Button>
             log {chatAllData?.logs.length}
             room {chatAllData?.rooms.length}
-            <Box>== Channels </Box>
+            <PermissionTitle permission={' Channnels'} />
             {
                 chatAllData?.rooms.map((room, index) => {
                 let name = logindata?.loginPlayer?.name;
@@ -124,14 +136,14 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
 
             <Box><Link onClick={() => onClickRoomLinkByName('browseChannels')}>+ Browse channels</Link></Box>
 
-            <Box>== Direct messages </Box>
+            <PermissionTitle permission={' Direct messages'} />
             {
                 chatAllData?.rooms.map((room, index) => {
                 let name = logindata?.loginPlayer?.name;
                 if (!name)
                     name = 'default';
                 if (room.roomType !== 'dm')
-                    return <Box></Box>
+                    return <Box key={index}></Box>
                 let opponentName = room.member_list[0];
                 if (name === room.member_list[0])
                     opponentName = room.member_list[1];
@@ -172,7 +184,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     }
                 }
                 else {
-                    return <Box></Box>
+                    return <Box key={index}></Box>
                 }
                 ;})
             }
