@@ -41,6 +41,8 @@ export let gameInfo: GameInfo = {
   }
 };
 
+// function 
+
 // export function Pong(props: {mode: string, gameType: string, privateKey?: string}) {
 //   useEffect(() => {
 //     gameInfo.socket = io(constUrl.serversideUrl);
