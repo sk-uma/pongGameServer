@@ -66,6 +66,7 @@ export const InviteDmModal: VFC<Props> = memo((props) => {
     if (players)
     {
         let existDm_list: string[] = [];
+        existDm_list.push(name)
         if (chatAllData?.rooms)
         {
             for (let i = 0; i < chatAllData.rooms.length; i++)
