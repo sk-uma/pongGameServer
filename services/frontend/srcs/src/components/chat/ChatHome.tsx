@@ -133,7 +133,7 @@ export const ChatHome: VFC = memo(() => {
                 </Box>
                 <Flex height='calc(100% - 50px)'>
                     <Box sx={{
-                        width: 'calc(100% - 230px)',
+                        width: '100%',
                         fontSize: 'md',
                     }}>
                         <ChatCenterHandle
@@ -143,12 +143,12 @@ export const ChatHome: VFC = memo(() => {
                             />
                     </Box>
 
-                    <Box width="230px" h="100%" borderWidth='0 0 0 0.5px'>
+                    {/* <Box width="230px" h="100%" borderWidth='0 0 0 0.5px'>
                     <ChatRight
                         chatAllData={chatData}
                         currentRoom={currentRoom}
                         currentRoomId={currentRoomId}/> 
-                    </Box>
+                    </Box> */}
                 </Flex>
             </Box>
         </Flex>

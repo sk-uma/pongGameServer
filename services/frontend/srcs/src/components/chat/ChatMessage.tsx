@@ -32,7 +32,7 @@ export const ChatMessage: VFC<Props> = memo((props) => {
                             {props.user?.displayName}
                         </Text>
                         <Text as="sub" color='gray' style={{marginBottom: '4px'}}>
-                            {props.log.time}
+                            {props.log.time.slice(0, 10) + ' ' + props.log.time.slice(11, 16)}
                         </Text>
                     </HStack>
                 </Flex>

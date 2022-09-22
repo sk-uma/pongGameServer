@@ -1,4 +1,5 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Center, VStack, Text } from "@chakra-ui/react";
+import chatInitIllust from './assets/chatInitIllust.svg';
 import { memo, VFC } from "react";
 import { ChatBrowseChannels } from "./ChatBrowseChannels";
 import { ChatCenter } from "./ChatCenter";
@@ -18,7 +19,22 @@ export const ChatCenterHandle: VFC<Props> = memo((props) => {
     if (currentRoomId === 'default')
     {
         return (
-            <Box>init page</Box>
+            <Box height="100%">
+                <Center height="100%" overflowY='scroll'>
+                    <VStack spacing={5}>
+                        <Text as="b" fontSize='3xl' color='#3f3d56'>
+                            『 Chat 』へようこそ！
+                        </Text>
+                        <Text>
+                            右のチャンネルから他のプレイヤーと交流しましょう
+                        </Text>
+                        <img src={chatInitIllust} width='80%' style={{
+                            width: '80%',
+                            maxWidth: '800px',
+                        }} />
+                    </VStack>
+                </Center>
+            </Box>
         )
     }
     else if (currentRoomId === 'browseChannels')
