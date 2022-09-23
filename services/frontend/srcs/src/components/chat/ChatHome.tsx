@@ -46,12 +46,20 @@ export const ChatHome: VFC = memo(() => {
             console.log(ret);
             //LoadDataFlag();
             //setLoadDataFlag(new Date().toISOString());
+            ret.rooms.sort(function (a, b) {
+                return a.id > b.id ? -1: 1;
+            })
             setChatData(ret);
             const room = ret.rooms.find((room) => room.id === currentRoom?.id)
             if (room)
             {
                 setCurrentRoom(room);
-                //setCurrentRoomId(room.id);
+                setCurrentRoomId(room.id);
+            }
+            else
+            {
+                setCurrentRoomId('default');
+                setCurrentRoom(undefined);
             }
         })
 
@@ -78,6 +86,9 @@ export const ChatHome: VFC = memo(() => {
                   return 0;
               }
           });*/
+            response.data.rooms.sort(function (a, b) {
+            return a.id > b.id ? -1: 1;
+            })
           setChatData(response.data);
         }
         getChatData();
