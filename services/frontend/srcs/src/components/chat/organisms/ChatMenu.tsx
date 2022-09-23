@@ -83,34 +83,10 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
                     <Box>
                     #{room.name}
                     </Box>
-                    <MenuItem onClick={onClickRoom1}>
-                        Invite People
-                        <InvitePeopleModal isOpen={isOpen1} onClose={onClose1} room={room}/>
-                    </MenuItem>
                     <MenuItem onClick={onClickRoom3}>
                         setting
                         <ChatRoomMenuModal isOpen={isOpen3} onClose={onClose3} room={room}/>     
                     </MenuItem>
-                    { (logindata?.loginPlayer?.name === room.owner) &&
-                        <MenuItem onClick={onClickRoom4}>Add admin
-                            <AddAdminModal isOpen={isOpen4} onClose={onClose4} room={room}/> 
-                        </MenuItem>
-                    }   
-                    { (logindata?.loginPlayer?.name === room.owner || room.admin_list.includes(userName)) &&
-                        <MenuItem onClick={onClickRoom2}>Kick Someone
-                            <ChatKickModal isOpen={isOpen2} onClose={onClose2} room={room}/>
-                        </MenuItem>
-                    }             
-                    { (logindata?.loginPlayer?.name === room.owner || room.admin_list.includes(userName)) &&
-                        <MenuItem onClick={onClickRoom5}>Ban User
-                            <ChatBanModal isOpen={isOpen5} onClose={onClose5} room={room}/>
-                        </MenuItem>
-                    }      
-                    { logindata?.loginPlayer?.name === room.owner &&
-                        <MenuItem onClick={onClickRoom6}>Mute User
-                            <ChatMuteModal isOpen={isOpen6} onClose={onClose6} room={room}/>
-                        </MenuItem>
-                    }        
                     { logindata?.loginPlayer?.name === room.owner &&
                         <MenuItem onClick={onClickDeleteRoom}>Delete</MenuItem>
                     }

@@ -17,11 +17,14 @@ type Props = {
 	level: number;
 	//isfriend: boolean;
 	status: string;
+    win: number;
+    lose: number;
+    exp: number;
     room: ChatRoomType | undefined;
 };
 
 export const AddUserCard: VFC<Props> = memo((props) => {
-    const { loginName, imgUrl, name, displayName, level, status, room} = props;
+    const { loginName, imgUrl, name, displayName, level, status, room, win, lose, exp} = props;
 
 
     const logindata = useLoginPlayer();
@@ -66,12 +69,19 @@ export const AddUserCard: VFC<Props> = memo((props) => {
 						bgColor="gray.200"
 						borderRadius="5px"
 					>
-						<Text fontWeight="bold">{displayName}</Text>
-						<Text fontSize="sm">Lv {level}    {position}
+                        <Flex display='flex' justifyContent='center'>
                         {
-                            room && room.ban_list.includes(name) && '"banned"'
+                            room && room.ban_list.includes(name) && 
+                            <Text fontWeight="bold" color='red' style={{marginRight: '6px'}}>banned</Text>
                         }
-                        </Text>
+						<Text fontWeight="bold" style={{marginRight: '6px'}}>{displayName}</Text>
+						<Text fontWeight="sm">{position}</Text>
+
+                        </Flex>
+                        
+                        <Flex display='flex' justifyContent='center'>
+						<Text fontSize="sm" color='gray'>Lv {level} Win: {win} Lose: {lose} Exp: {exp}</Text>
+                        </Flex>
 					</Box>
 				</Flex>
                 </Box>
