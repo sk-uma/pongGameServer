@@ -5,7 +5,6 @@ import { constUrl } from "../../constant/constUrl";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { TextMainStyle, TextSubStyle } from "./hooks/TextStyle";
 import { BrowseChannelsModal } from "./modalWindow/BrowseChannelsModal";
-import { ChatAddDirectMessageModal } from "./modalWindow/createDirectMessage";
 import { ChatRoomAddModal } from "./modalWindow/createRoom";
 import { InviteDmModal } from "./modalWindow/inviteDmModal";
 import { ChatDmMenu } from "./organisms/ChatDmMenu";
