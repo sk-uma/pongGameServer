@@ -70,9 +70,19 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
                 shadow="md"
             />
     */
+    let roomName = currentRoom.name;
+    const name = logindata?.loginPlayer?.name;
+    if (currentRoom && currentRoom.roomType === 'dm')
+    {
+        if (currentRoom && currentRoom.member_list[0] === name)
+            roomName = currentRoom.member_list[1];
+        else
+            roomName = currentRoom.member_list[0];
+    }
+
     return (
         <Flex gap={1} justifyContent='center' alignItems='center' height='100%'>
-            <Text fontSize="3xl" width="100%"># {currentRoom?.name}</Text>
+            <Text as="b" fontSize="3xl" width="100%"># {roomName}</Text>
             <Button
                 onClick={onClickRoom1}
                 colorScheme='teal'
@@ -87,6 +97,7 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
                 <ChatMemberModal isOpen={isOpen1} onClose={onClose1} room={currentRoom}></ChatMemberModal>
             </Button>
 
+            { currentRoom.roomType !== 'dm' &&
             <Button
                 onClick={onClickRoom2}
                 colorScheme='teal'
@@ -100,6 +111,7 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
             Add People
                 <AddMemberModal isOpen={isOpen2} onClose={onClose2} room={currentRoom}></AddMemberModal>
             </Button>
+            }
         </Flex>
     );
 })
