@@ -1,6 +1,7 @@
 import { Box, Link, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
 import { memo, useCallback, useContext, VFC } from "react";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
+import { TextSubHighlightStyle, TextSubStyle } from "../../atoms/TextStyle";
 import { AddAdminModal } from "../modalWindow/addAdmin";
 import { ChatBanModal } from "../modalWindow/chatBanModal";
 import { ChatKickModal } from "../modalWindow/chatKick";
@@ -70,12 +71,13 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
     }
 
     return (
-        <Box>
+        <Box  bg='teal.200'>
             <Menu>
                 <MenuButton>
                     <Link
                         onClick={() => onClickRoomLink(room)}
-                        ># {room.name}        
+                        >        
+                        <TextSubHighlightStyle title={`# ${room.name}`}  color='gray.600'/>
                         <ChatRoomMenuModal isOpen={isOpen3} onClose={onClose3} room={room}/>     
                     </Link>
                 </MenuButton>

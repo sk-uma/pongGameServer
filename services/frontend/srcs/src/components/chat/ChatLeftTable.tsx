@@ -3,6 +3,7 @@ import axios from "axios";
 import { memo, useCallback, VFC } from "react";
 import { constUrl } from "../../constant/constUrl";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
+import { TextMainStyle, TextSubStyle } from "../atoms/TextStyle";
 import { BrowseChannelsModal } from "./modalWindow/BrowseChannelsModal";
 import { ChatAddDirectMessageModal } from "./modalWindow/createDirectMessage";
 import { ChatRoomAddModal } from "./modalWindow/createRoom";
@@ -22,17 +23,7 @@ type Props = {
 
 //gray.300
 //white
-function PermissionTitle(props: {permission: String, color: string}) {
-    return (
-    <>
-        <Box style={{marginTop: '10px'}}>
-            <Text as="b" color={props.color}>
-                {props.permission}
-            </Text>
-        </Box>
-    </>
-    );
-}
+
 
 export const ChatLeftTable: VFC<Props> = memo((props) => {
     const { LoadDataFlag, chatAllData,
@@ -95,10 +86,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
 
     return (
         <Box>
-            <Button size="xs" onClick={LoadDataFlag}>ping</Button>
-            log {chatAllData?.logs.length}
-            room {chatAllData?.rooms.length}
-            <PermissionTitle permission={' Channnels'} color={'gray.300'} />
+            <TextMainStyle title={'Channnels'} color={'gray.300'}/>
             {
                 chatAllData?.rooms.map((room, index) => {
                 let name = logindata?.loginPlayer?.name;
@@ -114,7 +102,8 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                         <Box key={index}>
                         <Link
                             onClick={() => onClickRoomLink(room)}
-                        ># {room.name}        
+                        >
+                            <TextSubStyle title={`# ${room.name}`}/>
                         </Link>
                         </Box>
                         )
@@ -136,17 +125,19 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 }
                 ;})
             }
-            <Box><Link onClick={onClickRoom}>+ Create channel
+            <Box><Link onClick={onClickRoom}>
+                <TextSubStyle title={'+ Create channel'}/>
                 <ChatRoomAddModal isOpen={isOpen} onClose={onClose}/> 
             </Link></Box>
 
-            <Link onClick={onClickRoom3}>+ Browse channel
+            <Link onClick={onClickRoom3}>
+                <TextSubStyle title={'+ Browse channel'}/>
                 <BrowseChannelsModal
                     isOpen={isOpen3} onClose={onClose3}
                     chatAllData={chatAllData}/>  
             </Link>
 
-            <PermissionTitle permission={' Direct messages'} color={'gray.300'} />
+            <TextMainStyle title={'Direct messages'} color={'gray.300'}/>
             {
                 chatAllData?.rooms.map((room, index) => {
                 let name = logindata?.loginPlayer?.name;
@@ -167,15 +158,14 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                             <Link
                                 onClick={() => onClickRoomLink(room)}
                                 fontWeight={800}>
-                                # {opponentName}        
-            <PermissionTitle permission={' Direct messages'} color={'gray.300'} />
+                                <TextSubStyle title={`# ${opponentName}`}/>
                             </Link>
                         }
                         { !room.notVisited_list.includes(name) &&
                             <Link
                                 onClick={() => onClickRoomLink(room)}
                                 fontWeight={400}>
-                                # {opponentName}        
+                                <TextSubStyle title={`# ${opponentName}`}/>
                             </Link>
                         }
                         </Box>
@@ -199,7 +189,8 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 }
                 ;})
             }
-            <Link onClick={onClickRoom2}>+ New message
+            <Link onClick={onClickRoom2}>
+                <TextSubStyle title={'+ New message'}/>
                 <InviteDmModal
                     isOpen={isOpen2} onClose={onClose2}
                     chatAllData={chatAllData}/>  

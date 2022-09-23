@@ -63,30 +63,10 @@ export const BrowseChannelsModal: VFC<Props> = memo((props) => {
 
     //let members = players;
 
-    let chatMembers = undefined;
-    if (players)
-    {
-        let existDm_list: string[] = [];
-        if (chatAllData?.rooms)
-        {
-            for (let i = 0; i < chatAllData.rooms.length; i++)
-            {
-                let tmpRoom = chatAllData.rooms[i];
-                if (tmpRoom.roomType !== 'dm' || !tmpRoom.member_list.includes(name))
-                    continue;
-                for (let j = 0; j < tmpRoom.member_list.length; j++)
-                {
-                    existDm_list.push(tmpRoom.member_list[j]);
-                }
-            }   
-        }
-        chatMembers = players.filter((member) => (!existDm_list.includes(member.name)));
-    }
-
     let browseChannel_list = undefined;
     if (chatAllData)
     {
-        browseChannel_list = chatAllData.rooms.filter((room) => room.roomType !== 'dm');
+        browseChannel_list = chatAllData.rooms.filter((room) => room.roomType === 'public');
     }
 
     return (
