@@ -15,10 +15,13 @@ type Props = {
 	level: number;
 	//isfriend: boolean;
 	status: string;
+    win: number;
+    lose: number;
+    exp: number;
 };
 
 export const DmInviteUserCard: VFC<Props> = memo((props) => {
-    const { loginName, imgUrl, name, displayName, level, status } = props;
+    const { loginName, imgUrl, name, displayName, level, status, win, lose, exp } = props;
 
 
     const logindata = useLoginPlayer();
@@ -52,22 +55,25 @@ export const DmInviteUserCard: VFC<Props> = memo((props) => {
 					<Avatar src={imgUrl}>
 						<AvatarBadge boxSize="1.25em" bg={statusColor()} />
 					</Avatar>
-					<Box
+                    <Box
 						ml="2"
 						width="300px"
 						bgColor="gray.200"
 						borderRadius="5px"
 					>
-						<Text fontWeight="bold">{displayName}</Text>
-						<Text fontSize="sm">Lv {level}</Text>
+                        <Flex display='flex' justifyContent='center'>
+						<Text fontWeight="bold" style={{marginRight: '12px'}}>{displayName}</Text>
+
+                        </Flex>
+                        <Flex display='flex' justifyContent='center'>
+						<Text fontSize="sm" color='gray'>Lv {level} Win: {win} Lose: {lose} Exp: {exp}</Text>
+                        </Flex>
 					</Box>
 				</Flex>
                 </Box>
             </MenuButton>
             <MenuList>
-                <MenuItem>
-                    # {name} Profile
-                </MenuItem>
+                <Text as='b'># {name}</Text>
                 { //AmIOwner && IsAdmin && !IsOwner &&
                 
                     <MenuItem onClick={() => inviteDm(name, UserName)}>

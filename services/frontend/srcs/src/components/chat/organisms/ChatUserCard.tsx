@@ -96,9 +96,7 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
                 </Box>
             </MenuButton>
             <MenuList>
-                <MenuItem>
-                    # {name} Profile
-                </MenuItem>
+                <Text as='b'># {name}</Text>
                 { AmIAdmin && !IsOwner &&
                 <MenuItem onClick={() => banPlayer(name)}>
                     Ban

@@ -104,6 +104,9 @@ export const InviteDmModal: VFC<Props> = memo((props) => {
                                                     level={member.level}
                                                     status={member.status}
                                                     imgUrl={member.imgUrl}
+                                                    win={member.win}
+                                                    lose={member.lose}
+                                                    exp={member.exp}
                                                     />}
                                             </Box>
                                         )

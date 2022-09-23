@@ -1,4 +1,4 @@
-import { Box, Link, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
+import { Box, Link, Menu, MenuButton, MenuItem, Text, MenuList, useDisclosure } from "@chakra-ui/react";
 import { memo, useCallback, useContext, VFC } from "react";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 import { AddAdminModal } from "../modalWindow/addAdmin";
@@ -74,9 +74,7 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
                     </Link>
                 </MenuButton>
                 <MenuList>
-                    <Box>
-                    #{room.name}
-                    </Box>
+                    <Text as='b'># {room.name}</Text>
                     <MenuItem onClick={onClickRoom1}>
                         Invite People
                         <InvitePeopleModal isOpen={isOpen1} onClose={onClose1} room={room}/>

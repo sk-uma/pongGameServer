@@ -87,9 +87,7 @@ export const AddUserCard: VFC<Props> = memo((props) => {
                 </Box>
             </MenuButton>
             <MenuList>
-                <MenuItem>
-                    # {name} Profile
-                </MenuItem>
+                <Text as='b'># {name}</Text>
                 { room && !room.ban_list.includes(name) &&
                 <MenuItem onClick={() => invitePlayer(name)}>
                     Add
