@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Stack } from "@chakra-ui/react";
-import { createRef, memo, useCallback, useEffect, VFC } from "react";
+import { memo, useEffect, VFC } from "react";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChartInvaitChatMessage } from "./ChatInviteGameMessage";

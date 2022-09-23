@@ -1,9 +1,7 @@
 import { Box, FormControl, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Stack } from "@chakra-ui/react";
-import { ChangeEventHandler, memo, useContext, useEffect, useState, VFC } from "react";
+import { memo, useEffect, VFC } from "react";
 import { useAllPlayers } from "../../../hooks/useAllPlayers";
-import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 import { AddUserCard } from "../organisms/AddUserCard";
-import { ChatContext } from "../provider/ChatProvider";
 import { ChatRoomType } from "../type/ChatType";
 
 type Props = {

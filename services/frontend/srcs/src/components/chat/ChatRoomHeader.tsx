@@ -1,13 +1,11 @@
 import { Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
-import { ChangeEventHandler, memo, useCallback, useContext, useEffect, useState, VFC } from "react";
-import { GiEarthAsiaOceania } from "react-icons/gi";
+import { memo, useCallback, useEffect, VFC } from "react";
 import { FaUserFriends, FaUserPlus } from "react-icons/fa";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { AddMemberModal } from "./modalWindow/addMemberModal";
 import { ChatMemberModal } from "./modalWindow/roomMember";
-import { ChatContext } from "./provider/ChatProvider";
-import { ChatAllDataType, ChatLogType, ChatRoomType } from "./type/ChatType";
+import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 
 type Props = {
     chatAllData : ChatAllDataType | undefined;
@@ -19,9 +17,7 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
 
     const {currentRoom, currentRoomId, chatAllData} = props;
     const { getPlayers, players } = useAllPlayers();
-    const [text, setText] = useState("");
     const logindata = useLoginPlayer();
-    const { socket } = useContext(ChatContext);
 
     const {isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1} = useDisclosure();
     const {isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2} = useDisclosure();
@@ -35,31 +31,6 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
     //const onChangeText = (e: ChangeEvent<HTMLInputElement>) => {
     //    setText(e.target.value);
     //}
-
-    const onChangeTextarea: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
-        setText(e.target.value);
-    }
-
-    const onClick = () => {
-        let name: string;
-        if (logindata && logindata.loginPlayer)
-            name = logindata.loginPlayer.name;
-        else
-            name = "no name";
-
-        const payload: ChatLogType = {
-            roomId: currentRoomId,
-            id: "new one", //import { v4 as uuidv4 } from 'uuid';
-            owner: name,
-            time: 'undefine',
-            text: text,
-            type: 'message',
-        }
-        console.log(currentRoomId);
-        socket.emit('Chat/send/chatmessage', payload);
-
-        setText("");
-    }
 
     /*
             <Input

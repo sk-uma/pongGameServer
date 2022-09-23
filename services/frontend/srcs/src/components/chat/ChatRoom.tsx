@@ -1,5 +1,5 @@
-import { Box, Button, Flex, HStack, Image, Input, Menu, MenuButton, MenuItem, MenuList, Text, useDisclosure } from "@chakra-ui/react";
-import { ChangeEventHandler, memo, useCallback, useContext, useState, VFC } from "react";
+import { Box, Flex, HStack, Input, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
+import { ChangeEventHandler, memo, useContext, useState, VFC } from "react";
 import { useMessage } from "../../hooks/useMessage";
 import { Player } from "../../types/api/Player";
 import { useJoinRoom } from "./hooks/JoinRoom";

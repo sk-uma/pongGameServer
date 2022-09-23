@@ -1,4 +1,4 @@
-import { Box, Button, Link, useDisclosure, Text } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
 import { memo, useCallback, VFC } from "react";
 import { constUrl } from "../../constant/constUrl";
@@ -72,16 +72,6 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 }
             }
 	};
-
-    const onClickRoomLinkByName = (room: string) => {
-        //alert(roominfo.name);
-        setCurrentRoomId(room);
-    }
-
-    const onClickRightRoomLink = (room: string) => {
-        alert(room);
-        //setCurrentRoomId(room);
-    }
 
     return (
         <Box>
