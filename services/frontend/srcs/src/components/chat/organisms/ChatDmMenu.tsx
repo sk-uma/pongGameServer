@@ -47,14 +47,15 @@ export const ChatDmMenu: VFC<Props> = memo((props) => {
         <Box bg='teal.200'>
             <Menu>
                 <MenuButton>
-                    <Link
+                    <Box
+                        cursor='pointer'
                         onClick={() => onClickRoomLink(room)}
                         >
                         <TextSubHighlightStyle title={`# ${opponentName}`} color='gray.600'/>    
-                    </Link>
+                    </Box>
                 </MenuButton>
                 <MenuList>
-                    <Box>
+                    <Box  cursor='pointer'>
                     # {opponentName}
                     </Box>
                     <MenuItem onClick={onClickDeleteRoom}>Leave</MenuItem>

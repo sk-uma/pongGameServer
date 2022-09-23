@@ -76,6 +76,7 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
                 <MenuButton>
                     <Link
                         onClick={() => onClickRoomLink(room)}
+                        cursor='pointer'
                         >        
                         <TextSubHighlightStyle title={`# ${room.name}`}  color='gray.600'/>
                         <ChatRoomMenuModal isOpen={isOpen3} onClose={onClose3} room={room}/>     

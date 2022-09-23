@@ -99,12 +99,9 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     if (currentRoomId !== room.id)
                     {
                         return (
-                        <Box key={index}>
-                        <Link
-                            onClick={() => onClickRoomLink(room)}
+                        <Box key={index} cursor='pointer' onClick={() => onClickRoomLink(room)}
                         >
                             <TextSubStyle title={`# ${room.name}`}/>
-                        </Link>
                         </Box>
                         )
                     }
@@ -125,17 +122,17 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 }
                 ;})
             }
-            <Box><Link onClick={onClickRoom}>
+            <Box onClick={onClickRoom} cursor='pointer'>
                 <TextSubStyle title={'+ Create channel'}/>
                 <ChatRoomAddModal isOpen={isOpen} onClose={onClose}/> 
-            </Link></Box>
+            </Box>
 
-            <Link onClick={onClickRoom3}>
+            <Box onClick={onClickRoom3}  cursor='pointer'>
                 <TextSubStyle title={'+ Browse channel'}/>
                 <BrowseChannelsModal
                     isOpen={isOpen3} onClose={onClose3}
                     chatAllData={chatAllData}/>  
-            </Link>
+            </Box>
 
             <TextMainStyle title={'Direct messages'} color={'gray.300'}/>
             {
@@ -155,18 +152,20 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                         return (
                         <Box key={index}>
                         { room.notVisited_list.includes(name) &&
-                            <Link
+                            <Box
                                 onClick={() => onClickRoomLink(room)}
-                                fontWeight={800}>
+                                fontWeight={800}
+                                cursor='pointer'>
                                 <TextSubStyle title={`# ${opponentName}`}/>
-                            </Link>
+                            </Box>
                         }
                         { !room.notVisited_list.includes(name) &&
-                            <Link
+                            <Box
                                 onClick={() => onClickRoomLink(room)}
-                                fontWeight={400}>
+                                fontWeight={400}
+                                cursor='pointer'>
                                 <TextSubStyle title={`# ${opponentName}`}/>
-                            </Link>
+                            </Box>
                         }
                         </Box>
                         )
@@ -189,12 +188,12 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 }
                 ;})
             }
-            <Link onClick={onClickRoom2}>
+            <Box onClick={onClickRoom2} cursor='pointer'>
                 <TextSubStyle title={'+ New message'}/>
                 <InviteDmModal
                     isOpen={isOpen2} onClose={onClose2}
                     chatAllData={chatAllData}/>  
-            </Link>
+            </Box>
         </Box>
     );
 });
