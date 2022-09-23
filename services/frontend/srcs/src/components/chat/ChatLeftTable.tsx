@@ -99,7 +99,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     if (currentRoomId !== room.id)
                     {
                         return (
-                        <Box key={index} cursor='pointer' onClick={() => onClickRoomLink(room)}
+                        <Box key={index} cursor='pointer' _hover={{bg:'teal.500'}} onClick={() => onClickRoomLink(room)}
                         >
                             <TextSubStyle title={`# ${room.name}`}/>
                         </Box>
@@ -122,12 +122,12 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 }
                 ;})
             }
-            <Box onClick={onClickRoom} cursor='pointer'>
+            <Box onClick={onClickRoom} cursor='pointer'  _hover={{bg:'teal.500'}}>
                 <TextSubStyle title={'+ Create channel'}/>
                 <ChatRoomAddModal isOpen={isOpen} onClose={onClose}/> 
             </Box>
 
-            <Box onClick={onClickRoom3}  cursor='pointer'>
+            <Box onClick={onClickRoom3}  cursor='pointer'  _hover={{bg:'teal.500'}}>
                 <TextSubStyle title={'+ Browse channel'}/>
                 <BrowseChannelsModal
                     isOpen={isOpen3} onClose={onClose3}
@@ -155,7 +155,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                             <Box
                                 onClick={() => onClickRoomLink(room)}
                                 fontWeight={800}
-                                cursor='pointer'>
+                                cursor='pointer' _hover={{bg:'teal.500'}}>
                                 <TextSubStyle title={`# ${opponentName}`}/>
                             </Box>
                         }
@@ -163,7 +163,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                             <Box
                                 onClick={() => onClickRoomLink(room)}
                                 fontWeight={400}
-                                cursor='pointer'>
+                                cursor='pointer'  _hover={{bg:'teal.500'}}>
                                 <TextSubStyle title={`# ${opponentName}`}/>
                             </Box>
                         }
@@ -188,7 +188,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 }
                 ;})
             }
-            <Box onClick={onClickRoom2} cursor='pointer'>
+            <Box onClick={onClickRoom2} cursor='pointer' _hover={{bg:'teal.500'}}>
                 <TextSubStyle title={'+ New message'}/>
                 <InviteDmModal
                     isOpen={isOpen2} onClose={onClose2}
