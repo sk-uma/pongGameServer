@@ -2,20 +2,22 @@ import { Box, Button, Flex, FormControl, FormLabel, Modal, ModalBody, ModalClose
 import { ChangeEventHandler, memo, useContext, useEffect, useState, VFC } from "react";
 import { useAllPlayers } from "../../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
+import { ChatRoom } from "../ChatRoom";
 import { ChatUserCard } from "../organisms/ChatUserCard";
+import { DmInviteUserCard } from "../organisms/DmInviteUserCard";
 import { ChatContext } from "../provider/ChatProvider";
-import { ChatRoomType } from "../type/ChatType";
+import { ChatAllDataType, ChatRoomType } from "../type/ChatType";
 
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    room: ChatRoomType;
+    chatAllData: ChatAllDataType | undefined;
 }
 
-export const ChatMemberModal: VFC<Props> = memo((props) => {
+export const BrowseChannelsModal: VFC<Props> = memo((props) => {
     const { socket } = useContext(ChatContext);
 
-    const {isOpen, onClose, room} = props;
+    const {isOpen, onClose, chatAllData} = props;
     const logindata = useLoginPlayer();
     const { getPlayers, players } = useAllPlayers();
 
@@ -31,6 +33,12 @@ export const ChatMemberModal: VFC<Props> = memo((props) => {
         setRoomType(ev.target.value);
     }
 
+    let name = '';
+    if (logindata && logindata.loginPlayer)
+    {
+        name = logindata.loginPlayer.name;
+    }
+
     //const onChangeRoomName = (e: ChangeEvent<HTMLInputElement>) => {
     //    setRoomName(e.target.value);
     //}
@@ -41,7 +49,7 @@ export const ChatMemberModal: VFC<Props> = memo((props) => {
         if (!logindata || !logindata.loginPlayer)
             return ;
         const payload = {
-            roomId: room.id,
+            //roomId: room.id,
             player: logindata.loginPlayer.name,//target
             target: roomType,
         }
@@ -49,57 +57,56 @@ export const ChatMemberModal: VFC<Props> = memo((props) => {
         onClose();
     };
 
-    const onClickKick2 = async () => {
 
-        if (!logindata || !logindata.loginPlayer)
-            return ;
-        const payload = {
-            roomId: room.id,
-            player: logindata.loginPlayer.name,//target
-            target: roomType,
-        }
-        await socket.emit('Chat/unmuteUser', payload); 
-        onClose();
-    };
+    //let tmpMember = room.member_list.filter((item) => (item !== room.owner && !room.ban_list.includes(item)));
+    //let members = tmpMember.filter((item) => item !== logindata?.loginPlayer?.name);
 
-    let tmpMember = room.member_list.filter((item) => (item !== room.owner && !room.ban_list.includes(item)));
-    let members = tmpMember.filter((item) => item !== logindata?.loginPlayer?.name);
+    //let members = players;
 
-    let chatMembers = undefined;
-    if (players)
+    let browseChannel_list = undefined;
+    if (chatAllData)
     {
-        chatMembers = players.filter((item) => (room.member_list.includes(item.name)))
+        browseChannel_list = chatAllData.rooms.filter((room) => room.roomType === 'public');
     }
+
     return (
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent>
-                    <ModalHeader>#{room.name}</ModalHeader>
+                    <ModalHeader>All public channels</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
                         <Stack>
                             <FormControl>
                                 <Box width="100%" height="300" justifyContent='center' alignItems='center' overflowY='scroll'>
                                 {
-                                    chatMembers &&
-                                    chatMembers.map((member, index) => {
+                                    browseChannel_list && 
+                                    browseChannel_list.map((room, index) => {
                                         return (
-                                            <Box>
-                                                <ChatUserCard
+                                            //<Box>{room.name}</Box>
+                                            <Box key={index}>
+                                                {   logindata && logindata.loginPlayer &&
+                                                    <ChatRoom room={room} user={logindata.loginPlayer}/>
+                                                }
+                                            </Box>
+                                        )
+                                    })
+
+                                    /*chatMembers.map((member, index) => {
+                                        return (
+                                            <Box key={index}>
+                                                { <DmInviteUserCard
                                                     loginName={member.displayName}
                                                     displayName={member.displayName}
                                                     name={member.name}
                                                     level={member.level}
                                                     status={member.status}
                                                     imgUrl={member.imgUrl}
-                                                    win={member.win}
-                                                    lose={member.lose}
-                                                    exp={member.exp}
-                                                    room={room}/>  
+                                                    />}
                                             </Box>
                                         )
                                         //<Box key={index} fontSize='3xl'>{member}</Box>
-                                    })
+                                    })*/
                                 }
                                 </Box>
                             </FormControl>

@@ -1,6 +1,7 @@
 import { Box, Link, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
 import { memo, useCallback, useContext, VFC } from "react";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
+import { TextSubHighlightStyle, TextSubStyle } from "../hooks/TextStyle";
 import { AddAdminModal } from "../modalWindow/addAdmin";
 import { ChatBanModal } from "../modalWindow/chatBanModal";
 import { ChatKickModal } from "../modalWindow/chatKick";
@@ -70,12 +71,14 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
     }
 
     return (
-        <Box>
+        <Box  bg='teal.200'>
             <Menu>
                 <MenuButton>
                     <Link
                         onClick={() => onClickRoomLink(room)}
-                        ># {room.name}        
+                        cursor='pointer'  _hover={{bg:'teal.500'}}
+                        >        
+                        <TextSubHighlightStyle title={`# ${room.name}`}  color='gray.600'/>
                         <ChatRoomMenuModal isOpen={isOpen3} onClose={onClose3} room={room}/>     
                     </Link>
                 </MenuButton>
@@ -83,34 +86,10 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
                     <Box>
                     #{room.name}
                     </Box>
-                    <MenuItem onClick={onClickRoom1}>
-                        Invite People
-                        <InvitePeopleModal isOpen={isOpen1} onClose={onClose1} room={room}/>
-                    </MenuItem>
                     <MenuItem onClick={onClickRoom3}>
                         setting
                         <ChatRoomMenuModal isOpen={isOpen3} onClose={onClose3} room={room}/>     
                     </MenuItem>
-                    { (logindata?.loginPlayer?.name === room.owner) &&
-                        <MenuItem onClick={onClickRoom4}>Add admin
-                            <AddAdminModal isOpen={isOpen4} onClose={onClose4} room={room}/> 
-                        </MenuItem>
-                    }   
-                    { (logindata?.loginPlayer?.name === room.owner || room.admin_list.includes(userName)) &&
-                        <MenuItem onClick={onClickRoom2}>Kick Someone
-                            <ChatKickModal isOpen={isOpen2} onClose={onClose2} room={room}/>
-                        </MenuItem>
-                    }             
-                    { (logindata?.loginPlayer?.name === room.owner || room.admin_list.includes(userName)) &&
-                        <MenuItem onClick={onClickRoom5}>Ban User
-                            <ChatBanModal isOpen={isOpen5} onClose={onClose5} room={room}/>
-                        </MenuItem>
-                    }      
-                    { logindata?.loginPlayer?.name === room.owner &&
-                        <MenuItem onClick={onClickRoom6}>Mute User
-                            <ChatMuteModal isOpen={isOpen6} onClose={onClose6} room={room}/>
-                        </MenuItem>
-                    }        
                     { logindata?.loginPlayer?.name === room.owner &&
                         <MenuItem onClick={onClickDeleteRoom}>Delete</MenuItem>
                     }

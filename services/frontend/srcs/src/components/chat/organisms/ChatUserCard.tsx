@@ -7,6 +7,7 @@ import { ChatBlockUser } from "../hooks/Block";
 import { useBanPlayer } from "../hooks/Ban";
 import { useKickPlayer } from "../hooks/Kick";
 import { useManageAdminPlayer } from "../hooks/ManageAdmin";
+import { CheckPermission } from "../hooks/Permission";
 
 //type Props = {
 //    memberName: string,
@@ -20,11 +21,14 @@ type Props = {
 	level: number;
 	//isfriend: boolean;
 	status: string;
+    win:number;
+    lose:number;
+    exp: number;
     room: ChatRoomType | undefined;
 };
 
 export const ChatUserCard: VFC<Props> = memo((props) => {
-    const { loginName, imgUrl, name, displayName, level, status, room} = props;
+    const { loginName, imgUrl, name, displayName, level, status, room, win, lose, exp} = props;
 
 
     const logindata = useLoginPlayer();
@@ -57,11 +61,6 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
             position = 'owner';
     }
 
-    const AmIOwner = (room && logindata?.loginPlayer?.name === room.owner);
-    const AmIAdmin = (room && logindata && logindata.loginPlayer && room.admin_list.includes(logindata?.loginPlayer?.name));
-    const IsOwner = (room && name === room.owner);
-    const IsAdmin = (room && room.admin_list.includes(name));
-
     return (
         <Menu>
             <MenuButton>
@@ -70,23 +69,34 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
 					<Avatar src={imgUrl}>
 						<AvatarBadge boxSize="1.25em" bg={statusColor()} />
 					</Avatar>
-					<Box
+                    <Box
 						ml="2"
 						width="300px"
 						bgColor="gray.200"
 						borderRadius="5px"
 					>
-						<Text fontWeight="bold">{displayName}</Text>
-						<Text fontSize="sm">Lv {level}    {position}</Text>
+                        <Flex display='flex' justifyContent='center'>
+                        {
+                            room && room.ban_list.includes(name) && 
+                            <Text fontWeight="bold" color='red' style={{marginRight: '6px'}}>banned</Text>
+                        }
+						<Text fontWeight="bold" style={{marginRight: '12px'}}>{displayName}</Text>
+                        {
+                             room?.roomType !== 'dm' && 
+						    <Text fontWeight="sm" color='gray'>{position}</Text>
+                        }
+                        </Flex>
+                        <Flex display='flex' justifyContent='center'>
+						<Text fontSize="sm" color='gray'>Lv {level} Win: {win} Lose: {lose} Exp: {exp}</Text>
+                        </Flex>
 					</Box>
 				</Flex>
                 </Box>
             </MenuButton>
             <MenuList>
-                <MenuItem>
-                    # {name} Profile
-                </MenuItem>
-                { AmIAdmin && !IsOwner &&
+                <Text as='b'># {name}</Text>
+                
+                { room?.roomType !== 'dm' && CheckPermission(room, logindata.loginPlayer, name, 'ban') &&
                 <MenuItem onClick={() => banPlayer(name)}>
                     Ban
                 </MenuItem>
@@ -95,27 +105,27 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
                     name !== logindata.loginPlayer?.name &&
                     <ChatBlockUser opponentName={name}/>
                 }
-                { AmIAdmin && !IsOwner && !room.mute_list.includes(name) &&
+                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'mute') &&
                 <MenuItem onClick={() => mutePlayer(name)}>
                     Mute
                 </MenuItem>
                 }
-                { AmIAdmin && !IsOwner && room.mute_list.includes(name) &&
+                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'unmute') &&
                 <MenuItem onClick={() => unMutePlayer(name)}>
                     UnMute
                 </MenuItem>
                 }
-                { AmIAdmin && !IsOwner &&
+                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'kick') &&
                 <MenuItem onClick={() => kickPlayer(name)}>
                     Kick
                 </MenuItem>
                 }
-                { AmIOwner && !IsAdmin && !IsOwner &&
+                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'addAdmin') &&
                 <MenuItem onClick={() => addAdminPlayer(name)}>
                     Add admin
                 </MenuItem>
                 }
-                { AmIOwner && IsAdmin && !IsOwner &&
+                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'deleteAdmin') &&
                 <MenuItem onClick={() => deleteAdminPlayer(name)}>
                     delete admin
                 </MenuItem>

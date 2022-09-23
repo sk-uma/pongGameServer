@@ -26,7 +26,7 @@ export const ChatHome: VFC = memo(() => {
         socket.on('disconnect', () => {
         });
  
-        const registUser = () => {
+        /*const registUser = () => {
             let name = "undefinedName";
             if (logindata && logindata.loginPlayer)
             {
@@ -35,19 +35,42 @@ export const ChatHome: VFC = memo(() => {
                 name = logindata.loginPlayer.name;
             }
             socket.emit('Chat/userConnect', name);
-          }
+          }*/
         
-        registUser();
+        //registUser();
         //getAllChatData();
         //console.log(allChatData);
+
+        socket.on('Chat/recv', (ret: ChatAllDataType) => {
+            console.log('Chat/recv')
+            console.log(ret);
+            //LoadDataFlag();
+            //setLoadDataFlag(new Date().toISOString());
+            ret.rooms.sort(function (a, b) {
+                return a.id > b.id ? -1: 1;
+            })
+            setChatData(ret);
+            const room = ret.rooms.find((room) => room.id === currentRoom?.id)
+            if (room)
+            {
+                setCurrentRoom(room);
+                setCurrentRoomId(room.id);
+            }
+            else
+            {
+                setCurrentRoomId('default');
+                setCurrentRoom(undefined);
+            }
+        })
 
         return () => {
           socket.off('connect');
           socket.off('disconnect');
+          socket.off('Chat/recv');
           //socket.off('Chat/pong');
         };
 
-      }, [socket, logindata]);
+      });
 
       useEffect(() => {
         const getChatData = async () => {
@@ -63,13 +86,16 @@ export const ChatHome: VFC = memo(() => {
                   return 0;
               }
           });*/
+            response.data.rooms.sort(function (a, b) {
+            return a.id > b.id ? -1: 1;
+            })
           setChatData(response.data);
         }
         getChatData();
-      }, [loadDataFlag])
+      }, [])
 
         //データ取得用　flagを立てる。
-        useEffect(() => {
+       /* useEffect(() => {
             socket.on('Chat/recv', (ret: ChatAllDataType) => {
             console.log('Chat/recv')
             console.log(ret);
@@ -83,7 +109,7 @@ export const ChatHome: VFC = memo(() => {
                 //setCurrentRoomId(room.id);
             }
             })                
-        }, [socket, currentRoom]);
+        }, [socket, currentRoom]);*/
 
       const LoadDataFlag = () => {
           setLoadDataFlag(new Date().toISOString());
@@ -95,12 +121,14 @@ export const ChatHome: VFC = memo(() => {
 
     return (
         <Flex width="100%" bg="ffffff">
-            <Box width="25%" h="100vh" bg="#ff838b"
+            <Box width="25%" h="100vh" bg="teal"
                 sx={{
                     height: {
                         base: 'calc(100vh - 45.27px)',
                         md: 'calc(100vh - 61.59px)'
                     },
+                    overflowY: 'scroll',
+                    flexDirection: "column",
                 }}
             >
                 <ChatLeftTable
@@ -128,7 +156,7 @@ export const ChatHome: VFC = memo(() => {
                     }}
                 >
                     {   currentRoom &&
-                    <ChatRoomHeader currentRoom={currentRoom} currentRoomId={currentRoomId}/>
+                    <ChatRoomHeader chatAllData={chatData} currentRoom={currentRoom} currentRoomId={currentRoomId}/>
                     }
                 </Box>
                 <Flex height='calc(100% - 50px)'>

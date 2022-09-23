@@ -1,6 +1,7 @@
 import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Select, Stack } from "@chakra-ui/react";
 import { ChangeEvent, ChangeEventHandler, memo, useContext, useState, VFC } from "react";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
+import { useMessage } from "../../../hooks/useMessage";
 import { ChatContext } from "../provider/ChatProvider";
 
 type Props = {
@@ -15,6 +16,7 @@ export const ChatRoomAddModal: VFC<Props> = memo((props) => {
     const [roomName, setRoomName] = useState("");
     const [password, setPassword] = useState("");
     const logindata = useLoginPlayer();
+    const { showMessage } = useMessage();
 
     const [roomType, setRoomType] = useState("public");
     //const onChangeRoomType = (e: ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +35,22 @@ export const ChatRoomAddModal: VFC<Props> = memo((props) => {
     }
 
     const onClickAddChatRoom = async () => {
-
+        if (roomName === '')
+        {
+            showMessage({
+                title: 'room name error',
+                status: 'error'
+            })
+            return ;
+        }
+        if (roomName.length >= 20)
+        {
+            showMessage({
+                title: 'room name error',
+                status: 'error'
+            })
+            return ;
+        }
         if (!logindata || !logindata.loginPlayer)
             return ;
         const payload = {

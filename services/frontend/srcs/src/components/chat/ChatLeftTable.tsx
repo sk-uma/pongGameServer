@@ -1,10 +1,13 @@
-import { Box, Button, Link, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Link, useDisclosure, Text } from "@chakra-ui/react";
 import axios from "axios";
 import { memo, useCallback, VFC } from "react";
 import { constUrl } from "../../constant/constUrl";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
+import { TextMainStyle, TextSubStyle } from "./hooks/TextStyle";
+import { BrowseChannelsModal } from "./modalWindow/BrowseChannelsModal";
 import { ChatAddDirectMessageModal } from "./modalWindow/createDirectMessage";
 import { ChatRoomAddModal } from "./modalWindow/createRoom";
+import { InviteDmModal } from "./modalWindow/inviteDmModal";
 import { ChatDmMenu } from "./organisms/ChatDmMenu";
 import { ChatRoomMenu } from "./organisms/ChatMenu";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
@@ -18,6 +21,10 @@ type Props = {
     currentRoomId: string;
 }
 
+//gray.300
+//white
+
+
 export const ChatLeftTable: VFC<Props> = memo((props) => {
     const { LoadDataFlag, chatAllData,
             setCurrentRoomId, setCurrentRoom,
@@ -25,8 +32,10 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
     const logindata = useLoginPlayer();
     const {isOpen, onOpen, onClose} = useDisclosure();
     const {isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2} = useDisclosure();
+    const {isOpen: isOpen3, onOpen: onOpen3, onClose: onClose3} = useDisclosure();
     const onClickRoom = useCallback(() => onOpen(), [onOpen]);
     const onClickRoom2 = useCallback(() => onOpen2(), [onOpen2]);
+    const onClickRoom3 = useCallback(() => onOpen3(), [onOpen3]);
 
     let name = 'default';
     if (logindata?.loginPlayer?.name)
@@ -77,10 +86,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
 
     return (
         <Box>
-            <Button size="xs" onClick={LoadDataFlag}>ping</Button>
-            log {chatAllData?.logs.length}
-            room {chatAllData?.rooms.length}
-            <Box>== Channels </Box>
+            <TextMainStyle title={'Channnels'} color={'gray.300'}/>
             {
                 chatAllData?.rooms.map((room, index) => {
                 let name = logindata?.loginPlayer?.name;
@@ -93,11 +99,9 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     if (currentRoomId !== room.id)
                     {
                         return (
-                        <Box key={index}>
-                        <Link
-                            onClick={() => onClickRoomLink(room)}
-                        ># {room.name}        
-                        </Link>
+                        <Box key={index} cursor='pointer' _hover={{bg:'teal.500'}} onClick={() => onClickRoomLink(room)}
+                        >
+                            <TextSubStyle title={`# ${room.name}`}/>
                         </Box>
                         )
                     }
@@ -118,20 +122,26 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 }
                 ;})
             }
-            <Box><Link onClick={onClickRoom}>+ Create channel
+            <Box onClick={onClickRoom} cursor='pointer'  _hover={{bg:'teal.500'}}>
+                <TextSubStyle title={'+ Create channel'}/>
                 <ChatRoomAddModal isOpen={isOpen} onClose={onClose}/> 
-            </Link></Box>
+            </Box>
 
-            <Box><Link onClick={() => onClickRoomLinkByName('browseChannels')}>+ Browse channels</Link></Box>
+            <Box onClick={onClickRoom3}  cursor='pointer'  _hover={{bg:'teal.500'}}>
+                <TextSubStyle title={'+ Browse channel'}/>
+                <BrowseChannelsModal
+                    isOpen={isOpen3} onClose={onClose3}
+                    chatAllData={chatAllData}/>  
+            </Box>
 
-            <Box>== Direct messages </Box>
+            <TextMainStyle title={'Direct messages'} color={'gray.300'}/>
             {
                 chatAllData?.rooms.map((room, index) => {
                 let name = logindata?.loginPlayer?.name;
                 if (!name)
                     name = 'default';
                 if (room.roomType !== 'dm')
-                    return <Box></Box>
+                    return <Box key={index}></Box>
                 let opponentName = room.member_list[0];
                 if (name === room.member_list[0])
                     opponentName = room.member_list[1];
@@ -142,18 +152,20 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                         return (
                         <Box key={index}>
                         { room.notVisited_list.includes(name) &&
-                            <Link
+                            <Box
                                 onClick={() => onClickRoomLink(room)}
-                                fontWeight={800}>
-                                # {opponentName}        
-                            </Link>
+                                fontWeight={800}
+                                cursor='pointer' _hover={{bg:'teal.500'}}>
+                                <TextSubStyle title={`# ${opponentName}`}/>
+                            </Box>
                         }
                         { !room.notVisited_list.includes(name) &&
-                            <Link
+                            <Box
                                 onClick={() => onClickRoomLink(room)}
-                                fontWeight={400}>
-                                # {opponentName}        
-                            </Link>
+                                fontWeight={400}
+                                cursor='pointer'  _hover={{bg:'teal.500'}}>
+                                <TextSubStyle title={`# ${opponentName}`}/>
+                            </Box>
                         }
                         </Box>
                         )
@@ -172,15 +184,16 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     }
                 }
                 else {
-                    return <Box></Box>
+                    return <Box key={index}></Box>
                 }
                 ;})
             }
-            <Link onClick={onClickRoom2}>+ New message
-                <ChatAddDirectMessageModal
+            <Box onClick={onClickRoom2} cursor='pointer' _hover={{bg:'teal.500'}}>
+                <TextSubStyle title={'+ New message'}/>
+                <InviteDmModal
                     isOpen={isOpen2} onClose={onClose2}
-                    roomId={currentRoomId} chatAllData={chatAllData}/> 
-            </Link>
+                    chatAllData={chatAllData}/>  
+            </Box>
         </Box>
     );
 });
