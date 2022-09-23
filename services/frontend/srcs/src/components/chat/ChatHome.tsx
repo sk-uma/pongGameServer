@@ -41,13 +41,28 @@ export const ChatHome: VFC = memo(() => {
         //getAllChatData();
         //console.log(allChatData);
 
+        socket.on('Chat/recv', (ret: ChatAllDataType) => {
+            console.log('Chat/recv')
+            console.log(ret);
+            //LoadDataFlag();
+            //setLoadDataFlag(new Date().toISOString());
+            setChatData(ret);
+            const room = ret.rooms.find((room) => room.id === currentRoom?.id)
+            if (room)
+            {
+                setCurrentRoom(room);
+                //setCurrentRoomId(room.id);
+            }
+        })
+
         return () => {
           socket.off('connect');
           socket.off('disconnect');
+          socket.off('Chat/recv');
           //socket.off('Chat/pong');
         };
 
-      }, [socket]);
+      });
 
       useEffect(() => {
         const getChatData = async () => {
@@ -66,10 +81,10 @@ export const ChatHome: VFC = memo(() => {
           setChatData(response.data);
         }
         getChatData();
-      }, [loadDataFlag])
+      }, [])
 
         //データ取得用　flagを立てる。
-        useEffect(() => {
+       /* useEffect(() => {
             socket.on('Chat/recv', (ret: ChatAllDataType) => {
             console.log('Chat/recv')
             console.log(ret);
@@ -83,7 +98,7 @@ export const ChatHome: VFC = memo(() => {
                 //setCurrentRoomId(room.id);
             }
             })                
-        }, [socket, currentRoom]);
+        }, [socket, currentRoom]);*/
 
       const LoadDataFlag = () => {
           setLoadDataFlag(new Date().toISOString());
@@ -130,7 +145,7 @@ export const ChatHome: VFC = memo(() => {
                     }}
                 >
                     {   currentRoom &&
-                    <ChatRoomHeader currentRoom={currentRoom} currentRoomId={currentRoomId}/>
+                    <ChatRoomHeader chatAllData={chatData} currentRoom={currentRoom} currentRoomId={currentRoomId}/>
                     }
                 </Box>
                 <Flex height='calc(100% - 50px)'>

@@ -7,16 +7,17 @@ import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { AddMemberModal } from "./modalWindow/addMemberModal";
 import { ChatMemberModal } from "./modalWindow/roomMember";
 import { ChatContext } from "./provider/ChatProvider";
-import { ChatLogType, ChatRoomType } from "./type/ChatType";
+import { ChatAllDataType, ChatLogType, ChatRoomType } from "./type/ChatType";
 
 type Props = {
+    chatAllData : ChatAllDataType | undefined;
     currentRoom : ChatRoomType;
     currentRoomId : string;
 }
 
 export const ChatRoomHeader: VFC<Props> = memo((props) => {
 
-    const {currentRoom, currentRoomId} = props;
+    const {currentRoom, currentRoomId, chatAllData} = props;
     const { getPlayers, players } = useAllPlayers();
     const [text, setText] = useState("");
     const logindata = useLoginPlayer();
