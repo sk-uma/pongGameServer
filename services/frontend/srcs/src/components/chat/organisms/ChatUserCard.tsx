@@ -7,6 +7,7 @@ import { ChatBlockUser } from "../hooks/Block";
 import { useBanPlayer } from "../hooks/Ban";
 import { useKickPlayer } from "../hooks/Kick";
 import { useManageAdminPlayer } from "../hooks/ManageAdmin";
+import { CheckPermission } from "../../atoms/Permission";
 
 //type Props = {
 //    memberName: string,
@@ -60,11 +61,6 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
             position = 'owner';
     }
 
-    const AmIOwner = (room && logindata?.loginPlayer?.name === room.owner);
-    const AmIAdmin = (room && logindata && logindata.loginPlayer && room.admin_list.includes(logindata?.loginPlayer?.name));
-    const IsOwner = (room && name === room.owner);
-    const IsAdmin = (room && room.admin_list.includes(name));
-
     return (
         <Menu>
             <MenuButton>
@@ -97,7 +93,7 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
             </MenuButton>
             <MenuList>
                 <Text as='b'># {name}</Text>
-                { AmIAdmin && !IsOwner &&
+                { CheckPermission(room, logindata.loginPlayer, name, 'ban') &&
                 <MenuItem onClick={() => banPlayer(name)}>
                     Ban
                 </MenuItem>
@@ -106,27 +102,27 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
                     name !== logindata.loginPlayer?.name &&
                     <ChatBlockUser opponentName={name}/>
                 }
-                { AmIAdmin && !IsOwner && !room.mute_list.includes(name) &&
+                { CheckPermission(room, logindata.loginPlayer, name, 'mute') &&
                 <MenuItem onClick={() => mutePlayer(name)}>
                     Mute
                 </MenuItem>
                 }
-                { AmIAdmin && !IsOwner && room.mute_list.includes(name) &&
+                { CheckPermission(room, logindata.loginPlayer, name, 'unmute') &&
                 <MenuItem onClick={() => unMutePlayer(name)}>
                     UnMute
                 </MenuItem>
                 }
-                { AmIAdmin && !IsOwner &&
+                { CheckPermission(room, logindata.loginPlayer, name, 'kick') &&
                 <MenuItem onClick={() => kickPlayer(name)}>
                     Kick
                 </MenuItem>
                 }
-                { AmIOwner && !IsAdmin && !IsOwner &&
+                { CheckPermission(room, logindata.loginPlayer, name, 'addAdmin') &&
                 <MenuItem onClick={() => addAdminPlayer(name)}>
                     Add admin
                 </MenuItem>
                 }
-                { AmIOwner && IsAdmin && !IsOwner &&
+                { CheckPermission(room, logindata.loginPlayer, name, 'deleteAdmin') &&
                 <MenuItem onClick={() => deleteAdminPlayer(name)}>
                     delete admin
                 </MenuItem>
