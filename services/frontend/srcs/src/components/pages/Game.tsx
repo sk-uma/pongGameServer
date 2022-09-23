@@ -1,7 +1,7 @@
 import { memo, VFC } from "react";
 import { Button, Center, Stack, Text } from "@chakra-ui/react";
 import { GiEarthAsiaOceania } from "react-icons/gi"
-import { RiChatPrivateLine } from "react-icons/ri"
+// import { RiChatPrivateLine } from "react-icons/ri"
 import { AiFillEye } from "react-icons/ai"
 import { useNavigate } from "react-router-dom";
 
@@ -23,14 +23,14 @@ export const Game: VFC = memo(() => {
 
   const navigate = useNavigate();
 
-  const onClickPrivateRoom = () => {
-    navigate('/home/game/private', {state: {
-      mode: 'private',
-      data: {
-        key: 'hogehoge'
-      }
-    }});
-  };
+  // const onClickPrivateRoom = () => {
+  //   navigate('/home/game/private', {state: {
+  //     mode: 'private',
+  //     data: {
+  //       key: 'hogehoge'
+  //     }
+  //   }});
+  // };
   const onClickPublicRoom = () => {
     navigate('/home/game/public');
   };
@@ -54,7 +54,7 @@ export const Game: VFC = memo(() => {
         >
           公開マッチ
         </Button>
-        <Button
+        {/* <Button
           colorScheme='teal'
           size='lg'
           variant='outline'
@@ -63,7 +63,7 @@ export const Game: VFC = memo(() => {
           width='100%'
         >
           カスタムマッチ
-        </Button>
+        </Button> */}
         <Button
           colorScheme='teal'
           size='lg'
