@@ -1,17 +1,14 @@
-import { Box, Center, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import axios from "axios";
 import { memo, useContext, useEffect, useState, VFC } from "react"
-import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChatCenterHandle } from "./ChatCenterHandle";
 import { ChatLeftTable } from "./ChatLeftTable";
-import { ChatRight } from "./ChatRight";
 import { ChatRoomHeader } from "./ChatRoomHeader";
 import { ChatContext } from "./provider/ChatProvider";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 
 export const ChatHome: VFC = memo(() => {
     const { socket } = useContext(ChatContext);
-    const logindata = useLoginPlayer();
     const [loadDataFlag, setLoadDataFlag] = useState<string>("");
     const [chatData, setChatData] = useState<ChatAllDataType>();
     const [currentRoomId, setCurrentRoomId] = useState<string>("default");
@@ -77,15 +74,6 @@ export const ChatHome: VFC = memo(() => {
           const response = await axios.get<ChatAllDataType>('http://localhost:3001/chat/getAllData');
           console.log('axios')
           console.log(response.data)
-          /*response.data.rooms.sort(function(first, second){
-              if (first.name < second.name) {
-                  return -1;
-              } else if (first.name > second.name) {
-                  return 1;
-              } else {
-                  return 0;
-              }
-          });*/
             response.data.rooms.sort(function (a, b) {
             return a.id > b.id ? -1: 1;
             })

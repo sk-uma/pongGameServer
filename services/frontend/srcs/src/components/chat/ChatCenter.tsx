@@ -54,6 +54,8 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                 const usr = players.find((usr) => usr.name === log.owner);
                 if (logindata?.loginPlayer?.blockList.includes(log.owner))
                     return <Flex key={index}></Flex>;
+                if (currentRoom.mute_list.includes(log.owner) && logindata?.loginPlayer?.name !== log.owner)
+                    return <Flex key={index}></Flex>;
                 if (log.type === "message") {
                     return (
                         // <Flex key={index}  w="100%">
