@@ -157,6 +157,13 @@ export class ChatService {
   async leaveRoom(roomId: string, player: string): Promise<boolean> {
     const room = await this.chatRoomsRepository.findOne(roomId);
     if (!room) return false;
+    if (room.owner === player) {
+      //delete log
+      await this.chatLogRepository.delete({ roomId: roomId });
+      //delete room
+      await this.chatRoomsRepository.remove(room);
+      return true;
+    }
     const newParticipant = room.member_list.filter((item) => item !== player);
     const newAdmins = room.admin_list.filter((item) => item !== player);
     room.member_list = newParticipant;

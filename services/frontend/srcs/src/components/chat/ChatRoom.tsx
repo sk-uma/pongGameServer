@@ -117,7 +117,12 @@ export const ChatRoom: VFC<Props> = memo((props) => {
 
             { props.room.member_list.includes(name) && 
                 <MenuItem onClick={() => leaveRoom(name)}>
-                    Leave
+                { props.room.owner === name &&
+                    'Delete'
+                }
+                { props.room.owner !== name &&
+                    'Leave'
+                }
                 </MenuItem>
             }
 

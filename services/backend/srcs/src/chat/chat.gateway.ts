@@ -70,7 +70,7 @@ export class ChatGateway
   @SubscribeMessage('Chat/send/leaveRoom')
   async leaveRoom(client: Socket, payload: any): Promise<void> {
     const ret1 = await this.chatService.leaveRoom(payload.roomId, payload.name);
-    this.logger.log(`${this.chatHeader}: leaveRoom: ${payload}: ${ret1}`);
+    this.logger.log(`${this.chatHeader}: leaveRoom: ${payload.name}: ${ret1}`);
 
     const ret: ChatAllDataType = await this.chatService.getAllData();
     await this.server.emit('Chat/recv', ret);
