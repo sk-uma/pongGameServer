@@ -1,5 +1,5 @@
-import { Player } from "../../types/api/Player";
-import { ChatRoomType } from "../chat/type/ChatType";
+import { Player } from "../../../types/api/Player";
+import { ChatRoomType } from "../type/ChatType";
 
 /*
     Owner   block, change pass, set admin, ban, mute, kick

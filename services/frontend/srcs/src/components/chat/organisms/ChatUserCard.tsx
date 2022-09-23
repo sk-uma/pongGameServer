@@ -7,7 +7,7 @@ import { ChatBlockUser } from "../hooks/Block";
 import { useBanPlayer } from "../hooks/Ban";
 import { useKickPlayer } from "../hooks/Kick";
 import { useManageAdminPlayer } from "../hooks/ManageAdmin";
-import { CheckPermission } from "../../atoms/Permission";
+import { CheckPermission } from "../hooks/Permission";
 
 //type Props = {
 //    memberName: string,

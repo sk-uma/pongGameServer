@@ -3,7 +3,7 @@ import axios from "axios";
 import { memo, useCallback, VFC } from "react";
 import { constUrl } from "../../constant/constUrl";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
-import { TextMainStyle, TextSubStyle } from "../atoms/TextStyle";
+import { TextMainStyle, TextSubStyle } from "./hooks/TextStyle";
 import { BrowseChannelsModal } from "./modalWindow/BrowseChannelsModal";
 import { ChatAddDirectMessageModal } from "./modalWindow/createDirectMessage";
 import { ChatRoomAddModal } from "./modalWindow/createRoom";

@@ -1,7 +1,7 @@
 import { Box, Link, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
 import { memo, useCallback, useContext, VFC } from "react";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
-import { TextSubHighlightStyle, TextSubStyle } from "../../atoms/TextStyle";
+import { TextSubHighlightStyle, TextSubStyle } from "../hooks/TextStyle";
 import { AddAdminModal } from "../modalWindow/addAdmin";
 import { ChatBanModal } from "../modalWindow/chatBanModal";
 import { ChatKickModal } from "../modalWindow/chatKick";
