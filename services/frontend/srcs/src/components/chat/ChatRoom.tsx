@@ -1,5 +1,7 @@
 import { Box, Flex, HStack, Input, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
+import axios from "axios";
 import { ChangeEventHandler, memo, useContext, useState, VFC } from "react";
+import { constUrl } from "../../constant/constUrl";
 import { useMessage } from "../../hooks/useMessage";
 import { Player } from "../../types/api/Player";
 import { useJoinRoom } from "./hooks/JoinRoom";
@@ -38,11 +40,40 @@ export const ChatRoom: VFC<Props> = memo((props) => {
     const onChangeTextarea: ChangeEventHandler<HTMLInputElement> = (e) => {
         setText(e.target.value);
     }
-    
-    const joinPasswordRoom = () => {
+
+    const   joinPasswordRoom = async () => {
         //alert(`${name} mute => ${target}`);
+        const ret = await axios
+        .get<boolean>(
+            constUrl.serversideUrl +
+                `/chat/checkPassword?roomId=${props.room.id}&password=${text}`
+        );
+        /*
+        .then(() => {
+            //showMessage({
+            //    title: `${opponentName}, Unfriend Successful`,
+            //    status: "success",
+            //});
+            return true;
+        })
+        .catch(() => {
+            showMessage({
+                title: `Wrong password`,
+                status: "error",
+            }); 
+            return false;
+        });*/
+        if (ret.data !== true)
+        {
+            showMessage({
+                title: `Wrong password`,
+                status: "error",
+            });  
+            return ;
+        }
+        console.log(ret.data);
         
-        if (props.room.password !== text)
+        /*if (props.room.password !== text)
         {
             setText("");
             showMessage({
@@ -50,7 +81,7 @@ export const ChatRoom: VFC<Props> = memo((props) => {
                 status: "error",
             }); 
             return ;
-        }
+        }*/
         const payload = {
             roomId: props.room.id,
             name: name,
