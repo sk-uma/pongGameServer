@@ -1,11 +1,9 @@
-import { Box, Button, Flex, FormControl, FormLabel, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Select, Stack } from "@chakra-ui/react";
-import { ChangeEventHandler, memo, useContext, useEffect, useState, VFC } from "react";
+import { Box, FormControl, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Stack } from "@chakra-ui/react";
+import { memo, useEffect, VFC } from "react";
 import { useAllPlayers } from "../../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
-import { ChatUserCard } from "../organisms/ChatUserCard";
 import { DmInviteUserCard } from "../organisms/DmInviteUserCard";
-import { ChatContext } from "../provider/ChatProvider";
-import { ChatAllDataType, ChatRoomType } from "../type/ChatType";
+import { ChatAllDataType } from "../type/ChatType";
 
 type Props = {
     isOpen: boolean;
@@ -14,7 +12,6 @@ type Props = {
 }
 
 export const InviteDmModal: VFC<Props> = memo((props) => {
-    const { socket } = useContext(ChatContext);
 
     const {isOpen, onClose, chatAllData} = props;
     const logindata = useLoginPlayer();
@@ -24,13 +21,6 @@ export const InviteDmModal: VFC<Props> = memo((props) => {
 		getPlayers();
 	}, [getPlayers]);
 
-    const [roomType, setRoomType] = useState("public");
-    //const onChangeRoomType = (e: ChangeEvent<HTMLInputElement>) => {
-    //    setRoomType(e.target.value);
-    //}
-    const onChangeRoomType: ChangeEventHandler<HTMLSelectElement> = (ev) => {
-        setRoomType(ev.target.value);
-    }
 
     let name = '';
     if (logindata && logindata.loginPlayer)
@@ -41,20 +31,6 @@ export const InviteDmModal: VFC<Props> = memo((props) => {
     //const onChangeRoomName = (e: ChangeEvent<HTMLInputElement>) => {
     //    setRoomName(e.target.value);
     //}
-
-
-    const onClickKick = async () => {
-
-        if (!logindata || !logindata.loginPlayer)
-            return ;
-        const payload = {
-            //roomId: room.id,
-            player: logindata.loginPlayer.name,//target
-            target: roomType,
-        }
-        await socket.emit('Chat/addMuteUser', payload); 
-        onClose();
-    };
 
 
     //let tmpMember = room.member_list.filter((item) => (item !== room.owner && !room.ban_list.includes(item)));

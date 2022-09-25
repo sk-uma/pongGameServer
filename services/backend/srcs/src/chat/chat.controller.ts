@@ -108,6 +108,14 @@ export class ChatController {
     return this.chatService.visitRoom(roomId, userName);
   }
 
+  @Get('checkPassword')
+  async checkPassword(
+    @Query('roomId') roomId: string,
+    @Query('password') password: string,
+  ): Promise<boolean> {
+    return await this.chatService.checkPassword(roomId, password);
+  }
+
   @Get('deleteRoom')
   deleteRoom(
     @Query('roomId') roomId: string,
