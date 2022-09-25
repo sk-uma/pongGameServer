@@ -13,7 +13,7 @@ export class CreatePlayerDto {
 	name: string;
 
 	@IsString()
-	//	@MinLength(6)
+	@MinLength(6)
 	@MaxLength(12)
 	@IsNotEmpty()
 	password: string;
