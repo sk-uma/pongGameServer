@@ -120,10 +120,15 @@ export const ChatRoom: VFC<Props> = memo((props) => {
             <MenuList>
             
             <Text as='b'># {props.room.name}</Text>
+            {   
+                props.room.ban_list.includes(name) &&
+                <Text as='b' color='red'>&nbsp;&nbsp;banned</Text>
+            }
 
             { !props.room.member_list.includes(name)
                 && props.room.roomType === 'public'
-                && props.room.password !== ''
+                && props.room.password.length !== 0
+                && !props.room.ban_list.includes(name)
                 &&
                 <Box>
                 <Input
@@ -139,7 +144,8 @@ export const ChatRoom: VFC<Props> = memo((props) => {
 
             { !props.room.member_list.includes(name)
                 && props.room.roomType === 'public'
-                && props.room.password === ''
+                && props.room.password.length === 0
+                && !props.room.ban_list.includes(name)
                 &&
                 <MenuItem onClick={() => joinRoom(name)}>
                     Join

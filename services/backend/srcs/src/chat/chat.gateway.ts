@@ -11,6 +11,11 @@ import { Socket, Server } from 'socket.io';
 import { ChatService } from './chat.service';
 import { ChatAllDataType, ChatLogType } from './chat.entity';
 
+type userMapType = {
+  userName: string;
+  socket: Socket;
+};
+
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -29,6 +34,8 @@ export class ChatGateway
 
   private chatHeader = 'Chat ';
 
+  private userMap: userMapType[] = [];
+
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('ChatGateway');
 
@@ -36,7 +43,30 @@ export class ChatGateway
   connectedUser(client: Socket, payload: string): void {
     this.logger.log(`${this.chatHeader}: userConnect: ${payload}`);
     //this.server.emit();
-    this.server.emit('Chat/recv');
+    //this.server.emit('Chat/recv');
+  }
+
+  @SubscribeMessage('Chat/connect/server')
+  connectedServer(client: Socket, payload: any): void {
+    this.logger.log(`${this.chatHeader}: userConnect: ${payload.name}`);
+    const newUser: userMapType = {
+      socket: client,
+      userName: payload.name,
+    };
+    this.userMap = this.userMap.filter((item) => item.socket !== client);
+    this.userMap.push(newUser);
+    this.logger.log(`${this.chatHeader}: userlen: ${this.userMap.length}`);
+    //this.server.emit();
+    //this.server.emit('Chat/recv');
+  }
+
+  handleDisconnect(client: Socket) {
+    this.logger.log(`Chat: Client disconnected: ${client.id}`);
+    this.userMap = this.userMap.filter((item) => item.socket !== client);
+  }
+
+  handleConnection(client: Socket, ...args: any[]) {
+    this.logger.log(`Chat: connected: ${client.id}`);
   }
 
   @SubscribeMessage('Chat/send/chatmessage')
@@ -56,6 +86,21 @@ export class ChatGateway
 
     const ret: ChatAllDataType = await this.chatService.getAllData();
     await this.server.emit('Chat/recv', ret);
+
+    const room = ret.rooms.find((item, index) => item.id === payload.roomId);
+    if (!room) return;
+    const members = room.member_list;
+    for (let i = 0; i < members.length; i++) {
+      const Soc = this.userMap.find((item) => item.userName === members[i]);
+      if (Soc) {
+        await this.server
+          .to(Soc.socket.id)
+          .emit('Chat/notification', Soc.userName);
+        this.logger.log(
+          `${this.chatHeader}: send notification: ${Soc.userName}`,
+        );
+      }
+    }
   }
 
   @SubscribeMessage('Chat/send/joinRoom')
@@ -229,7 +274,7 @@ export class ChatGateway
   async visitRoom(client: Socket, payload: any): Promise<void> {
     const ret1 = await this.chatService.visitRoom(
       payload.roomId,
-      payload.roomName,
+      payload.userName,
     );
     this.logger.log(`${this.chatHeader}: visitRoom: ${payload}: ${ret1}`);
     const ret: ChatAllDataType = await this.chatService.getAllData();
@@ -239,13 +284,5 @@ export class ChatGateway
 
   afterInit(server: Server) {
     this.logger.log('Chat: Init');
-  }
-
-  handleDisconnect(client: Socket) {
-    this.logger.log(`Chat: Client disconnected: ${client.id}`);
-  }
-
-  handleConnection(client: Socket, ...args: any[]) {
-    this.logger.log(`Chat: connected: ${client.id}`);
   }
 }

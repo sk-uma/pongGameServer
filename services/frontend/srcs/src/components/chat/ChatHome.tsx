@@ -1,6 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import axios from "axios";
 import { memo, useContext, useEffect, useState, VFC } from "react"
+import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChatCenterHandle } from "./ChatCenterHandle";
 import { ChatLeftTable } from "./ChatLeftTable";
 import { ChatRoomHeader } from "./ChatRoomHeader";
@@ -15,6 +16,10 @@ export const ChatHome: VFC = memo(() => {
     const [currentRoom, setCurrentRoom] = useState<ChatRoomType | undefined>(undefined);
     
     //const { getAllChatData, allChatData } = useAllChatData();
+    const logindata = useLoginPlayer();
+    let UserName = '';
+    if (logindata && logindata.loginPlayer)
+        UserName = logindata.loginPlayer.name;
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -50,14 +55,38 @@ export const ChatHome: VFC = memo(() => {
             const room = ret.rooms.find((room) => room.id === currentRoom?.id)
             if (room)
             {
-                setCurrentRoom(room);
-                setCurrentRoomId(room.id);
+                if (!room.member_list.includes(UserName))
+                {
+                    setCurrentRoomId('default');
+                    setCurrentRoom(undefined);    
+                }
+                else
+                {
+                    setCurrentRoom(room);
+                    setCurrentRoomId(room.id);
+                }
             }
             else
             {
                 setCurrentRoomId('default');
                 setCurrentRoom(undefined);
             }
+            if (currentRoomId !== 'default' && room
+                && room.notVisited_list.includes(UserName))
+            {
+                const payload = {
+                    roomId: room.id,
+                    userName: UserName,
+                }
+                socket.emit('Chat/visitRoom', payload)    
+            }
+        })
+
+        socket.on('Chat/notification', (ret: any) => {
+            console.log('Chat/notification')
+            console.log(ret);
+            //LoadDataFlag();
+            //setLoadDataFlag(new Date().toISOString());
         })
 
         return () => {
@@ -67,6 +96,17 @@ export const ChatHome: VFC = memo(() => {
           //socket.off('Chat/pong');
         };
 
+      });
+
+      
+      useEffect(() => {
+        const payload = {
+            name: UserName
+        }
+        socket.emit('Chat/connect/server', payload); 
+        return () => {
+            socket.off('Chat/connect/server');
+          };
       });
 
       useEffect(() => {
@@ -80,6 +120,7 @@ export const ChatHome: VFC = memo(() => {
           setChatData(response.data);
         }
         getChatData();
+
       }, [])
 
         //データ取得用　flagを立てる。

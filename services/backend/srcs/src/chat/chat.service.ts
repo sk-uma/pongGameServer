@@ -72,7 +72,8 @@ export class ChatService {
   ): Promise<boolean> {
     //bcryptでパスワードを暗号化する。saltはhash化するときに付加する文字列
     const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(password, salt);
+    let hashPassword = '';
+    if (password !== '') hashPassword = await bcrypt.hash(password, salt);
     const newRoom: ChatRoomType = {
       id: uuidv4(),
       name: roomName,
@@ -296,7 +297,7 @@ export class ChatService {
     //room.id = roomId;
     room.name = roomName;
     room.roomType = roomType;
-    if (room.password !== password) {
+    if (room.password !== password && password !== '') {
       const salt = await bcrypt.genSalt();
       const hashPassword = await bcrypt.hash(password, salt);
       room.password = hashPassword;
