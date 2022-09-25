@@ -55,7 +55,7 @@ export const ChatDmMenu: VFC<Props> = memo((props) => {
                     </Box>
                 </MenuButton>
                 <MenuList>
-                    <Box  cursor='pointer' _hover={{bg:'teal.500'}}>
+                    <Box>
                     # {opponentName}
                     </Box>
                     <MenuItem onClick={onClickDeleteRoom}>Leave</MenuItem>
