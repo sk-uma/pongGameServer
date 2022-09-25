@@ -1,15 +1,15 @@
-import { Box, Button, Link, useDisclosure, Text } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
-import { memo, useCallback, VFC } from "react";
+import { memo, useCallback, useContext, VFC } from "react";
 import { constUrl } from "../../constant/constUrl";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
-import { TextMainStyle, TextSubStyle } from "./hooks/TextStyle";
+import { TextMainStyle, TextSubHighlightStyle, TextSubStyle } from "./hooks/TextStyle";
 import { BrowseChannelsModal } from "./modalWindow/BrowseChannelsModal";
-import { ChatAddDirectMessageModal } from "./modalWindow/createDirectMessage";
 import { ChatRoomAddModal } from "./modalWindow/createRoom";
 import { InviteDmModal } from "./modalWindow/inviteDmModal";
 import { ChatDmMenu } from "./organisms/ChatDmMenu";
 import { ChatRoomMenu } from "./organisms/ChatMenu";
+import { ChatContext } from "./provider/ChatProvider";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 
 type Props = {
@@ -40,6 +40,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
     let name = 'default';
     if (logindata?.loginPlayer?.name)
         name = logindata?.loginPlayer?.name;
+    const { socket } = useContext(ChatContext);
 
     const onClickRoomLink = (room: ChatRoomType) => {
         //alert(roominfo.name);
@@ -49,40 +50,20 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
     }
 
     const onClickVisitRoom = (room: ChatRoomType) => {
-		axios
+        if (room.notVisited_list.includes(name))
+        {
+            const payload = {
+                roomId: room.id,
+                userName: name,
+            }
+            socket.emit('Chat/visitRoom', payload)
+		    /*axios
 			.get(
 				constUrl.serversideUrl +
-					`/Chat/visitRoom?roomId=${room.id}&userName=${logindata?.loginPlayer?.name}`
-			);
-
-            if (room.notVisited_list.includes(name))
-            {
-                room.notVisited_list = room.notVisited_list.filter((item) => item !== name);
-                let newRooms = chatAllData?.rooms;
-                if (newRooms && chatAllData)
-                {
-                    const newRoom = newRooms.find((item) => item.id === room.id)
-                    if (newRoom)
-                    {
-                        newRoom.notVisited_list = room.notVisited_list;
-                        newRooms = newRooms.filter((item) => item.name !== newRoom.name)
-                        newRooms.push(newRoom);
-                        chatAllData.rooms = newRooms;
-                        setChatData(chatAllData);
-                    }
-                }
-            }
+					`/Chat/visitRoom?roomId=${room.id}&userName=${name}`
+			);*/
+        }
 	};
-
-    const onClickRoomLinkByName = (room: string) => {
-        //alert(roominfo.name);
-        setCurrentRoomId(room);
-    }
-
-    const onClickRightRoomLink = (room: string) => {
-        alert(room);
-        //setCurrentRoomId(room);
-    }
 
     return (
         <Box>
@@ -99,9 +80,23 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     if (currentRoomId !== room.id)
                     {
                         return (
-                        <Box key={index} cursor='pointer' _hover={{bg:'teal.500'}} onClick={() => onClickRoomLink(room)}
-                        >
-                            <TextSubStyle title={`# ${room.name}`}/>
+                        <Box key={index}>
+                        { room.notVisited_list.includes(name) &&
+                            <Box
+                                onClick={() => onClickRoomLink(room)}
+                                fontWeight={800}
+                                cursor='pointer' _hover={{bg:'teal.500'}}>
+                                <TextSubHighlightStyle title={`# ${room.name}`} color={'white'}/>
+                            </Box>
+                        }
+                        { !room.notVisited_list.includes(name) &&
+                            <Box
+                                onClick={() => onClickRoomLink(room)}
+                                fontWeight={400}
+                                cursor='pointer'  _hover={{bg:'teal.500'}}>
+                                <TextSubStyle title={`# ${room.name}`}/>
+                            </Box>
+                        }
                         </Box>
                         )
                     }
@@ -156,7 +151,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                                 onClick={() => onClickRoomLink(room)}
                                 fontWeight={800}
                                 cursor='pointer' _hover={{bg:'teal.500'}}>
-                                <TextSubStyle title={`# ${opponentName}`}/>
+                                <TextSubHighlightStyle title={`# ${opponentName}`} color={'white'}/>
                             </Box>
                         }
                         { !room.notVisited_list.includes(name) &&

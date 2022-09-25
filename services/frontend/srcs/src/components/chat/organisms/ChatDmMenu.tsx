@@ -1,7 +1,7 @@
-import { Box, Link, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Box, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { memo, useContext, VFC } from "react";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
-import { TextSubHighlightStyle, TextSubStyle } from "../hooks/TextStyle";
+import { TextSubHighlightStyle } from "../hooks/TextStyle";
 import { ChatContext } from "../provider/ChatProvider";
 import { ChatRoomType } from "../type/ChatType";
 

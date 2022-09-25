@@ -1,7 +1,6 @@
 import { Box, Flex, Center, VStack, Text } from "@chakra-ui/react";
 import chatInitIllust from './assets/chatInitIllust.svg';
 import { memo, VFC } from "react";
-import { ChatBrowseChannels } from "./ChatBrowseChannels";
 import { ChatCenter } from "./ChatCenter";
 import { ChatSendMessage } from "./ChatSendMessage";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
@@ -35,13 +34,6 @@ export const ChatCenterHandle: VFC<Props> = memo((props) => {
                     </VStack>
                 </Center>
             </Box>
-        )
-    }
-    else if (currentRoomId === 'browseChannels')
-    {
-        return (
-            <ChatBrowseChannels
-                chatAllData={chatAllData}/> 
         )
     }
     return (

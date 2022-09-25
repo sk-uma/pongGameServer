@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChatLogType, ChatRoomType, ChatAllDataType } from './chat.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { ChatLogRepository, ChatRoomsRepository } from './chat.repository';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ChatService {
@@ -69,6 +70,10 @@ export class ChatService {
     roomType: string,
     password: string,
   ): Promise<boolean> {
+    //bcryptでパスワードを暗号化する。saltはhash化するときに付加する文字列
+    const salt = await bcrypt.genSalt();
+    let hashPassword = '';
+    if (password !== '') hashPassword = await bcrypt.hash(password, salt);
     const newRoom: ChatRoomType = {
       id: uuidv4(),
       name: roomName,
@@ -78,7 +83,7 @@ export class ChatService {
       ban_list: [],
       mute_list: [],
       notVisited_list: [],
-      password: password,
+      password: hashPassword,
       roomType: roomType,
     };
     newRoom.member_list.push(ownerName);
@@ -292,7 +297,11 @@ export class ChatService {
     //room.id = roomId;
     room.name = roomName;
     room.roomType = roomType;
-    room.password = password;
+    if (room.password !== password && password !== '') {
+      const salt = await bcrypt.genSalt();
+      const hashPassword = await bcrypt.hash(password, salt);
+      room.password = hashPassword;
+    }
     await this.chatRoomsRepository.save(room);
     return true;
   }
@@ -310,6 +319,12 @@ export class ChatService {
   //delete user
   //deleteAdminUser
   //kickUser
+  async checkPassword(roomId: string, password: string): Promise<boolean> {
+    const room = await this.chatRoomsRepository.findOne(roomId);
+    if (!room) return false;
+    if (await bcrypt.compare(password, room.password)) return true;
+    return false;
+  }
 
   async deleteRoom(roomId: string, userName: string): Promise<boolean> {
     const room = await this.chatRoomsRepository.findOne(roomId);

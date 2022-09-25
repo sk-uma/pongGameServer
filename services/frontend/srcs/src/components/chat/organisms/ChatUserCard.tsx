@@ -77,8 +77,8 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
 					>
                         <Flex display='flex' justifyContent='center'>
                         {
-                            room && room.ban_list.includes(name) && 
-                            <Text fontWeight="bold" color='red' style={{marginRight: '6px'}}>banned</Text>
+                            room && room.mute_list.includes(name) && 
+                            <Text fontWeight="bold" color='red' style={{marginRight: '6px'}}>muted</Text>
                         }
 						<Text fontWeight="bold" style={{marginRight: '12px'}}>{displayName}</Text>
                         {
