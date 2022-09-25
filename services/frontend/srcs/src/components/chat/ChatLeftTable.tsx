@@ -3,7 +3,7 @@ import axios from "axios";
 import { memo, useCallback, useContext, VFC } from "react";
 import { constUrl } from "../../constant/constUrl";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
-import { TextMainStyle, TextSubStyle } from "./hooks/TextStyle";
+import { TextMainStyle, TextSubHighlightStyle, TextSubStyle } from "./hooks/TextStyle";
 import { BrowseChannelsModal } from "./modalWindow/BrowseChannelsModal";
 import { ChatRoomAddModal } from "./modalWindow/createRoom";
 import { InviteDmModal } from "./modalWindow/inviteDmModal";
@@ -137,7 +137,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                                 onClick={() => onClickRoomLink(room)}
                                 fontWeight={800}
                                 cursor='pointer' _hover={{bg:'teal.500'}}>
-                                <TextSubStyle title={`# ${opponentName}`}/>
+                                <TextSubHighlightStyle title={`# ${opponentName}`} color={'white'}/>
                             </Box>
                         }
                         { !room.notVisited_list.includes(name) &&

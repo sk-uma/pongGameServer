@@ -87,6 +87,7 @@ export class ChatGateway
     const ret: ChatAllDataType = await this.chatService.getAllData();
     await this.server.emit('Chat/recv', ret);
 
+    /*
     const room = ret.rooms.find((item, index) => item.id === payload.roomId);
     if (!room) return;
     const members = room.member_list;
@@ -100,7 +101,7 @@ export class ChatGateway
           `${this.chatHeader}: send notification: ${Soc.userName}`,
         );
       }
-    }
+    }*/
   }
 
   @SubscribeMessage('Chat/send/joinRoom')
