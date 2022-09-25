@@ -1,13 +1,8 @@
 import { Box, Link, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
 import { memo, useCallback, useContext, VFC } from "react";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
-import { TextSubHighlightStyle, TextSubStyle } from "../hooks/TextStyle";
-import { AddAdminModal } from "../modalWindow/addAdmin";
-import { ChatBanModal } from "../modalWindow/chatBanModal";
-import { ChatKickModal } from "../modalWindow/chatKick";
-import { ChatMuteModal } from "../modalWindow/chatMute";
+import { TextSubHighlightStyle } from "../hooks/TextStyle";
 import { ChatRoomMenuModal } from "../modalWindow/handleRoom";
-import { InvitePeopleModal } from "../modalWindow/invitePeople";
 import { ChatContext } from "../provider/ChatProvider";
 import { ChatRoomType } from "../type/ChatType";
 
@@ -24,18 +19,8 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
 
     const { socket } = useContext(ChatContext);
 
-    const {isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1} = useDisclosure();
-    const {isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2} = useDisclosure();
     const {isOpen: isOpen3, onOpen: onOpen3, onClose: onClose3} = useDisclosure();
-    const {isOpen: isOpen4, onOpen: onOpen4, onClose: onClose4} = useDisclosure();
-    const {isOpen: isOpen5, onOpen: onOpen5, onClose: onClose5} = useDisclosure();
-    const {isOpen: isOpen6, onOpen: onOpen6, onClose: onClose6} = useDisclosure();
-    const onClickRoom1 = useCallback(() => onOpen1(), [onOpen1]);
-    const onClickRoom2 = useCallback(() => onOpen2(), [onOpen2]);
     const onClickRoom3 = useCallback(() => onOpen3(), [onOpen3]);
-    const onClickRoom4 = useCallback(() => onOpen4(), [onOpen4]);
-    const onClickRoom5 = useCallback(() => onOpen5(), [onOpen5]);
-    const onClickRoom6 = useCallback(() => onOpen6(), [onOpen6]);
 
     const logindata = useLoginPlayer();
 

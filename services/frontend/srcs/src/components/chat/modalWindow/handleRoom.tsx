@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Select, Stack } from "@chakra-ui/react";
+import { Button, Checkbox, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Select, Stack } from "@chakra-ui/react";
 import { ChangeEvent, ChangeEventHandler, memo, useContext, useState, VFC } from "react";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 import { useMessage } from "../../../hooks/useMessage";
@@ -16,7 +16,9 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
 
     const {isOpen, onClose, room} = props;
     const [roomName, setRoomName] = useState(room.name);
-    const [password, setPassword] = useState(room.password);
+    const [password, setPassword] = useState("");
+    const [checkedPassword, setCheckedPassword] = useState(false);
+
     const logindata = useLoginPlayer();
     const { showMessage } = useMessage();
 
@@ -58,11 +60,14 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
 
         if (!logindata || !logindata.loginPlayer)
             return ;
+        let newPass = room.password;
+        if (checkedPassword)
+            newPass = password;
         const payload = {
             roomId: room.id,
             roomName: roomName,
             roomType: roomType,
-            password: password,
+            password: newPass,
             name: logindata.loginPlayer.name,
         }
         console.log(payload)
@@ -98,10 +103,7 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
                 <ModalHeader>Setting #{room.name}</ModalHeader>
                 <ModalBody>
                 <FormLabel>
-                    roomType "{room.roomType}"
-                </FormLabel>
-                <FormLabel>
-                    password "{room.password}"
+                    {room.roomType} channel
                 </FormLabel>
                 </ModalBody>
             </ModalContent>
@@ -133,7 +135,9 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
                                 </Select>
                             </FormControl>
                             <FormControl>
-                                <FormLabel>password</FormLabel>
+                                <Checkbox isChecked={checkedPassword} onChange={e => setCheckedPassword(e.target.checked)}>
+                                    <FormLabel>set new password</FormLabel>
+                                </Checkbox>
                                 <Input value={password} onChange={onChangePassword}/>
                             </FormControl>
                             <Button onClick={onClickAddChatRoom}>Save</Button>

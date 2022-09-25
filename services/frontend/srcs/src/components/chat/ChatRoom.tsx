@@ -1,5 +1,7 @@
-import { Box, Button, Flex, HStack, Image, Input, Menu, MenuButton, MenuItem, MenuList, Text, useDisclosure } from "@chakra-ui/react";
-import { ChangeEventHandler, memo, useCallback, useContext, useState, VFC } from "react";
+import { Box, Flex, HStack, Input, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
+import axios from "axios";
+import { ChangeEventHandler, memo, useContext, useState, VFC } from "react";
+import { constUrl } from "../../constant/constUrl";
 import { useMessage } from "../../hooks/useMessage";
 import { Player } from "../../types/api/Player";
 import { useJoinRoom } from "./hooks/JoinRoom";
@@ -38,11 +40,40 @@ export const ChatRoom: VFC<Props> = memo((props) => {
     const onChangeTextarea: ChangeEventHandler<HTMLInputElement> = (e) => {
         setText(e.target.value);
     }
-    
-    const joinPasswordRoom = () => {
+
+    const   joinPasswordRoom = async () => {
         //alert(`${name} mute => ${target}`);
+        const ret = await axios
+        .get<boolean>(
+            constUrl.serversideUrl +
+                `/chat/checkPassword?roomId=${props.room.id}&password=${text}`
+        );
+        /*
+        .then(() => {
+            //showMessage({
+            //    title: `${opponentName}, Unfriend Successful`,
+            //    status: "success",
+            //});
+            return true;
+        })
+        .catch(() => {
+            showMessage({
+                title: `Wrong password`,
+                status: "error",
+            }); 
+            return false;
+        });*/
+        if (ret.data !== true)
+        {
+            showMessage({
+                title: `Wrong password`,
+                status: "error",
+            });  
+            return ;
+        }
+        console.log(ret.data);
         
-        if (props.room.password !== text)
+        /*if (props.room.password !== text)
         {
             setText("");
             showMessage({
@@ -50,7 +81,7 @@ export const ChatRoom: VFC<Props> = memo((props) => {
                 status: "error",
             }); 
             return ;
-        }
+        }*/
         const payload = {
             roomId: props.room.id,
             name: name,
@@ -89,10 +120,15 @@ export const ChatRoom: VFC<Props> = memo((props) => {
             <MenuList>
             
             <Text as='b'># {props.room.name}</Text>
+            {   
+                props.room.ban_list.includes(name) &&
+                <Text as='b' color='red'>&nbsp;&nbsp;banned</Text>
+            }
 
             { !props.room.member_list.includes(name)
                 && props.room.roomType === 'public'
-                && props.room.password !== ''
+                && props.room.password.length !== 0
+                && !props.room.ban_list.includes(name)
                 &&
                 <Box>
                 <Input
@@ -108,7 +144,8 @@ export const ChatRoom: VFC<Props> = memo((props) => {
 
             { !props.room.member_list.includes(name)
                 && props.room.roomType === 'public'
-                && props.room.password === ''
+                && props.room.password.length === 0
+                && !props.room.ban_list.includes(name)
                 &&
                 <MenuItem onClick={() => joinRoom(name)}>
                     Join
