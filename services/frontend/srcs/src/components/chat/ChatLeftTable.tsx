@@ -80,9 +80,23 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     if (currentRoomId !== room.id)
                     {
                         return (
-                        <Box key={index} cursor='pointer' _hover={{bg:'teal.500'}} onClick={() => onClickRoomLink(room)}
-                        >
-                            <TextSubStyle title={`# ${room.name}`}/>
+                        <Box key={index}>
+                        { room.notVisited_list.includes(name) &&
+                            <Box
+                                onClick={() => onClickRoomLink(room)}
+                                fontWeight={800}
+                                cursor='pointer' _hover={{bg:'teal.500'}}>
+                                <TextSubHighlightStyle title={`# ${room.name}`} color={'white'}/>
+                            </Box>
+                        }
+                        { !room.notVisited_list.includes(name) &&
+                            <Box
+                                onClick={() => onClickRoomLink(room)}
+                                fontWeight={400}
+                                cursor='pointer'  _hover={{bg:'teal.500'}}>
+                                <TextSubStyle title={`# ${room.name}`}/>
+                            </Box>
+                        }
                         </Box>
                         )
                     }
