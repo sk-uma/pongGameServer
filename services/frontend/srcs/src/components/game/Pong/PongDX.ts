@@ -327,7 +327,8 @@ export default class PongDX extends Phaser.Scene {
 
     if (this.gameStatus === 'standBy') {
       if (this.startTime - Date.now() >= 0) {
-        this.display!.standByCountDownDisplay.text = `ゲーム開始まで${1 + Math.floor((this.startTime - Date.now()) / 1000)}秒`;
+        this.display!.standByCountDownDisplay.text = 'ゲーム開始待機中...';
+        // this.display!.standByCountDownDisplay.text = `ゲーム開始まで${1 + Math.floor((this.startTime - Date.now()) / 1000)}秒`;
       } else {
         this.ball!.visible = true;
         if (this.gameInfo.isServer) {

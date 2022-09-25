@@ -36,6 +36,13 @@ export let gameInfo: GameInfo = {
   }
 };
 
+function _socketOffGameEvent() {
+  gameInfo.socket?.off('UpdateCheckedGameData');
+  gameInfo.socket?.off('PlayerLeaveRoom');
+  gameInfo.socket?.off('restartGame');
+  gameInfo.socket?.off('updateEventGameData');
+}
+
 
 export function Watch(props: {room_id: string}) {
   const navigate = useNavigate();
@@ -63,6 +70,7 @@ export function Watch(props: {room_id: string}) {
     });
 
     gameInfo.socket.on('gameResult', (data: any) => {
+      _socketOffGameEvent();
       g?.destroy(true);
       gameInfo.socket?.disconnect();
 
@@ -70,6 +78,7 @@ export function Watch(props: {room_id: string}) {
     });
 
     return () => {
+      _socketOffGameEvent();
       g?.destroy(true);
 
       gameInfo.socket?.emit('finishWatching', {
