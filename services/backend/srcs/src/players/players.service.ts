@@ -194,7 +194,6 @@ export class PlayersService {
 	//フレンドの削除
 	async deleteFriend(name: string, friendName: string): Promise<Player> {
 		const player = await this.findByName(name);
-		const friend = await this.findByName(friendName);
 		if (!player.friends.includes(friendName)) {
 			throw new ForbiddenException(
 				`Friend with name "${friendName}" is not exist`,
@@ -230,7 +229,6 @@ export class PlayersService {
 	//ブロックリストからの削除
 	async unblockFriend(name: string, friendName: string): Promise<Player> {
 		const player = await this.findByName(name);
-		const friend = await this.findByName(friendName);
 		if (!player.blockList.includes(friendName)) {
 			throw new ForbiddenException(
 				`Block user with name "${friendName}" is not exist`,

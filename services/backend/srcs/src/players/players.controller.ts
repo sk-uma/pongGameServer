@@ -7,22 +7,15 @@ import {
 	Delete,
 	Patch,
 	Put,
-	ParseUUIDPipe,
-	UseInterceptors,
-	UploadedFile,
 	UseGuards,
 	Req,
 } from '@nestjs/common';
 import { PlayersService } from './players.service';
 import { CreatePlayerDto } from './dto/create.player.dto';
-import { PlayersRepository } from './players.repository';
 import { Player } from './player.entity';
 import { CredentialPlayerDto } from './dto/credential.player.dto';
-import { Express } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from './guards/jwt.auth.guards';
 import RequestWithPlayer from '../two-factor-authentication/requestWithPlayer';
-import { PlayerStatus } from './playerStatus.enum';
 import { EditPlayerDto } from './dto/edit.player.dto';
 
 @Controller('players')

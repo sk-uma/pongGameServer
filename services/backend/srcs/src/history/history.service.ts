@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HistoryRepository } from './history.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateHistoryDto } from './dto/create.history.dto';
