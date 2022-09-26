@@ -49,6 +49,10 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
             roomName = currentRoom.member_list[1];
         else
             roomName = currentRoom.member_list[0];
+
+        const player = players.find((player) => player.name === roomName)
+        if (player)
+            roomName = player.displayName;
     }
 
     return (

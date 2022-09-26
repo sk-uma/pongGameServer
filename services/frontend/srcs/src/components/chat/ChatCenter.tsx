@@ -1,5 +1,6 @@
-import { Box, Center, Flex, Stack } from "@chakra-ui/react";
-import { memo, useEffect, VFC } from "react";
+import { Box, Button, Center, Flex, Stack } from "@chakra-ui/react";
+import { memo, useEffect, useRef, VFC } from "react";
+import { FaArrowCircleDown } from "react-icons/fa";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChartInvaitChatMessage } from "./ChatInviteGameMessage";
@@ -37,6 +38,17 @@ export const ChatCenter: VFC<Props> = memo((props) => {
     //     scrollToBottomOfChat();
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, []);
+
+    const bottom = useRef<null | HTMLDivElement>(null); 
+
+    const scrollToBottom = () => {
+        //bottom.current?.scrollIntoView({ behavior: "smooth" })
+        bottom.current?.scrollIntoView();
+    }
+
+    useEffect(() => {
+    scrollToBottom()
+    });
 
     if (currentRoom && currentRoomId !== 'default' && chatAllData)
     {
@@ -94,6 +106,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
             }
             <div style={{height: '5px'}}></div>
         </Stack>
+        <div ref={bottom}></div>
         {/* <div id="bottom-of-chat" ref={ref}>hello</div> */}
         </>
     );

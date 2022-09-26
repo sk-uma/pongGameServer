@@ -136,7 +136,7 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
                             </FormControl>
                             <FormControl>
                                 <Checkbox isChecked={checkedPassword} onChange={e => setCheckedPassword(e.target.checked)}>
-                                    <FormLabel>set new password</FormLabel>
+                                    <FormLabel>set a new password</FormLabel>
                                 </Checkbox>
                                 <Input value={password} onChange={onChangePassword}/>
                             </FormControl>
