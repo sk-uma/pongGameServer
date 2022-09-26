@@ -19,6 +19,6 @@ export const useAllHistory = () => {
 				getPlayerWithToken();
 			})
 			.catch(() => console.log("Not found players"));
-	}, []);
+	}, [getPlayerWithToken]);
 	return { getAllHistory, allHistory };
 };
