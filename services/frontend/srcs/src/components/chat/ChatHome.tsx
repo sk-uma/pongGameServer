@@ -1,12 +1,14 @@
 import { Box, Flex } from "@chakra-ui/react";
 import axios from "axios";
 import { memo, useContext, useEffect, useState, VFC } from "react"
+import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChatCenterHandle } from "./ChatCenterHandle";
 import { ChatLeftTable } from "./ChatLeftTable";
 import { ChatRoomHeader } from "./ChatRoomHeader";
+import { useChatMessage } from "./hooks/MessageToast";
 import { ChatContext } from "./provider/ChatProvider";
-import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
+import { ChatAllDataType, ChatLogType, ChatRoomType } from "./type/ChatType";
 
 export const ChatHome: VFC = memo(() => {
     const { socket } = useContext(ChatContext);
@@ -14,7 +16,13 @@ export const ChatHome: VFC = memo(() => {
     const [chatData, setChatData] = useState<ChatAllDataType>();
     const [currentRoomId, setCurrentRoomId] = useState<string>("default");
     const [currentRoom, setCurrentRoom] = useState<ChatRoomType | undefined>(undefined);
-    
+    const { showChatMessage } = useChatMessage();
+    const { getPlayers, players } = useAllPlayers();
+
+    useEffect(() => {
+		getPlayers();
+	}, [getPlayers]);
+
     //const { getAllChatData, allChatData } = useAllChatData();
     const logindata = useLoginPlayer();
     let UserName = '';
@@ -82,9 +90,26 @@ export const ChatHome: VFC = memo(() => {
             }
         })
 
-        socket.on('Chat/notification', (ret: any) => {
+        socket.on('Chat/notification', (ret: ChatLogType) => {
             console.log('Chat/notification')
             console.log(ret);
+            if (ret && logindata?.loginPlayer?.name !== ret.owner
+                && currentRoomId !== ret.roomId
+                )
+            {
+                const logRoom = chatData?.rooms.find((room) => room.id === ret.roomId);
+                if (logRoom && !logRoom.mute_list.includes(ret.owner)
+                    && !logindata.loginPlayer?.blockList.includes(ret.owner))
+                {
+                    showChatMessage({
+                        title: `aaa`,
+                        status: 'info',
+                        log: ret,
+                        players: players,
+                    })
+                }
+            }
+            
             //LoadDataFlag();
             //setLoadDataFlag(new Date().toISOString());
         })

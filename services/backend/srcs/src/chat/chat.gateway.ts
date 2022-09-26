@@ -74,18 +74,17 @@ export class ChatGateway
     this.logger.log(`Chat: recv message: room ${payload.roomId} ${client.id}`);
     this.logger.log(`Chat: recv message: owner ${payload.owner} ${client.id}`);
     this.logger.log(`Chat: recv message: text ${payload.text} ${client.id}`);
-    const ret1 = await this.chatService.createLog(
+    const retLog: ChatLogType = await this.chatService.createLog(
       payload.roomId,
       payload.owner,
       payload.text,
       payload.type,
     );
-    this.logger.log(
-      `${this.chatHeader}: send chatMessage: ${payload}: ${ret1}`,
-    );
+    this.logger.log(`${this.chatHeader}: send chatMessage: ${payload}:`);
 
     const ret: ChatAllDataType = await this.chatService.getAllData();
     await this.server.emit('Chat/recv', ret);
+    if (retLog === null) return;
 
     const room = ret.rooms.find((item) => item.id === payload.roomId);
     if (!room) return;
@@ -99,9 +98,9 @@ export class ChatGateway
         for (let j = 0; j < onlineUsers.length; j++) {
           this.server
             .to(onlineUsers[j].socket.id)
-            .emit('Chat/notification', onlineUsers[j].userName);
+            .emit('Chat/notification', retLog);
           this.logger.log(
-            `${this.chatHeader}: send notification: ${onlineUsers[j].userName}`,
+            `${this.chatHeader}: send notification: ${retLog.text}`,
           );
         }
       }

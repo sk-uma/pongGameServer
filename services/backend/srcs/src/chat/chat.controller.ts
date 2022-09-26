@@ -68,7 +68,7 @@ export class ChatController {
     @Query('roomId') roomId: string,
     @Query('userName') ownerName: string,
     @Query('text') text: string,
-  ): Promise<string> {
+  ): Promise<ChatLogType> {
     return this.chatService.createLog(roomId, ownerName, text, 'message');
   }
 
