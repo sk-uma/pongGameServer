@@ -87,21 +87,25 @@ export class ChatGateway
     const ret: ChatAllDataType = await this.chatService.getAllData();
     await this.server.emit('Chat/recv', ret);
 
-    /*
-    const room = ret.rooms.find((item, index) => item.id === payload.roomId);
+    const room = ret.rooms.find((item) => item.id === payload.roomId);
     if (!room) return;
+
     const members = room.member_list;
     for (let i = 0; i < members.length; i++) {
-      const Soc = this.userMap.find((item) => item.userName === members[i]);
-      if (Soc) {
-        await this.server
-          .to(Soc.socket.id)
-          .emit('Chat/notification', Soc.userName);
-        this.logger.log(
-          `${this.chatHeader}: send notification: ${Soc.userName}`,
-        );
+      const onlineUsers = this.userMap.filter(
+        (item) => item.userName === members[i],
+      );
+      if (onlineUsers) {
+        for (let j = 0; j < onlineUsers.length; j++) {
+          this.server
+            .to(onlineUsers[j].socket.id)
+            .emit('Chat/notification', onlineUsers[j].userName);
+          this.logger.log(
+            `${this.chatHeader}: send notification: ${onlineUsers[j].userName}`,
+          );
+        }
       }
-    }*/
+    }
   }
 
   @SubscribeMessage('Chat/send/joinRoom')
@@ -280,7 +284,8 @@ export class ChatGateway
     this.logger.log(`${this.chatHeader}: visitRoom: ${payload}: ${ret1}`);
     const ret: ChatAllDataType = await this.chatService.getAllData();
     //this.logger.log(ret);
-    await this.server.emit('Chat/recv', ret);
+    this.server.to(client.id).emit('Chat/recv', ret);
+    //await this.server.emit('Chat/recv', ret);
   }
 
   afterInit(server: Server) {

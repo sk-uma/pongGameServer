@@ -93,6 +93,7 @@ export const ChatHome: VFC = memo(() => {
           socket.off('connect');
           socket.off('disconnect');
           socket.off('Chat/recv');
+          socket.off('Chat/notification');
           //socket.off('Chat/pong');
         };
 
@@ -107,7 +108,7 @@ export const ChatHome: VFC = memo(() => {
         return () => {
             socket.off('Chat/connect/server');
           };
-      });
+      }, []);
 
       useEffect(() => {
         const getChatData = async () => {
