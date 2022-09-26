@@ -73,7 +73,7 @@ export const DmInviteUserCard: VFC<Props> = memo((props) => {
                 </Box>
             </MenuButton>
             <MenuList>
-                <Text as='b'># {name}</Text>
+                <Text as='b'># {displayName}</Text>
                 { //AmIOwner && IsAdmin && !IsOwner &&
                 
                     <MenuItem onClick={() => inviteDm(name, UserName)}>
