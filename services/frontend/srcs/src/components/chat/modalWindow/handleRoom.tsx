@@ -70,7 +70,7 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
             password: newPass,
             name: logindata.loginPlayer.name,
         }
-        console.log(payload)
+        //console.log(payload)
         await socket.emit('Chat/fix/room', payload);        
         //setRoomName("");
         //setPassword("");
@@ -85,7 +85,7 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
             roomId: room.id,
             name: logindata.loginPlayer.name,
         }
-        console.log(payload)
+        //console.log(payload)
         await socket.emit('Chat/delete/room', payload);        
         //setRoomName("");
         //setPassword("");
@@ -94,7 +94,7 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
 
     let name = logindata?.loginPlayer?.name;
 
-    if (!name || !room.admin_list.includes(name))
+    if (!name || !(room.owner === name))
     {
         return (
             <Modal isOpen={isOpen} onClose={onClose}>
@@ -105,6 +105,11 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
                 <FormLabel>
                     {room.roomType} channel
                 </FormLabel>
+                { room.password !== '' &&
+                    <FormLabel>
+                        password protected
+                    </FormLabel>
+                }
                 </ModalBody>
             </ModalContent>
         </Modal> 
@@ -135,6 +140,11 @@ export const ChatRoomMenuModal: VFC<Props> = memo((props) => {
                                 </Select>
                             </FormControl>
                             <FormControl>
+                                { room.password !== '' &&
+                                    <FormLabel>
+                                        password protected
+                                    </FormLabel>
+                                }
                                 <Checkbox isChecked={checkedPassword} onChange={e => setCheckedPassword(e.target.checked)}>
                                     <FormLabel>set a new password</FormLabel>
                                 </Checkbox>

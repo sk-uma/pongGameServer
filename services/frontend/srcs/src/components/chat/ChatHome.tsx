@@ -52,8 +52,8 @@ export const ChatHome: VFC = memo(() => {
         //console.log(allChatData);
 
         socket.on('Chat/recv', (ret: ChatAllDataType) => {
-            console.log('Chat/recv')
-            console.log(ret);
+            //console.log('Chat/recv')
+            //console.log(ret);
             //LoadDataFlag();
             //setLoadDataFlag(new Date().toISOString());
             ret.rooms.sort(function (a, b) {
@@ -91,8 +91,8 @@ export const ChatHome: VFC = memo(() => {
         })
 
         socket.on('Chat/notification', (ret: ChatLogType) => {
-            console.log('Chat/notification')
-            console.log(ret);
+            //console.log('Chat/notification')
+            //console.log(ret);
             if (ret && logindata?.loginPlayer?.name !== ret.owner
                 && currentRoomId !== ret.roomId
                 )
@@ -138,8 +138,8 @@ export const ChatHome: VFC = memo(() => {
       useEffect(() => {
         const getChatData = async () => {
           const response = await axios.get<ChatAllDataType>(constUrl.serversideUrl + `/chat/getAllData`);
-          console.log('axios')
-          console.log(response.data)
+          //console.log('axios')
+          //console.log(response.data)
             response.data.rooms.sort(function (a, b) {
             return a.id > b.id ? -1: 1;
             })

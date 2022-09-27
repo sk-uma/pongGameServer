@@ -49,7 +49,12 @@ const ChatMessage: VFC<Props2> = memo((props) => {
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                 }}>
-                    {props.log.text}
+                {   props.log.type === "invite" &&
+                    `${props.user?.displayName} is inviting you to a pong`
+                }
+                {   props.log.type !== "invite" &&
+                    `${props.log.text}`
+                }
                 </Text>
             </Box>
         </Flex>

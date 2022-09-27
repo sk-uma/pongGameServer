@@ -45,7 +45,7 @@ export const ChatSendMessage: VFC<Props> = memo((props) => {
             text: text,
             type: 'message',
         }
-        console.log(currentRoomId);
+        //console.log(currentRoomId);
         socket.emit('Chat/send/chatmessage', payload);
 
         setText("");

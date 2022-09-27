@@ -298,11 +298,11 @@ export class ChatService {
     //room.id = roomId;
     room.name = roomName;
     room.roomType = roomType;
-    if (room.password !== password && password !== '') {
+    if (room.password !== password && password.length !== 0) {
       const salt = await bcrypt.genSalt();
       const hashPassword = await bcrypt.hash(password, salt);
       room.password = hashPassword;
-    }
+    } else room.password = password;
     await this.chatRoomsRepository.save(room);
     return true;
   }

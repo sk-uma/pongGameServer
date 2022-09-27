@@ -38,7 +38,7 @@ export const ChatDmMenu: VFC<Props> = memo((props) => {
             roomId: room.id,
             name: room.owner,
         }
-        console.log(payload)
+        //console.log(payload)
         await socket.emit('Chat/delete/room', payload);        
     };
 

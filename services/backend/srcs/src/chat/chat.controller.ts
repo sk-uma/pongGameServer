@@ -6,6 +6,8 @@ import { ChatService } from './chat.service';
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
+  tmpkey = '66f7e73e-5ba5-4a00-bc76-d6153cf89e5e';
+
   @Get()
   getHello(@Query('name') name: string): string {
     if (name) return 'chat: controller ' + name;
@@ -17,6 +19,7 @@ export class ChatController {
   //getRoom(): void {}
   //getLogs(): void {}
   //getLog(): void {}
+
   @Get('getAllRooms')
   async getRooms(): Promise<ChatRoomType[]> {
     const ret = await this.chatService.getAllRooms();
@@ -53,6 +56,7 @@ export class ChatController {
   }
 
   // --- debug ---
+
   @Get('createRoom')
   createRoom(
     @Query('roomName') roomName: string,
@@ -71,8 +75,6 @@ export class ChatController {
   ): Promise<ChatLogType> {
     return this.chatService.createLog(roomId, ownerName, text, 'message');
   }
-
-  tmpRoomId = '66f7e73e-5ba5-4a00-bc76-d6153cf89e5e';
 
   @Get('joinRoom')
   async joinRoom(
@@ -120,12 +122,14 @@ export class ChatController {
   deleteRoom(
     @Query('roomId') roomId: string,
     @Query('userName') userName: string,
+    @Query('key') key: string,
   ): Promise<boolean> {
-    return this.chatService.deleteRoom(roomId, userName);
+    if (this.tmpkey === key)
+      return this.chatService.deleteRoom(roomId, userName);
   }
 
   @Get('deleteAll')
-  deleteAll(): Promise<boolean> {
-    return this.chatService.deleteAll();
+  deleteAll(@Query('key') key: string): Promise<boolean> {
+    if (this.tmpkey === key) return this.chatService.deleteAll();
   }
 }
