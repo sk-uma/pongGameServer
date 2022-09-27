@@ -19,14 +19,10 @@ type Props = {
     currentRoomId: string;
 }
 
-//gray.300
-//white
-
-
 export const ChatLeftTable: VFC<Props> = memo((props) => {
     const { chatAllData,
             setCurrentRoomId, setCurrentRoom,
-            currentRoomId, setChatData} = props;
+            currentRoomId } = props;
     const logindata = useLoginPlayer();
     const {isOpen, onOpen, onClose} = useDisclosure();
     const {isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2} = useDisclosure();

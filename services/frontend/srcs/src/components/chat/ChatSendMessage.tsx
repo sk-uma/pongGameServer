@@ -1,9 +1,8 @@
 import { Box, Button, Center, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList, Text, Textarea } from "@chakra-ui/react";
 import axios from "axios";
-import { ChangeEventHandler, memo, useContext, useEffect, useState, VFC } from "react";
+import { ChangeEventHandler, memo, useContext, useState, VFC } from "react";
 import { GiGamepad } from "react-icons/gi";
 import { constUrl } from "../../constant/constUrl";
-import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChatContext } from "./provider/ChatProvider";
 import { ChatLogType, ChatRoomType } from "./type/ChatType";
@@ -15,15 +14,10 @@ type Props = {
 
 export const ChatSendMessage: VFC<Props> = memo((props) => {
 
-    const {currentRoom, currentRoomId} = props;
-    const { getPlayers, players } = useAllPlayers();
+    const { currentRoomId } = props;
     const [text, setText] = useState("");
     const logindata = useLoginPlayer();
     const { socket } = useContext(ChatContext);
-
-    useEffect(() => {
-		getPlayers();
-	}, [getPlayers]);
 
     //const onChangeText = (e: ChangeEvent<HTMLInputElement>) => {
     //    setText(e.target.value);

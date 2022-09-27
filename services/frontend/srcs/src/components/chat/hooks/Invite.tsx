@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { useMessage } from "../../../hooks/useMessage";
+//import { useMessage } from "../../../hooks/useMessage";
 import { ChatContext } from "../provider/ChatProvider";
 import { ChatRoomType } from "../type/ChatType";
 
@@ -12,7 +12,7 @@ import { ChatRoomType } from "../type/ChatType";
 export const useInvitePlayer = (room: ChatRoomType | undefined, name: string) => {
 
     const { socket } = useContext(ChatContext);
-    const { showMessage } = useMessage();
+    //const { showMessage } = useMessage();
 
 	const invitePlayer = useCallback((target: string) => {
         //alert(`${name} mute => ${target}`);
@@ -24,11 +24,11 @@ export const useInvitePlayer = (room: ChatRoomType | undefined, name: string) =>
             name: target,
         }
         socket.emit('Chat/send/joinRoom', payload); 
-        showMessage({
-            title: `add user`,
-            status: "success",
-        });
-	}, [room, socket, showMessage]);
+        //showMessage({
+        //    title: `add user`,
+        //    status: "success",
+        //});
+	}, [room, socket]);
 
 	return { invitePlayer };
 };

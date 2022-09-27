@@ -74,7 +74,7 @@ export const useChatMessage = () => {
 				title,
 				status,
 				position: "top",
-				duration: 3000,
+				duration: 2000,
 				isClosable: true,
                 render: () => (
                     <Box

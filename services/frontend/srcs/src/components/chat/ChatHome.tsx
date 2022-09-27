@@ -133,7 +133,7 @@ export const ChatHome: VFC = memo(() => {
         return () => {
             socket.off('Chat/connect/server');
           };
-      }, []);
+      }, [UserName, socket]);
 
       useEffect(() => {
         const getChatData = async () => {
