@@ -1,6 +1,6 @@
 import { memo, useCallback, VFC } from "react";
-import { Flex, useToast, Image, HStack, Box, Text, Button } from "@chakra-ui/react";
-import { ChatAllDataType, ChatLogType } from "../type/ChatType";
+import { Flex, useToast, Image, HStack, Box, Text } from "@chakra-ui/react";
+import { ChatLogType } from "../type/ChatType";
 import { Player } from "../../../types/api/Player";
 
 //chakra-uiのToast機能を使い、アクション終了後にメッセージをポップアップさせるhooks
@@ -79,7 +79,7 @@ export const useChatMessage = () => {
                 render: () => (
                     <Box
                         color='bray'
-                        p={3}
+                        p={2}
                         bg="gray.100"
 					    borderRadius="10px"
 					    shadow="md">
