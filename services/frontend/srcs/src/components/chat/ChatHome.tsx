@@ -1,6 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import axios from "axios";
 import { memo, useContext, useEffect, useState, VFC } from "react"
+import { constUrl } from "../../constant/constUrl";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChatCenterHandle } from "./ChatCenterHandle";
@@ -12,7 +13,6 @@ import { ChatAllDataType, ChatLogType, ChatRoomType } from "./type/ChatType";
 
 export const ChatHome: VFC = memo(() => {
     const { socket } = useContext(ChatContext);
-    const [loadDataFlag, setLoadDataFlag] = useState<string>("");
     const [chatData, setChatData] = useState<ChatAllDataType>();
     const [currentRoomId, setCurrentRoomId] = useState<string>("default");
     const [currentRoom, setCurrentRoom] = useState<ChatRoomType | undefined>(undefined);
@@ -137,7 +137,7 @@ export const ChatHome: VFC = memo(() => {
 
       useEffect(() => {
         const getChatData = async () => {
-          const response = await axios.get<ChatAllDataType>('http://localhost:3001/chat/getAllData');
+          const response = await axios.get<ChatAllDataType>(constUrl.serversideUrl + `/chat/getAllData`);
           console.log('axios')
           console.log(response.data)
             response.data.rooms.sort(function (a, b) {
@@ -166,9 +166,6 @@ export const ChatHome: VFC = memo(() => {
             })                
         }, [socket, currentRoom]);*/
 
-      const LoadDataFlag = () => {
-          setLoadDataFlag(new Date().toISOString());
-      } 
 
     //let Xname = "undifinedName";
     //if (logindata && logindata.loginPlayer)
@@ -187,7 +184,6 @@ export const ChatHome: VFC = memo(() => {
                 }}
             >
                 <ChatLeftTable
-                    LoadDataFlag={LoadDataFlag}
                     chatAllData={chatData}
                     setCurrentRoomId={setCurrentRoomId}
                     setCurrentRoom={setCurrentRoom}

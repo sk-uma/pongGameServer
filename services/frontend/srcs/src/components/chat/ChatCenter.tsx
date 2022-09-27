@@ -1,6 +1,5 @@
-import { Box, Button, Center, Flex, Stack } from "@chakra-ui/react";
+import { Box, Center, Flex, Stack } from "@chakra-ui/react";
 import { memo, useEffect, useRef, VFC } from "react";
-import { FaArrowCircleDown } from "react-icons/fa";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChartInvaitChatMessage } from "./ChatInviteGameMessage";
@@ -98,6 +97,13 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                                     log={log}
                                     isOwn={logindata?.loginPlayer?.name === log.owner}
                                 />
+                            </Box>
+                        </Center>
+                    )
+                } else {
+                    return (
+                        <Center key={index}>
+                            <Box style={{width: 'calc(100% - 30px)'}}>
                             </Box>
                         </Center>
                     )

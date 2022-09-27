@@ -24,7 +24,7 @@ type Props = {
 };
 
 export const AddUserCard: VFC<Props> = memo((props) => {
-    const { loginName, imgUrl, name, displayName, level, status, room, win, lose, exp} = props;
+    const { imgUrl, name, displayName, level, status, room, win, lose, exp} = props;
 
 
     const logindata = useLoginPlayer();
