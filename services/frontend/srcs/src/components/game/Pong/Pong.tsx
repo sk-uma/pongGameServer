@@ -67,6 +67,13 @@ export let gameInfo: GameInfo = {
 //   );
 // }
 
+function _socketOffGameEvent() {
+  gameInfo.socket?.off('UpdateCheckedGameData');
+  gameInfo.socket?.off('PlayerLeaveRoom');
+  gameInfo.socket?.off('restartGame');
+  gameInfo.socket?.off('updateEventGameData');
+}
+
 export function Pong(props: {mode: string, gameType: string, privateKey?: string}) {
   let [isConnected, setIsConnected] = useState(false);
 
@@ -109,6 +116,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
           }
 
           g.events.on('hidden', () => {
+            _socketOffGameEvent();
             g?.destroy(true);
             if (loginPlayer) {
               axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
@@ -133,6 +141,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
             axios.patch(constUrl.serversideUrl+`/players/statusplay/${loginPlayer?.name}`);
           }
           g.events.on('hidden', () => {
+            _socketOffGameEvent();
             g?.destroy(true);
             if (loginPlayer) {
               axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
@@ -168,6 +177,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
      * ゲーム終了時の画面遷移
      */
     gameInfo.socket?.on('gameResult', (data: any) => {
+      _socketOffGameEvent();
       g?.destroy(true);
       if (loginPlayer) {
         axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
@@ -220,6 +230,7 @@ export function Pong(props: {mode: string, gameType: string, privateKey?: string
       if (loginPlayer) {
         axios.patch(constUrl.serversideUrl+`/players/statuslogin/${loginPlayer?.name}`);
       }
+      _socketOffGameEvent();
       g?.destroy(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

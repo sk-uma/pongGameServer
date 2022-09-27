@@ -1,45 +1,22 @@
 # ft_transcendence_co
-  
-## 起動手順
-## 1.database
-databaseディレクトリでdocker-compose up -d  
-  
-localhost:81でpgAdminにアクセス。  
+
+## 起順方法
+
+ルートディレクトリで  
+docker-compose up --build
+
+## アプリケーション URL
+
+localhost:3000
+
+## データベース管理 pgAdmin
+
+localhost:81  
 E-mail:nestjs@example.com  
-password:password  
-でログイン  
-  
-Servers右クリック>Register>Server  
-Generalタブ  
--Name:任意  
+password:password
 
-Connectionタブ  
--Host:postgres  
--Port:5432  
--Username:postgres  
--Password:postgres  
-でServer作成  
+## 注意事項
 
-作成したServerを展開  
-Databases右クリック>Create>Database  
-Generalタブ  
--Database:backend_db  
-でDatabase作成  
-
-## 2.serverside  
-seversideのディレクトリに移動  
-npm i -g @nestjs/cli(既にインストールされている場合必要なし。初回だけでOK)  
- 
-npm install  
-  
-npm run start:dev でサーバー起動(PORT3001)  
-
-## 3.frontend  
-npm install --legacy-peer-deps  
-(現状モジュール間でコンフリクトあるため、オプション必要)  
-
-npm run start でサーバー起動(PORT3000)  
-  
-以上、実行後  
-localhost:3000 にアクセス  
-
+42 認証は期限切れのため使用できない可能性があります  
+services/frontend/srcs/src/constant/constUrl.ts  
+の ftApiAuthUrl, ftClientId, ftClientSecret を適宜編集してください

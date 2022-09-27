@@ -18,7 +18,7 @@ export class EditPlayerDto {
 	displayName: string;
 
 	@IsString()
-	//	@MinLength(6)
+	@MinLength(6)
 	@MaxLength(12)
 	@IsOptional()
 	password: string;

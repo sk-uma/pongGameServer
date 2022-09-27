@@ -18,7 +18,7 @@ export const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: true,
+      // debug: true,
       fps: 60,
     },
   },
@@ -41,7 +41,7 @@ export const DXconfig: Phaser.Types.Core.GameConfig = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: true,
+      // debug: true,
       fps: 60,
     },
   },

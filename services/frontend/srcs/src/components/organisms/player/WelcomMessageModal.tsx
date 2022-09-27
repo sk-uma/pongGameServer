@@ -11,6 +11,7 @@ import axios from "axios";
 
 import { PrimaryButton } from "../../atoms/button/PrimaryButton";
 import { constUrl } from "../../../constant/constUrl";
+import { useGetPlayerwithToken } from "../../../hooks/useGetPlayerWithToken";
 
 type Props = {
 	name: string;
@@ -19,10 +20,14 @@ type Props = {
 };
 
 export const WelcomMessageModal: FC<Props> = memo((props) => {
+	const { getPlayerWithToken } = useGetPlayerwithToken();
 	const { name, isOpen, onClose } = props;
 	const onClickOK = () => {
 		axios
 			.patch(constUrl.serversideUrl + `/players/editrookie/${name}`)
+			.then(() => {
+				getPlayerWithToken();
+			})
 			.catch((e) => {
 				console.log(e.response.data.message);
 			});
