@@ -38,7 +38,7 @@ export const ChatMemberModal: VFC<Props> = memo((props) => {
                                     chatMembers &&
                                     chatMembers.map((member, index) => {
                                         return (
-                                            <Box>
+                                            <Box key={index}>
                                                 <ChatUserCard
                                                     loginName={member.displayName}
                                                     displayName={member.displayName}

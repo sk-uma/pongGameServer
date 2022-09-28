@@ -1,4 +1,4 @@
-import { Box, Link, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
+import { Box, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
 import { memo, useCallback, useContext, VFC } from "react";
 import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 import { TextSubHighlightStyle } from "../hooks/TextStyle";
@@ -59,13 +59,13 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
         <Box  bg='teal.200'>
             <Menu>
                 <MenuButton>
-                    <Link
+                    <Box
                         onClick={() => onClickRoomLink(room)}
                         cursor='pointer'  _hover={{bg:'teal.500'}}
                         >        
                         <TextSubHighlightStyle title={`# ${room.name}`}  color='gray.600'/>
                         <ChatRoomMenuModal isOpen={isOpen3} onClose={onClose3} room={room}/>     
-                    </Link>
+                    </Box>
                 </MenuButton>
                 <MenuList>
                     <Box>

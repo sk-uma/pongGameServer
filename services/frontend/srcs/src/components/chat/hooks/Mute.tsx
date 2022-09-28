@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { useMessage } from "../../../hooks/useMessage";
+//import { useMessage } from "../../../hooks/useMessage";
 import { ChatContext } from "../provider/ChatProvider";
 import { ChatRoomType } from "../type/ChatType";
 
@@ -12,7 +12,7 @@ import { ChatRoomType } from "../type/ChatType";
 export const useMutePlayer = (room: ChatRoomType | undefined, name: string) => {
 
     const { socket } = useContext(ChatContext);
-    const { showMessage } = useMessage();
+    //const { showMessage } = useMessage();
 
 	const mutePlayer = useCallback((target: string) => {
         //alert(`${name} mute => ${target}`);
@@ -25,11 +25,11 @@ export const useMutePlayer = (room: ChatRoomType | undefined, name: string) => {
             target: target,
         }
         socket.emit('Chat/addMuteUser', payload); 
-        showMessage({
-            title: `mute`,
-            status: "success",
-        });
-	}, [name, room, socket, showMessage]);
+        //showMessage({
+        //    title: `mute`,
+        //    status: "success",
+        //});
+	}, [name, room, socket]);
 
     const unMutePlayer = useCallback((target: string) => {
         //alert(`${name} mute => ${target}`);
@@ -42,11 +42,11 @@ export const useMutePlayer = (room: ChatRoomType | undefined, name: string) => {
             target: target,
         }
         socket.emit('Chat/unmuteUser', payload); 
-        showMessage({
-            title: `unmute`,
-            status: "success",
-        });
-	}, [name, room, socket, showMessage]);
+        //showMessage({
+        //    title: `unmute`,
+        //    status: "success",
+        //});
+	}, [name, room, socket]);
 
 	return { mutePlayer, unMutePlayer };
 };

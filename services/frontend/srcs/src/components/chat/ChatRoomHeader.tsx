@@ -15,7 +15,7 @@ type Props = {
 
 export const ChatRoomHeader: VFC<Props> = memo((props) => {
 
-    const {currentRoom, currentRoomId, chatAllData} = props;
+    const {currentRoom} = props;
     const { getPlayers, players } = useAllPlayers();
     const logindata = useLoginPlayer();
 
@@ -57,7 +57,13 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
 
     return (
         <Flex gap={1} justifyContent='center' alignItems='center' height='100%'>
-            <Text as="b" fontSize="3xl" width="100%"># {roomName}</Text>
+            <Text as="b" fontSize="3xl" width="100%"
+                style={{
+                    display: 'block',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                }}>&nbsp;# {roomName}</Text>
             <Button
                 onClick={onClickRoom1}
                 colorScheme='teal'
@@ -67,6 +73,12 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
                 //leftIcon={<GiEarthAsiaOceania />}
                 //onClick={onClickPublicRoom}
                 width='70%'
+                style={{
+                    display: 'block',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                }}
             >
             view all members
                 <ChatMemberModal isOpen={isOpen1} onClose={onClose1} room={currentRoom}></ChatMemberModal>
@@ -82,6 +94,12 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
                 //leftIcon={<GiEarthAsiaOceania />}
                 //onClick={onClickPublicRoom}
                 width='70%'
+                style={{
+                    display: 'block',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                }}
             >
             Add People
                 <AddMemberModal isOpen={isOpen2} onClose={onClose2} room={currentRoom}></AddMemberModal>

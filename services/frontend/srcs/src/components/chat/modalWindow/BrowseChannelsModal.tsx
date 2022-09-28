@@ -36,7 +36,11 @@ export const BrowseChannelsModal: VFC<Props> = memo((props) => {
                                     browseChannel_list.map((room, index) => {
                                         return (
                                             //<Box>{room.name}</Box>
-                                            <Box key={index}>
+                                            <Box key={index}
+                                            sx={{
+                                                boxShadow: '-10px 4px 5px -5px rgba(0, 0, 0, .3)'
+                                                }}
+                                            >
                                                 {   logindata && logindata.loginPlayer &&
                                                     <ChatRoom room={room} user={logindata.loginPlayer}/>
                                                 }

@@ -1,7 +1,5 @@
 import { Box, useDisclosure } from "@chakra-ui/react";
-import axios from "axios";
 import { memo, useCallback, useContext, useEffect, VFC } from "react";
-import { constUrl } from "../../constant/constUrl";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { TextMainStyle, TextSubHighlightStyle, TextSubStyle } from "./hooks/TextStyle";
@@ -14,7 +12,6 @@ import { ChatContext } from "./provider/ChatProvider";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 
 type Props = {
-    LoadDataFlag : () => void;
     setCurrentRoomId : (roomid: string) => void;
     setCurrentRoom : (room: ChatRoomType) => void;
     chatAllData :ChatAllDataType | undefined;
@@ -22,14 +19,10 @@ type Props = {
     currentRoomId: string;
 }
 
-//gray.300
-//white
-
-
 export const ChatLeftTable: VFC<Props> = memo((props) => {
-    const { LoadDataFlag, chatAllData,
+    const { chatAllData,
             setCurrentRoomId, setCurrentRoom,
-            currentRoomId, setChatData} = props;
+            currentRoomId } = props;
     const logindata = useLoginPlayer();
     const {isOpen, onOpen, onClose} = useDisclosure();
     const {isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2} = useDisclosure();

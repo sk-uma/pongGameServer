@@ -74,34 +74,37 @@ export class ChatGateway
     this.logger.log(`Chat: recv message: room ${payload.roomId} ${client.id}`);
     this.logger.log(`Chat: recv message: owner ${payload.owner} ${client.id}`);
     this.logger.log(`Chat: recv message: text ${payload.text} ${client.id}`);
-    const ret1 = await this.chatService.createLog(
+    const retLog: ChatLogType = await this.chatService.createLog(
       payload.roomId,
       payload.owner,
       payload.text,
       payload.type,
     );
-    this.logger.log(
-      `${this.chatHeader}: send chatMessage: ${payload}: ${ret1}`,
-    );
+    this.logger.log(`${this.chatHeader}: send chatMessage: ${payload}:`);
 
     const ret: ChatAllDataType = await this.chatService.getAllData();
     await this.server.emit('Chat/recv', ret);
+    if (retLog === null) return;
 
-    /*
-    const room = ret.rooms.find((item, index) => item.id === payload.roomId);
+    const room = ret.rooms.find((item) => item.id === payload.roomId);
     if (!room) return;
+
     const members = room.member_list;
     for (let i = 0; i < members.length; i++) {
-      const Soc = this.userMap.find((item) => item.userName === members[i]);
-      if (Soc) {
-        await this.server
-          .to(Soc.socket.id)
-          .emit('Chat/notification', Soc.userName);
-        this.logger.log(
-          `${this.chatHeader}: send notification: ${Soc.userName}`,
-        );
+      const onlineUsers = this.userMap.filter(
+        (item) => item.userName === members[i],
+      );
+      if (onlineUsers) {
+        for (let j = 0; j < onlineUsers.length; j++) {
+          this.server
+            .to(onlineUsers[j].socket.id)
+            .emit('Chat/notification', retLog);
+          this.logger.log(
+            `${this.chatHeader}: send notification: ${retLog.text}`,
+          );
+        }
       }
-    }*/
+    }
   }
 
   @SubscribeMessage('Chat/send/joinRoom')
@@ -280,7 +283,8 @@ export class ChatGateway
     this.logger.log(`${this.chatHeader}: visitRoom: ${payload}: ${ret1}`);
     const ret: ChatAllDataType = await this.chatService.getAllData();
     //this.logger.log(ret);
-    await this.server.emit('Chat/recv', ret);
+    this.server.to(client.id).emit('Chat/recv', ret);
+    //await this.server.emit('Chat/recv', ret);
   }
 
   afterInit(server: Server) {

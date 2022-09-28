@@ -18,7 +18,7 @@ type Props = {
 };
 
 export const DmInviteUserCard: VFC<Props> = memo((props) => {
-    const { loginName, imgUrl, name, displayName, level, status } = props;
+    const { imgUrl, name, displayName, level, status } = props;
 
 
     const logindata = useLoginPlayer();

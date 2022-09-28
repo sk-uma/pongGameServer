@@ -35,7 +35,7 @@ export const ChatCenterHandle: VFC<Props> = memo((props) => {
                         {/* <Text color="gray.400">
                             右のチャンネルから他のプレイヤーと交流しましょう
                         </Text> */}
-                        <img src={chatInitIllust} width='80%' style={{
+                        <img src={chatInitIllust} alt={chatInitIllust} width='80%' style={{
                             width: '80%',
                             maxWidth: '800px',
                         }} />

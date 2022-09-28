@@ -1,6 +1,5 @@
-import { Box, Button, Center, Flex, Stack } from "@chakra-ui/react";
+import { Box, Center, Stack } from "@chakra-ui/react";
 import { memo, useEffect, useRef, VFC } from "react";
-import { FaArrowCircleDown } from "react-icons/fa";
 import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { ChartInvaitChatMessage } from "./ChatInviteGameMessage";
@@ -52,7 +51,9 @@ export const ChatCenter: VFC<Props> = memo((props) => {
 
     if (currentRoom && currentRoomId !== 'default' && chatAllData)
     {
-        myMap = chatAllData.logs.filter((item) => item.roomId === currentRoomId)   
+        myMap = chatAllData.logs.filter((item) => item.roomId === currentRoomId) 
+        myMap = myMap.filter((item) => !(logindata?.loginPlayer?.blockList.includes(item.owner)));
+        myMap = myMap.filter((item) => (!(currentRoom.mute_list.includes(item.owner)) || logindata?.loginPlayer?.name === item.owner));
     }
     else
         return (<Box></Box>);
@@ -64,10 +65,10 @@ export const ChatCenter: VFC<Props> = memo((props) => {
             {
                 myMap.map((log, index) => {
                 const usr = players.find((usr) => usr.name === log.owner);
-                if (logindata?.loginPlayer?.blockList.includes(log.owner))
-                    return <Flex key={index}></Flex>;
-                if (currentRoom.mute_list.includes(log.owner) && logindata?.loginPlayer?.name !== log.owner)
-                    return <Flex key={index}></Flex>;
+                //if (logindata?.loginPlayer?.blockList.includes(log.owner))
+                //    return <Flex key={index}></Flex>;
+                //if (currentRoom.mute_list.includes(log.owner) && logindata?.loginPlayer?.name !== log.owner)
+                //    return <Flex key={index}></Flex>;
                 if (log.type === "message") {
                     return (
                         // <Flex key={index}  w="100%">
@@ -98,6 +99,13 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                                     log={log}
                                     isOwn={logindata?.loginPlayer?.name === log.owner}
                                 />
+                            </Box>
+                        </Center>
+                    )
+                } else {
+                    return (
+                        <Center key={index}>
+                            <Box style={{width: 'calc(100% - 30px)'}}>
                             </Box>
                         </Center>
                     )

@@ -125,11 +125,11 @@ export class ChatService {
     ownerName: string,
     text: string,
     type: string,
-  ): Promise<string> {
+  ): Promise<ChatLogType> {
     //user check
     const room = await this.chatRoomsRepository.findOne(roomId);
-    if (!room) return 'not valid roomId';
-    if (!room.member_list.includes(ownerName)) return 'not valid user';
+    if (!room) return null;
+    if (!room.member_list.includes(ownerName)) return null;
     const newLog: ChatLogType = {
       roomId: roomId, //roomId
       id: uuidv4(), //import { v4 as uuidv4 } from 'uuid';
@@ -144,7 +144,8 @@ export class ChatService {
     await this.chatRoomsRepository.save(room);
 
     const ret = await this.chatLogRepository.save(newLog);
-    return ret ? 'Add' : 'false';
+    if (ret) return newLog;
+    return null;
   }
 
   async joinRoom(roomId: string, player: string): Promise<string> {
@@ -297,11 +298,11 @@ export class ChatService {
     //room.id = roomId;
     room.name = roomName;
     room.roomType = roomType;
-    if (room.password !== password && password !== '') {
+    if (room.password !== password && password.length !== 0) {
       const salt = await bcrypt.genSalt();
       const hashPassword = await bcrypt.hash(password, salt);
       room.password = hashPassword;
-    }
+    } else room.password = password;
     await this.chatRoomsRepository.save(room);
     return true;
   }

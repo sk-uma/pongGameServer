@@ -108,7 +108,7 @@ export const ChatRoom: VFC<Props> = memo((props) => {
                 </Flex>
                 <Flex>
                 { props.room.member_list.includes(name) &&
-                    <Text color='green'> joined. </Text>
+                    <Text color='green'> joined&nbsp;&nbsp;</Text>
                 }
                 <Text style={{whiteSpace: 'pre-wrap', width: '100%'}}>
                     {props.room.member_list.length} members  
