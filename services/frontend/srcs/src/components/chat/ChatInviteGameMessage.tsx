@@ -52,7 +52,7 @@ export const ChartInvaitChatMessage: VFC<Props> = memo((props) => {
                     setIsAvailable(false);
                 }
             });
-    }, []);
+    }, [privateKey]);
 
     return (
         <Flex style={{width: '100%'}}>

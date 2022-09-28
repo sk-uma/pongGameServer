@@ -28,7 +28,7 @@ type Props = {
 };
 
 export const ChatUserCard: VFC<Props> = memo((props) => {
-    const { loginName, imgUrl, name, displayName, level, status, room, win, lose, exp} = props;
+    const { imgUrl, name, displayName, level, status, room, win, lose, exp} = props;
 
 
     const logindata = useLoginPlayer();
@@ -94,9 +94,9 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
                 </Box>
             </MenuButton>
             <MenuList>
-                <Text as='b'># {name}</Text>
-                
-                { room?.roomType !== 'dm' && CheckPermission(room, logindata.loginPlayer, name, 'ban') &&
+                <Text as='b'># {displayName}</Text>
+
+                { room?.roomType !== 'dm' && name !== logindata.loginPlayer?.name && CheckPermission(room, logindata.loginPlayer, name, 'ban') &&
                 <MenuItem onClick={() => banPlayer(name)}>
                     Ban
                 </MenuItem>
@@ -105,27 +105,27 @@ export const ChatUserCard: VFC<Props> = memo((props) => {
                     name !== logindata.loginPlayer?.name &&
                     <ChatBlockUser opponentName={name}/>
                 }
-                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'mute') &&
+                { room?.roomType !== 'dm' && name !== logindata.loginPlayer?.name && CheckPermission(room, logindata.loginPlayer, name, 'mute') &&
                 <MenuItem onClick={() => mutePlayer(name)}>
                     Mute
                 </MenuItem>
                 }
-                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'unmute') &&
+                { room?.roomType !== 'dm' && name !== logindata.loginPlayer?.name && CheckPermission(room, logindata.loginPlayer, name, 'unmute') &&
                 <MenuItem onClick={() => unMutePlayer(name)}>
                     UnMute
                 </MenuItem>
                 }
-                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'kick') &&
+                { room?.roomType !== 'dm' && name !== logindata.loginPlayer?.name && CheckPermission(room, logindata.loginPlayer, name, 'kick') &&
                 <MenuItem onClick={() => kickPlayer(name)}>
                     Kick
                 </MenuItem>
                 }
-                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'addAdmin') &&
+                { room?.roomType !== 'dm' && name !== logindata.loginPlayer?.name && CheckPermission(room, logindata.loginPlayer, name, 'addAdmin') &&
                 <MenuItem onClick={() => addAdminPlayer(name)}>
                     Add admin
                 </MenuItem>
                 }
-                { room?.roomType !== 'dm' &&  CheckPermission(room, logindata.loginPlayer, name, 'deleteAdmin') &&
+                { room?.roomType !== 'dm' && name !== logindata.loginPlayer?.name && CheckPermission(room, logindata.loginPlayer, name, 'deleteAdmin') &&
                 <MenuItem onClick={() => deleteAdminPlayer(name)}>
                     delete admin
                 </MenuItem>

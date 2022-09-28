@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { useMessage } from "../../../hooks/useMessage";
+//import { useMessage } from "../../../hooks/useMessage";
 import { ChatContext } from "../provider/ChatProvider";
 
 //import { Player } from "../types/api/Player";
@@ -11,7 +11,7 @@ import { ChatContext } from "../provider/ChatProvider";
 export const useInviteDm = (name: string) => {
 
     const { socket } = useContext(ChatContext);
-    const { showMessage } = useMessage();
+    //const { showMessage } = useMessage();
 
 	const inviteDm = useCallback((target: string, name: string) => {
         //alert(`${name} mute => ${target}`);
@@ -25,11 +25,11 @@ export const useInviteDm = (name: string) => {
         }
         socket.emit('Chat/generate/DmRoom', payload);        
 
-        showMessage({
-            title: `start a Dm`,
-            status: "success",
-        });
-	}, [socket, showMessage]);
+        //showMessage({
+        //    title: `start a Dm`,
+        //    status: "success",
+        //});
+	}, [socket]);
 
 	return { inviteDm };
 };

@@ -35,6 +35,7 @@ services:
       - ./services/database/docker/pgadmin:/var/lib/pgadmin
     depends_on:
       - postgres
+    user: root
 
   frontend:
     image: node:17-alpine

@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { useMessage } from "../../../hooks/useMessage";
+//import { useMessage } from "../../../hooks/useMessage";
 import { ChatContext } from "../provider/ChatProvider";
 import { ChatRoomType } from "../type/ChatType";
 
@@ -12,7 +12,7 @@ import { ChatRoomType } from "../type/ChatType";
 export const useManageAdminPlayer = (room: ChatRoomType | undefined, name: string) => {
 
     const { socket } = useContext(ChatContext);
-    const { showMessage } = useMessage();
+    //const { showMessage } = useMessage();
 
 	const addAdminPlayer = useCallback((target: string) => {
         //alert(`${name} mute => ${target}`);
@@ -25,11 +25,11 @@ export const useManageAdminPlayer = (room: ChatRoomType | undefined, name: strin
             newAdmin: target,
         }
         socket.emit('Chat/addAdmin', payload); 
-        showMessage({
-            title: `add admin`,
-            status: "success",
-        });
-	}, [name, room, socket, showMessage]);
+        //showMessage({
+        //    title: `add admin`,
+        //    status: "success",
+        //});
+	}, [name, room, socket]);
 
     const deleteAdminPlayer = useCallback((target: string) => {
         //alert(`${name} mute => ${target}`);
@@ -42,11 +42,11 @@ export const useManageAdminPlayer = (room: ChatRoomType | undefined, name: strin
             newAdmin: target,
         }
         socket.emit('Chat/deleteAdmin', payload); 
-        showMessage({
-            title: `delete admin`,
-            status: "success",
-        });
-	}, [name, room, socket, showMessage]);
+        //showMessage({
+        //    title: `delete admin`,
+        //    status: "success",
+        //});
+	}, [name, room, socket]);
 
 	return { addAdminPlayer, deleteAdminPlayer };
 };

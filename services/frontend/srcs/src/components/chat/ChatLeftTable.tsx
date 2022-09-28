@@ -1,7 +1,6 @@
 import { Box, useDisclosure } from "@chakra-ui/react";
-import axios from "axios";
-import { memo, useCallback, useContext, VFC } from "react";
-import { constUrl } from "../../constant/constUrl";
+import { memo, useCallback, useContext, useEffect, VFC } from "react";
+import { useAllPlayers } from "../../hooks/useAllPlayers";
 import { useLoginPlayer } from "../../hooks/useLoginPlayer";
 import { TextMainStyle, TextSubHighlightStyle, TextSubStyle } from "./hooks/TextStyle";
 import { BrowseChannelsModal } from "./modalWindow/BrowseChannelsModal";
@@ -13,7 +12,6 @@ import { ChatContext } from "./provider/ChatProvider";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 
 type Props = {
-    LoadDataFlag : () => void;
     setCurrentRoomId : (roomid: string) => void;
     setCurrentRoom : (room: ChatRoomType) => void;
     chatAllData :ChatAllDataType | undefined;
@@ -21,14 +19,10 @@ type Props = {
     currentRoomId: string;
 }
 
-//gray.300
-//white
-
-
 export const ChatLeftTable: VFC<Props> = memo((props) => {
-    const { LoadDataFlag, chatAllData,
+    const { chatAllData,
             setCurrentRoomId, setCurrentRoom,
-            currentRoomId, setChatData} = props;
+            currentRoomId } = props;
     const logindata = useLoginPlayer();
     const {isOpen, onOpen, onClose} = useDisclosure();
     const {isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2} = useDisclosure();
@@ -36,6 +30,11 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
     const onClickRoom = useCallback(() => onOpen(), [onOpen]);
     const onClickRoom2 = useCallback(() => onOpen2(), [onOpen2]);
     const onClickRoom3 = useCallback(() => onOpen3(), [onOpen3]);
+    const { getPlayers, players } = useAllPlayers();
+
+    useEffect(() => {
+		getPlayers();
+	}, [getPlayers]);
 
     let name = 'default';
     if (logindata?.loginPlayer?.name)
@@ -140,6 +139,9 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                 let opponentName = room.member_list[0];
                 if (name === room.member_list[0])
                     opponentName = room.member_list[1];
+                    let opponentDisplayName = players.find((player) => player.name === opponentName)?.displayName;
+                if (!opponentDisplayName)
+                    opponentDisplayName = 'default';
                 if (room.member_list.includes(name)) {
 
                     if (currentRoomId !== room.id)
@@ -151,7 +153,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                                 onClick={() => onClickRoomLink(room)}
                                 fontWeight={800}
                                 cursor='pointer' _hover={{bg:'teal.500'}}>
-                                <TextSubHighlightStyle title={`# ${opponentName}`} color={'white'}/>
+                                <TextSubHighlightStyle title={`# ${opponentDisplayName}`} color={'white'}/>
                             </Box>
                         }
                         { !room.notVisited_list.includes(name) &&
@@ -159,7 +161,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                                 onClick={() => onClickRoomLink(room)}
                                 fontWeight={400}
                                 cursor='pointer'  _hover={{bg:'teal.500'}}>
-                                <TextSubStyle title={`# ${opponentName}`}/>
+                                <TextSubStyle title={`# ${opponentDisplayName}`}/>
                             </Box>
                         }
                         </Box>
@@ -172,7 +174,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                                 setCurrentRoomId={setCurrentRoomId}
                                 setCurrentRoom={setCurrentRoom}
                                 room={room}
-                                opponentName={opponentName}
+                                opponentName={opponentDisplayName}
                             />
                         </Box>
                     )

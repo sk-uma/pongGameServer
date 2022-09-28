@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { useMessage } from "../../../hooks/useMessage";
+//import { useMessage } from "../../../hooks/useMessage";
 import { ChatContext } from "../provider/ChatProvider";
 import { ChatRoomType } from "../type/ChatType";
 
@@ -12,7 +12,7 @@ import { ChatRoomType } from "../type/ChatType";
 export const useKickPlayer = (room: ChatRoomType | undefined, name: string) => {
 
     const { socket } = useContext(ChatContext);
-    const { showMessage } = useMessage();
+    //const { showMessage } = useMessage();
 
 	const kickPlayer = useCallback((target: string) => {
         //alert(`${name} mute => ${target}`);
@@ -25,11 +25,11 @@ export const useKickPlayer = (room: ChatRoomType | undefined, name: string) => {
             target: target,
         }
         socket.emit('Chat/delete/roomMember', payload); 
-        showMessage({
-            title: `kick`,
-            status: "success",
-        });
-	}, [name, room, socket, showMessage]);
+        //showMessage({
+        //    title: `kick`,
+        //    status: "success",
+        //});
+	}, [name, room, socket]);
 
 	return { kickPlayer };
 };

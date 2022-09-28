@@ -72,7 +72,7 @@ export const InviteDmModal: VFC<Props> = memo((props) => {
                                     chatMembers &&
                                     chatMembers.map((member, index) => {
                                         return (
-                                            <Box>
+                                            <Box key={index}>
                                                 { <DmInviteUserCard
                                                     loginName={member.displayName}
                                                     displayName={member.displayName}
