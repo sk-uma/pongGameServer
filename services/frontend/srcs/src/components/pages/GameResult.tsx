@@ -2,7 +2,7 @@ import { Avatar, Center, Stack, Text } from "@chakra-ui/react";
 import { memo, useEffect, VFC } from "react";
 import { useLocation } from "react-router-dom";
 import { usePlayer } from "../../hooks/usePlayer";
-import { PlayGame } from "../game/Pong/PlayGame";
+// import { PlayGame } from "../game/Pong/PlayGame";
 // import { PlayerCard } from "../organisms/player/PlayerCard";
 
 interface GameResultType {
