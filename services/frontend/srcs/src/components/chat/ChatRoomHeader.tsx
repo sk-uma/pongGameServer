@@ -15,7 +15,7 @@ type Props = {
 
 export const ChatRoomHeader: VFC<Props> = memo((props) => {
 
-    const {currentRoom, currentRoomId, chatAllData} = props;
+    const {currentRoom} = props;
     const { getPlayers, players } = useAllPlayers();
     const logindata = useLoginPlayer();
 
