@@ -70,6 +70,11 @@ type Props = {
 
 export const useChatMessage = () => {
 	const toast = useToast();
+
+    const onClickCloseToast = useCallback(() => {
+        toast.closeAll();
+    }, [toast]);
+
 	const showChatMessage = useCallback(
 		(props: Props) => {
 			const { title, status, log, players } = props;
@@ -83,6 +88,7 @@ export const useChatMessage = () => {
 				isClosable: true,
                 render: () => (
                     <Box
+                        onClick={onClickCloseToast}
                         color='bray'
                         p={2}
                         bg="gray.100"
@@ -93,7 +99,7 @@ export const useChatMessage = () => {
                   ),
 			});
 		},
-		[toast]
+		[toast, onClickCloseToast]
 	);
 	return { showChatMessage };
 };
