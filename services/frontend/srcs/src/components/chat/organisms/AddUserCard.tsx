@@ -94,7 +94,7 @@ export const AddUserCard: VFC<Props> = memo((props) => {
                 </MenuItem>
                 }
                 { room && room.ban_list.includes(name) &&
-                  logindata?.loginPlayer?.name === room.owner &&
+                  logindata?.loginPlayer?.name && room.admin_list.includes(logindata.loginPlayer.name) &&
                     <MenuItem  onClick={() => unBanPlayer(name)}>
                        unban
                    </MenuItem> 
