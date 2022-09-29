@@ -58,7 +58,7 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
     return (
         <Box  bg='teal.200'>
             <Menu>
-                <MenuButton>
+                <MenuButton width='100%' textAlign='left'>
                     <Box
                         onClick={() => onClickRoomLink(room)}
                         cursor='pointer'  _hover={{bg:'teal.500'}}
@@ -69,7 +69,7 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
                 </MenuButton>
                 <MenuList>
                     <Box>
-                    #{room.name}
+                    &nbsp;# {room.name}
                     </Box>
                     <MenuItem onClick={onClickRoom3}>
                         setting

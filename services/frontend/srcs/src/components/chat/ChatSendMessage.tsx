@@ -99,6 +99,7 @@ export const ChatSendMessage: VFC<Props> = memo((props) => {
                 onChange={onChangeTextarea}
                 shadow="md"
                 style={{height: '90px'}}
+                resize='none'
             />
             <Box
                 style={{
