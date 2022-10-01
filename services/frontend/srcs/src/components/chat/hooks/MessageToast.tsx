@@ -11,6 +11,7 @@ import { useLoginPlayer } from "../../../hooks/useLoginPlayer";
 type Props2 = {
     user?: Player;
     log: ChatLogType;
+    room: ChatRoomType;
 }
 
 const ChatMessage: VFC<Props2> = memo((props) => {
@@ -36,8 +37,9 @@ const ChatMessage: VFC<Props2> = memo((props) => {
                         <Text as='b' size='md'>
                             {props.user?.displayName}
                         </Text>
-                        <Text as="sub" color='gray' style={{marginBottom: '4px'}}>
-                            {props.log.time.slice(0, 10) + ' ' + props.log.time.slice(11, 16)}
+                        <Text as="b" size='md' style={{textAlign: 'end'}}>
+                            { props.room.roomType !== 'dm' &&
+                                <>&nbsp;&nbsp;# {props.room.name}</>}
                         </Text>
                     </HStack>
                 </Flex>
@@ -115,7 +117,7 @@ export const useChatMessage = () => {
                         bg="gray.100"
 					    borderRadius="10px"
 					    shadow="md">
-                      <ChatMessage user={user} log={log}/>
+                      <ChatMessage user={user} log={log} room={room}/>
                     </Box>
                   ),
 			});
