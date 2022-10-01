@@ -80,7 +80,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                         //         <Box> {log.text} </Box>
                         //     </Box>
                         // </Flex>
-                        <Center key={index}>
+                        <Center key={index} _hover={{bg:'gray.100'}}>
                             <Box style={{width: 'calc(100% - 30px)'}}>
                                 <ChatMessage
                                     user={usr}
@@ -91,7 +91,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                     )
                 } else if (log.type === "invite") {
                     return (
-                        <Center key={index}>
+                        <Center key={index} _hover={{bg:'gray.100'}}>
                             <Box style={{width: 'calc(100% - 30px)'}}>
                                 <ChartInvaitChatMessage
                                     user={usr}
