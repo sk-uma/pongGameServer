@@ -9,12 +9,11 @@ import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 type Props = {
     chatAllData :ChatAllDataType | undefined;
     currentRoom : ChatRoomType | undefined;
-    currentRoomId : string;
 }
 
 export const ChatCenterHandle: VFC<Props> = memo((props) => {
 
-    const {chatAllData, currentRoom, currentRoomId} = props;
+    const {chatAllData, currentRoom} = props;
 
     /*const bottom = useRef<null | HTMLDivElement>(null); 
 
@@ -23,7 +22,7 @@ export const ChatCenterHandle: VFC<Props> = memo((props) => {
         //bottom.current?.scrollIntoView();
     }*/
 
-    if (currentRoomId === 'default')
+    if (currentRoom === undefined)
     {
         return (
             <Box height="100%">
@@ -68,14 +67,13 @@ export const ChatCenterHandle: VFC<Props> = memo((props) => {
             <ChatCenter
                 chatAllData={chatAllData}
                 currentRoom={currentRoom}
-                currentRoomId={currentRoomId}
             />
             {/*<div ref={bottom}></div>*/}
             </Flex>
             <Box style={{bottom: '0px', height: '100px'}}>
                 <ChatSendMessage
                 currentRoom={currentRoom}
-                currentRoomId={currentRoomId}/>  
+            />  
             </Box>
         </Box>
 

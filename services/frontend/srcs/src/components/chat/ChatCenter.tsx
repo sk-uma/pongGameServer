@@ -9,12 +9,11 @@ import { ChatAllDataType, ChatLogType, ChatRoomType } from "./type/ChatType";
 type Props = {
     chatAllData :ChatAllDataType | undefined;
     currentRoom : ChatRoomType | undefined;
-    currentRoomId : string;
 }
 
 export const ChatCenter: VFC<Props> = memo((props) => {
 
-    const {chatAllData, currentRoom, currentRoomId} = props;
+    const {chatAllData, currentRoom} = props;
     const { getPlayers, players } = useAllPlayers();
     const logindata = useLoginPlayer();
 
@@ -49,9 +48,9 @@ export const ChatCenter: VFC<Props> = memo((props) => {
     scrollToBottom()
     });
 
-    if (currentRoom && currentRoomId !== 'default' && chatAllData)
+    if (currentRoom && chatAllData)
     {
-        myMap = chatAllData.logs.filter((item) => item.roomId === currentRoomId) 
+        myMap = chatAllData.logs.filter((item) => item.roomId === currentRoom.id) 
         myMap = myMap.filter((item) => !(logindata?.loginPlayer?.blockList.includes(item.owner)));
         myMap = myMap.filter((item) => (!(currentRoom.mute_list.includes(item.owner)) || logindata?.loginPlayer?.name === item.owner));
     }

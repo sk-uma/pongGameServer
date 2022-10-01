@@ -10,7 +10,6 @@ import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 type Props = {
     chatAllData : ChatAllDataType | undefined;
     currentRoom : ChatRoomType;
-    currentRoomId : string;
 }
 
 export const ChatRoomHeader: VFC<Props> = memo((props) => {
@@ -26,7 +25,7 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, currentRoom]);
 
     //const onChangeText = (e: ChangeEvent<HTMLInputElement>) => {
     //    setText(e.target.value);

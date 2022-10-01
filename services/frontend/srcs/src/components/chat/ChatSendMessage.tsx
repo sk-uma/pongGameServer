@@ -9,12 +9,11 @@ import { ChatLogType, ChatRoomType } from "./type/ChatType";
 
 type Props = {
     currentRoom : ChatRoomType | undefined;
-    currentRoomId : string;
 }
 
 export const ChatSendMessage: VFC<Props> = memo((props) => {
 
-    const { currentRoomId } = props;
+    const { currentRoom } = props;
     const [text, setText] = useState("");
     const logindata = useLoginPlayer();
     const { socket } = useContext(ChatContext);
@@ -37,8 +36,13 @@ export const ChatSendMessage: VFC<Props> = memo((props) => {
         else
             name = "no name";
 
+        if (currentRoom === undefined) {
+            setText("")
+            return ;
+        }
+
         const payload: ChatLogType = {
-            roomId: currentRoomId,
+            roomId: currentRoom.id,
             id: "new one", //import { v4 as uuidv4 } from 'uuid';
             owner: name,
             time: 'undefine',
@@ -58,6 +62,11 @@ export const ChatSendMessage: VFC<Props> = memo((props) => {
         else
             name = "no name";
 
+        if (currentRoom === undefined) {
+            setText("")
+            return ;
+        }
+
         axios
             .get(constUrl.serversideUrl + '/game/privateKeyGen', {params: {
                 user: name,
@@ -68,7 +77,7 @@ export const ChatSendMessage: VFC<Props> = memo((props) => {
                     // setPrivateKey(response.data.privateKey);
 
                     const payload: ChatLogType = {
-                        roomId: currentRoomId,
+                        roomId: currentRoom.id,
                         id: "new one", //import { v4 as uuidv4 } from 'uuid';
                         owner: name,
                         time: 'undefine',
