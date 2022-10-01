@@ -19,7 +19,7 @@ export const InviteDmModal: VFC<Props> = memo((props) => {
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, isOpen]);
 
 
     let name = '';

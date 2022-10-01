@@ -17,7 +17,7 @@ export const ChatMemberModal: VFC<Props> = memo((props) => {
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, isOpen]);
 
     let chatMembers = undefined;
     if (players)

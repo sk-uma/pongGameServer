@@ -20,7 +20,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, currentRoom]);
 
     let myMap: ChatLogType[] = [];
 
