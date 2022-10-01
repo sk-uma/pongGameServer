@@ -28,7 +28,7 @@ export const ChatMemberModal: VFC<Props> = memo((props) => {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent>
-                    <ModalHeader>#{room.name}</ModalHeader>
+                    <ModalHeader>Members</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
                         <Stack>

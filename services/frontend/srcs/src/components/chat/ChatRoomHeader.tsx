@@ -79,7 +79,7 @@ export const ChatRoomHeader: VFC<Props> = memo((props) => {
                     overflow: 'hidden',
                 }}
             >
-            view all members
+            View all members
                 <ChatMemberModal isOpen={isOpen1} onClose={onClose1} room={currentRoom}></ChatMemberModal>
             </Button>
 
