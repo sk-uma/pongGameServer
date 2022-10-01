@@ -62,7 +62,7 @@ export const InviteDmModal: VFC<Props> = memo((props) => {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent>
-                    <ModalHeader># DM</ModalHeader>
+                    <ModalHeader>Create DM</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
                         <Stack>

@@ -90,7 +90,7 @@ export const ChatHome: VFC = memo(() => {
             //console.log('Chat/notification')
             //console.log(ret);
             if (ret && logindata?.loginPlayer?.name !== ret.owner
-                && currentRoom && currentRoom.id !== ret.roomId
+                && (currentRoom === undefined || currentRoom.id !== ret.roomId)
                 )
             {
                 const logRoom = chatData?.rooms.find((room) => room.id === ret.roomId);
@@ -102,6 +102,8 @@ export const ChatHome: VFC = memo(() => {
                         status: 'info',
                         log: ret,
                         players: players,
+                        setCurrentRoom: setCurrentRoom,
+                        room: logRoom,
                     })
                 }
             }
