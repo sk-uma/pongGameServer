@@ -20,7 +20,7 @@ export const ChatHome: VFC = memo(() => {
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, currentRoom, chatData]);
 
     //const { getAllChatData, allChatData } = useAllChatData();
     const logindata = useLoginPlayer();

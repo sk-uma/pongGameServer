@@ -33,7 +33,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers, currentRoom]);
+	}, [getPlayers, currentRoom, chatAllData]);
 
     let name = 'default';
     if (logindata?.loginPlayer?.name)
