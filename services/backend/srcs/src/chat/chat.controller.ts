@@ -6,8 +6,6 @@ import { ChatService } from './chat.service';
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
-  tmpkey = '66f7e73e-5ba5-4a00-bc76-d6153cf89e5e';
-
   @Get()
   getHello(@Query('name') name: string): string {
     if (name) return 'chat: controller ' + name;
@@ -122,14 +120,12 @@ export class ChatController {
   deleteRoom(
     @Query('roomId') roomId: string,
     @Query('userName') userName: string,
-    @Query('key') key: string,
   ): Promise<boolean> {
-    if (this.tmpkey === key)
-      return this.chatService.deleteRoom(roomId, userName);
+    return this.chatService.deleteRoom(roomId, userName);
   }
 
   @Get('deleteAll')
-  deleteAll(@Query('key') key: string): Promise<boolean> {
-    if (this.tmpkey === key) return this.chatService.deleteAll();
+  deleteAll(): Promise<boolean> {
+    return this.chatService.deleteAll();
   }
 }

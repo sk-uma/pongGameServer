@@ -14,14 +14,13 @@ import { ChatAllDataType, ChatLogType, ChatRoomType } from "./type/ChatType";
 export const ChatHome: VFC = memo(() => {
     const { socket } = useContext(ChatContext);
     const [chatData, setChatData] = useState<ChatAllDataType>();
-    const [currentRoomId, setCurrentRoomId] = useState<string>("default");
     const [currentRoom, setCurrentRoom] = useState<ChatRoomType | undefined>(undefined);
     const { showChatMessage } = useChatMessage();
     const { getPlayers, players } = useAllPlayers();
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, currentRoom, chatData]);
 
     //const { getAllChatData, allChatData } = useAllChatData();
     const logindata = useLoginPlayer();
@@ -65,21 +64,18 @@ export const ChatHome: VFC = memo(() => {
             {
                 if (!room.member_list.includes(UserName))
                 {
-                    setCurrentRoomId('default');
                     setCurrentRoom(undefined);    
                 }
                 else
                 {
                     setCurrentRoom(room);
-                    setCurrentRoomId(room.id);
                 }
             }
             else
             {
-                setCurrentRoomId('default');
                 setCurrentRoom(undefined);
             }
-            if (currentRoomId !== 'default' && room
+            if (currentRoom !== undefined && room
                 && room.notVisited_list.includes(UserName))
             {
                 const payload = {
@@ -94,7 +90,7 @@ export const ChatHome: VFC = memo(() => {
             //console.log('Chat/notification')
             //console.log(ret);
             if (ret && logindata?.loginPlayer?.name !== ret.owner
-                && currentRoomId !== ret.roomId
+                && (currentRoom === undefined || currentRoom.id !== ret.roomId)
                 )
             {
                 const logRoom = chatData?.rooms.find((room) => room.id === ret.roomId);
@@ -106,6 +102,8 @@ export const ChatHome: VFC = memo(() => {
                         status: 'info',
                         log: ret,
                         players: players,
+                        setCurrentRoom: setCurrentRoom,
+                        room: logRoom,
                     })
                 }
             }
@@ -170,7 +168,6 @@ export const ChatHome: VFC = memo(() => {
     //let Xname = "undifinedName";
     //if (logindata && logindata.loginPlayer)
     //  Xname = logindata.loginPlayer.name;
-
     return (
         <Flex width="100%" bg="ffffff">
             <Box width="25%" h="100vh" bg="teal"
@@ -185,10 +182,9 @@ export const ChatHome: VFC = memo(() => {
             >
                 <ChatLeftTable
                     chatAllData={chatData}
-                    setCurrentRoomId={setCurrentRoomId}
                     setCurrentRoom={setCurrentRoom}
                     setChatData={setChatData}
-                    currentRoomId={currentRoomId}
+                    currentRoom={currentRoom}
                     />
             </Box>
             <Box sx={{
@@ -207,7 +203,7 @@ export const ChatHome: VFC = memo(() => {
                     }}
                 >
                     {   currentRoom &&
-                    <ChatRoomHeader chatAllData={chatData} currentRoom={currentRoom} currentRoomId={currentRoomId}/>
+                    <ChatRoomHeader chatAllData={chatData} currentRoom={currentRoom}/>
                     }
                 </Box>
                 <Flex height='calc(100% - 50px)'>
@@ -218,7 +214,6 @@ export const ChatHome: VFC = memo(() => {
                         <ChatCenterHandle
                             chatAllData={chatData}
                             currentRoom={currentRoom}
-                            currentRoomId={currentRoomId}     
                             />
                     </Box>
 

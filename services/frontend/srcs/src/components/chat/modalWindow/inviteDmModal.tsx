@@ -19,7 +19,7 @@ export const InviteDmModal: VFC<Props> = memo((props) => {
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, isOpen]);
 
 
     let name = '';
@@ -62,7 +62,7 @@ export const InviteDmModal: VFC<Props> = memo((props) => {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent>
-                    <ModalHeader># DM</ModalHeader>
+                    <ModalHeader>Create DM</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
                         <Stack>

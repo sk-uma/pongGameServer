@@ -17,7 +17,7 @@ export const AddMemberModal: VFC<Props> = memo((props) => {
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, isOpen]);
 
     let chatMembers = undefined;
     if (players)
@@ -28,7 +28,7 @@ export const AddMemberModal: VFC<Props> = memo((props) => {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent>
-                    <ModalHeader>Invite Prople</ModalHeader>
+                    <ModalHeader>Invite People</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
                         <Stack>

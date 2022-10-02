@@ -9,18 +9,17 @@ import { ChatAllDataType, ChatLogType, ChatRoomType } from "./type/ChatType";
 type Props = {
     chatAllData :ChatAllDataType | undefined;
     currentRoom : ChatRoomType | undefined;
-    currentRoomId : string;
 }
 
 export const ChatCenter: VFC<Props> = memo((props) => {
 
-    const {chatAllData, currentRoom, currentRoomId} = props;
+    const {chatAllData, currentRoom} = props;
     const { getPlayers, players } = useAllPlayers();
     const logindata = useLoginPlayer();
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, currentRoom]);
 
     let myMap: ChatLogType[] = [];
 
@@ -49,9 +48,9 @@ export const ChatCenter: VFC<Props> = memo((props) => {
     scrollToBottom()
     });
 
-    if (currentRoom && currentRoomId !== 'default' && chatAllData)
+    if (currentRoom && chatAllData)
     {
-        myMap = chatAllData.logs.filter((item) => item.roomId === currentRoomId) 
+        myMap = chatAllData.logs.filter((item) => item.roomId === currentRoom.id) 
         myMap = myMap.filter((item) => !(logindata?.loginPlayer?.blockList.includes(item.owner)));
         myMap = myMap.filter((item) => (!(currentRoom.mute_list.includes(item.owner)) || logindata?.loginPlayer?.name === item.owner));
     }
@@ -81,7 +80,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                         //         <Box> {log.text} </Box>
                         //     </Box>
                         // </Flex>
-                        <Center key={index}>
+                        <Center key={index} _hover={{bg:'gray.100'}}>
                             <Box style={{width: 'calc(100% - 30px)'}}>
                                 <ChatMessage
                                     user={usr}
@@ -92,7 +91,7 @@ export const ChatCenter: VFC<Props> = memo((props) => {
                     )
                 } else if (log.type === "invite") {
                     return (
-                        <Center key={index}>
+                        <Center key={index} _hover={{bg:'gray.100'}}>
                             <Box style={{width: 'calc(100% - 30px)'}}>
                                 <ChartInvaitChatMessage
                                     user={usr}

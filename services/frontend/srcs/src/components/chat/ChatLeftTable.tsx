@@ -12,17 +12,16 @@ import { ChatContext } from "./provider/ChatProvider";
 import { ChatAllDataType, ChatRoomType } from "./type/ChatType";
 
 type Props = {
-    setCurrentRoomId : (roomid: string) => void;
     setCurrentRoom : (room: ChatRoomType) => void;
     chatAllData :ChatAllDataType | undefined;
     setChatData : (data: ChatAllDataType) => void;
-    currentRoomId: string;
+    currentRoom: ChatRoomType | undefined;
 }
 
 export const ChatLeftTable: VFC<Props> = memo((props) => {
     const { chatAllData,
-            setCurrentRoomId, setCurrentRoom,
-            currentRoomId } = props;
+            setCurrentRoom,
+            currentRoom } = props;
     const logindata = useLoginPlayer();
     const {isOpen, onOpen, onClose} = useDisclosure();
     const {isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2} = useDisclosure();
@@ -34,7 +33,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
 
     useEffect(() => {
 		getPlayers();
-	}, [getPlayers]);
+	}, [getPlayers, currentRoom, chatAllData]);
 
     let name = 'default';
     if (logindata?.loginPlayer?.name)
@@ -43,7 +42,6 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
 
     const onClickRoomLink = (room: ChatRoomType) => {
         //alert(roominfo.name);
-        setCurrentRoomId(room.id);
         setCurrentRoom(room);
         onClickVisitRoom(room);
     }
@@ -76,7 +74,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     return <Box key={index}></Box>
                 if (room.member_list.includes(name)) {
 
-                    if (currentRoomId !== room.id)
+                    if (currentRoom === undefined || currentRoom.id !== room.id)
                     {
                         return (
                         <Box key={index}>
@@ -103,7 +101,6 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     return (
                         <Box key={index}>
                             <ChatRoomMenu
-                                setCurrentRoomId={setCurrentRoomId}
                                 setCurrentRoom={setCurrentRoom}
                                 room={room}
                             />
@@ -144,7 +141,7 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     opponentDisplayName = 'default';
                 if (room.member_list.includes(name)) {
 
-                    if (currentRoomId !== room.id)
+                    if (currentRoom === undefined || currentRoom.id !== room.id)
                     {
                         return (
                         <Box key={index}>
@@ -171,7 +168,6 @@ export const ChatLeftTable: VFC<Props> = memo((props) => {
                     return (
                         <Box key={index}>
                             <ChatDmMenu
-                                setCurrentRoomId={setCurrentRoomId}
                                 setCurrentRoom={setCurrentRoom}
                                 room={room}
                                 opponentName={opponentDisplayName}

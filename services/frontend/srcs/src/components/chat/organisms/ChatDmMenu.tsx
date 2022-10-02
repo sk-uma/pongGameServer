@@ -7,14 +7,13 @@ import { ChatRoomType } from "../type/ChatType";
 
 
 type Props = {
-    setCurrentRoomId : (roomid: string) => void;
     setCurrentRoom : (room: ChatRoomType) => void;
     room: ChatRoomType;
     opponentName: string;
 }
 
 export const ChatDmMenu: VFC<Props> = memo((props) => {
-    const { setCurrentRoomId, setCurrentRoom, room, opponentName
+    const { setCurrentRoom, room, opponentName
            } = props;
 
     const { socket } = useContext(ChatContext);
@@ -26,7 +25,6 @@ export const ChatDmMenu: VFC<Props> = memo((props) => {
         userName = 'default';
 
     const onClickRoomLink = (room: ChatRoomType) => {
-        setCurrentRoomId(room.id);
         setCurrentRoom(room);
     }
 
