@@ -11,25 +11,25 @@ import { ChatModule } from './chat/chat.module';
 // import { Player } from './players/player.entity';
 
 @Module({
-  imports: [
-    PlayersModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'postgres',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'backend_db',
-      autoLoadEntities: true,
-      synchronize: true,
-      // entities: [ "src/**/**.entity{.ts,.js}" ],
-    }),
-    AvatarModule,
-    GameModule,
-    HistoryModule,
-    TwoFactorAuthenticationModule,
-    StatusModule,
-    ChatModule,
-  ],
+	imports: [
+		PlayersModule,
+		TypeOrmModule.forRoot({
+			type: 'postgres',
+			host: 'postgres',
+			port: 5432,
+			username: process.env.POSTGRES_USER || '',
+			password: process.env.POSTGRES_PASSWORD || '',
+			database: 'backend_db',
+			autoLoadEntities: true,
+			synchronize: true,
+			// entities: [ "src/**/**.entity{.ts,.js}" ],
+		}),
+		AvatarModule,
+		GameModule,
+		HistoryModule,
+		TwoFactorAuthenticationModule,
+		StatusModule,
+		ChatModule,
+	],
 })
 export class AppModule {}
