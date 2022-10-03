@@ -8,3 +8,4 @@ services/backend/srcs/node_modules
 
 # nest_dist
 serverside/dist
+.env
