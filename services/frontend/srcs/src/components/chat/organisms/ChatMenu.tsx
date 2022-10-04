@@ -40,7 +40,7 @@ export const ChatRoomMenu: VFC<Props> = memo((props) => {
             roomId: room.id,
             name: logindata.loginPlayer.name,
         }
-        console.log(payload)
+        //console.log(payload)
         await socket.emit('Chat/delete/room', payload);        
         onClose3();
     };
