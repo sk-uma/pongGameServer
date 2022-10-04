@@ -71,7 +71,7 @@ export const ChatRoom: VFC<Props> = memo((props) => {
             });  
             return ;
         }
-        console.log(ret.data);
+        //console.log(ret.data);
         
         /*if (props.room.password !== text)
         {
